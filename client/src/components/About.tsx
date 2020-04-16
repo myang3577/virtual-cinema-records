@@ -1,11 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { InitialState } from "../reducers/otherReducer";
+import { GlobalState } from "../reducers/rootReducer";
 import "./App.css";
 
 function About() {
-  const movieSearchResult: any = useSelector<any>(
-    (state) => state.otherReducer.movieSearchResult
+  const movieSearchResult: any = useSelector<GlobalState>(
+    (state) => state.otherData.movieSearchResult
   );
 
   return (

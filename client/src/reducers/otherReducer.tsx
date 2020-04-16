@@ -15,7 +15,9 @@ export enum LoadingState {
  * There is another variable called movieSearchResult
  * that is of type object. {} means object type
  */
-export interface InitialState {
+// Need to change name from OtherState to something else if we decide to use
+// this code, could be used for search in future
+export interface OtherState {
   loading: LoadingState;
   movieSearchResult: {};
 }
@@ -38,7 +40,7 @@ export interface InitialState {
  * but only if you are a reducer with the set attribute can you modify the
  * state.
  */
-const initialState: InitialState = {
+const initialState: OtherState = {
   loading: LoadingState.IDLE,
   movieSearchResult: {},
 };
@@ -66,7 +68,7 @@ const initialState: InitialState = {
 export const otherReducer = (
   state = initialState,
   action: Action
-): InitialState => {
+): OtherState => {
   // Check the action type and choose the appropriate action. Within each action
   // you set the states you want to set
   switch (action.type) {
@@ -91,7 +93,7 @@ export const otherReducer = (
   }
 };
 
-const fetchBeginReducer = (state: InitialState, action: Action) => {
+const fetchBeginReducer = (state: OtherState, action: Action) => {
   // Reducers always return back the state. The action of returning back the
   // state is what actually sets the state within the store
   return {
