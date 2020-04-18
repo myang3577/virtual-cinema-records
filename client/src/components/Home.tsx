@@ -162,13 +162,8 @@ function Login() {
           onSubmit={(event) => {
             event.preventDefault();
             // console.log(EMAIL_FORMAT.test(String(username).toLowerCase()));
-<<<<<<< HEAD
             // console.log(EMAIL_FORMAT.test(String(localUsername).toLowerCase()));
             // console.log(localUsername);
-=======
-            console.log(EMAIL_FORMAT.test(String(localUsername).toLowerCase()));
-            console.log(localUsername);
->>>>>>> pull rebase
 
             if (localUsername === "" || localPassword === "") {
               alert(
