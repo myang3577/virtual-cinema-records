@@ -1,6 +1,6 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 // https://material-ui.com/customization/color/#color
-import { teal, lime } from "@material-ui/core/colors";
+import { teal, lightGreen } from "@material-ui/core/colors";
 
 export const tealLimeTheme = createMuiTheme({
   palette: {
@@ -8,7 +8,7 @@ export const tealLimeTheme = createMuiTheme({
       main: teal[400],
     },
     secondary: {
-      main: lime[500],
+      main: lightGreen[500],
     },
   },
 });

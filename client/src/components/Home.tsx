@@ -104,7 +104,16 @@ function Home() {
             }}
             loading={loading === LoadingState.LOADING}
           >
-            Search Movies
+            Search Movies (primary color)
+          </LoadingButton>
+          <LoadingButton
+            onClick={() => {
+              dispatch(searchMovies(movieQuery));
+            }}
+            loading={loading === LoadingState.LOADING}
+            color={"secondary"}
+          >
+            Search Movies (secondary color)
           </LoadingButton>
         </ThemeProvider>
         {movieSearchResult.results
@@ -153,8 +162,8 @@ function Login() {
           onSubmit={(event) => {
             event.preventDefault();
             // console.log(EMAIL_FORMAT.test(String(username).toLowerCase()));
-            console.log(EMAIL_FORMAT.test(String(localUsername).toLowerCase()));
-            console.log(localUsername);
+            // console.log(EMAIL_FORMAT.test(String(localUsername).toLowerCase()));
+            // console.log(localUsername);
 
             if (localUsername === "" || localPassword === "") {
               alert(

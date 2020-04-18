@@ -6,13 +6,15 @@ export interface LoadingButtonProps {
   onClick: () => any;
   loading: boolean;
   children: React.ReactNode;
+  color?: "inherit" | "primary" | "secondary" | "default";
+  variant?: "text" | "outlined" | "contained";
 }
 
 export function LoadingButton(props: LoadingButtonProps) {
   return (
     <Button
-      variant="contained"
-      color="primary"
+      variant={props.variant ? props.variant : "contained"}
+      color={props.color ? props.color : "primary"}
       disableElevation
       disabled={props.loading}
       onClick={props.onClick}
