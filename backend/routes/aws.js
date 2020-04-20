@@ -97,7 +97,7 @@ function checkLogin(req, res, next) {
   const invalidEmail =
     "The entered username was not a valid email address. Please try again with a valid email address";
   const userNotExist =
-    "There is no user with the provided username. Please try again";
+    "There is no user with the provided username. Please register for an account";
   const dbError = "Login failed. Database error.";
   const wrongPassword =
     "The username and password entered are incorrect. Please try again";
@@ -199,9 +199,17 @@ function checkIfAcctExists(username) {
 function createAccount(req, res, next) {
   const username = decodeURIComponent(req.query.username).trim();
   const password = decodeURIComponent(req.query.password).trim();
+
+  const invalidEmail =
+    "The entered username was not a valid email address. Please try again with a valid email address";
   const success = "Account successfully created!";
   const acctExist = "Account could not be created. Username already exists.";
   const dbError = "Account could not be created. Database error.";
+  // Check if username is a valid email address
+  if (checkValidEmail(username)) {
+    res.json({ requestFeedback: invalidEmail });
+    return;
+  }
   createAccountData.Item.username.S = username;
   createAccountData.Item.password.S = password;
   checkIfAcctExists(username).then((acctStatus) => {
@@ -213,8 +221,8 @@ function createAccount(req, res, next) {
 
     db.putItem(createAccountData, function (err, data) {
       if (err) {
-        res.json({ requestFeedback: dbError });
         console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        res.json({ requestFeedback: dbError });
       } else {
         res.json({ requestFeedback: success });
       }

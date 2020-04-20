@@ -9,6 +9,9 @@ import { tealLimeTheme } from "../styles/MUITheme";
 import "./App.css";
 import { GlobalState } from "../reducers/rootReducer";
 
+// Email regex used to determine if the entered email address is valid
+const EMAIL_FORMAT = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
 /**
  * Home is a component that we want to render. It has been implemented with
  * react hooks here instead of a react class
@@ -150,7 +153,6 @@ function Login() {
     (state) => state.loginData.loginFeedback
   );
 
-  const EMAIL_FORMAT = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   const dispatch = useDispatch();
 
   return (
@@ -186,7 +188,7 @@ function Login() {
             onChange={(event) => {
               setLocalUsername(event.target.value);
             }}
-            placeholder="Enter username here"
+            placeholder="Enter email address here"
           />
           <br />
           <br />
@@ -246,6 +248,10 @@ function CreateAccount() {
                 "Your username or password is empty. Please provide" +
                   " both a username and a password"
               );
+            } else if (
+              !EMAIL_FORMAT.test(String(localUsername).toLowerCase())
+            ) {
+              alert("Your username must be a valid email address");
             } else {
               dispatch(createAcct(localUsername, localPassword));
             }
@@ -258,7 +264,7 @@ function CreateAccount() {
             onChange={(event) => {
               setLocalUsername(event.target.value);
             }}
-            placeholder="Enter username here"
+            placeholder="Enter email address here"
           />
           <br />
           <br />
