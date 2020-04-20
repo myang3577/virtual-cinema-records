@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, CircularProgress } from "@material-ui/core";
-import "./App.css";
 
 export interface LoadingButtonProps {
   onClick: () => any;

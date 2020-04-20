@@ -6,6 +6,8 @@ import thunk from "redux-thunk";
 // import rootReducer from "./reducers/otherReducer";
 import rootReducer from "./reducers/rootReducer";
 import App from "./components/App";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { tealLightGreenTheme } from "./styles/MUITheme";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import "./index.css";
@@ -28,7 +30,9 @@ const store = createStore(
 ReactDOM.render(
   // Always provider. Keep it like that
   <Provider store={store}>
-    <App />
+    <ThemeProvider theme={tealLightGreenTheme}>
+      <App />
+    </ThemeProvider>
   </Provider>,
   document.getElementById("root")
 );

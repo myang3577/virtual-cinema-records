@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
-import "./App.css";
 
 function About() {
   const movieSearchResult: any = useSelector<GlobalState>(
