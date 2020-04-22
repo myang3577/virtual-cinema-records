@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { checkLogin } from "../actions/loginActions";
-import { UserForm } from "../components/UserForm";
+import { UsernameField } from "../components/Username";
+import { PasswordField } from "../components/Password";
+import { LoadingButton } from "../components/LoadingButton";
+import { GlobalState } from "../reducers/rootReducer";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
@@ -11,6 +14,9 @@ function LoginForm() {
   const [localUsername, setLocalUsername] = useState("");
   const [localPassword, setLocalPassword] = useState("");
 
+  const feedback: any = useSelector<GlobalState>(
+    (state) => state.loginData.loginFeedback
+  );
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
@@ -33,18 +39,29 @@ function LoginForm() {
   };
 
   return (
-    <UserForm
-      error={
-        localUsername !== "" &&
-        !EMAIL_FORMAT.test(String(localUsername).toLowerCase())
-      }
-      username={localUsername}
-      password={localPassword}
-      setUsername={setLocalUsername}
-      setPassword={setLocalPassword}
-      onSubmit={handleSubmit}
-      loading={false} // Add value here later
-    />
+    <div className="user-form">
+      <UsernameField
+        error={
+          localUsername !== "" &&
+          !EMAIL_FORMAT.test(String(localUsername).toLowerCase())
+        }
+        username={localUsername}
+        loading={false}
+        setUsername={setLocalUsername}
+      />
+      <div className="divider"></div>
+      <PasswordField
+        password={localPassword}
+        loading={false}
+        setPassword={setLocalPassword}
+        placeholder={"Password"}
+      />
+      <div className="divider"></div>
+      <LoadingButton onClick={handleSubmit} loading={false}>
+        Submit
+      </LoadingButton>
+      {feedback}
+    </div>
   );
 }
 

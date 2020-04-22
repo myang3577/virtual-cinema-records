@@ -6,6 +6,9 @@ import { LoadingButton } from "./LoadingButton";
 import { GlobalState } from "../reducers/rootReducer";
 import LoginForm from "../containers/LoginForm";
 import RegisterForm from "../containers/RegisterForm";
+import ChangePasswordForm from "../containers/ChangePasswordForm";
+import ForgotPassword from "../containers/ForgotPasswordForm";
+import LogoutForm from "../containers/LogoutForm";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
@@ -91,15 +94,31 @@ function Home() {
           : ""}
       </div>
       <h1>Welcome to CAO!</h1>
-      <p>Please login below</p>
+      <h2>Please login below</h2>
       <LoginForm />
-      {loginFeedback}
+      {/* {loginFeedback} */}
       <br />
       Current store username is: {username.toString()} and its password is:{" "}
       {password} and isLoggedIn is: {isLoggedIn.toString()}
       {/* Remove later ^ */}
-      <h3>If you do not have an account, please create one below</h3>
+      <h2>If you do not have an account, please create one below</h2>
       <RegisterForm />
+      <h2>
+        If you want to change your password, please login above first.
+        <br />
+        Then provide your old and new password
+      </h2>
+      <ChangePasswordForm />
+      <h2>
+        If you want to reset your password, please provide your email below.
+        <br />
+      </h2>
+      <ForgotPassword />
+      <h2>
+        If you want to logout of your account, click the button below
+        <br />
+      </h2>
+      <LogoutForm />
     </div>
   );
 }

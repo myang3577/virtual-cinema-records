@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
+var bodyParser = require("body-parser");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 // var testAPIRouter = require('./routes/testAPI')
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "/../frontend/build")));
 app.use("/test", indexRouter);
 app.use("/users", usersRouter);

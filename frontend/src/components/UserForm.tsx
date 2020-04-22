@@ -19,6 +19,7 @@ export interface UserFormProps {
   error: boolean;
   username: string;
   password: string;
+  feedback: string;
   loading: boolean;
   setUsername: (username: string) => any;
   setPassword: (password: string) => any;
@@ -74,8 +75,9 @@ export function UserForm(props: UserFormProps) {
       <LoadingButton onClick={props.onSubmit} loading={props.loading}>
         Submit
       </LoadingButton>
+      {props.feedback}
     </div>
   );
 }
 
-export default UserForm;
+// export default UserForm;

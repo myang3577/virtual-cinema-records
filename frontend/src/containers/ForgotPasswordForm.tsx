@@ -1,38 +1,38 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createAcct } from "../actions/loginActions";
-import { UsernameField } from "../components/Username";
-import { PasswordField } from "../components/Password";
-import { LoadingButton } from "../components/LoadingButton";
+import { forgotPassword } from "../actions/loginActions";
 import { GlobalState } from "../reducers/rootReducer";
+import { UsernameField } from "../components/Username";
+import { LoadingButton } from "../components/LoadingButton";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
 const EMAIL_FORMAT = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-function LoginForm() {
+function ForgotPassword() {
   const [localUsername, setLocalUsername] = useState("");
-  const [localPassword, setLocalPassword] = useState("");
-  const [localRepeatPassword, setLocalRepeatPassword] = useState("");
+  //   const [localPassword, setLocalPassword] = useState("");
+  //   const [newLocalPassword, setNewLocalPassword] = useState("");
+
+  //   const username: any = useSelector<GlobalState>(
+  //     (state) => state.loginData.username
+  //   );
 
   const feedback: any = useSelector<GlobalState>(
-    (state) => state.loginData.createAcctFeedback
+    (state) => state.loginData.passwordRecoverFeedback
   );
 
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    if (localUsername === "" || localPassword === "") {
+    if (localUsername === "") {
       alert(
-        "Your username or password is empty. Please provide" +
-          " both a username and a password"
+        "Your entered username is empty. Please provide a valid email username"
       );
     } else if (!EMAIL_FORMAT.test(String(localUsername).toLowerCase())) {
       alert("Your username must be a valid email address");
-    } else if (localPassword !== localRepeatPassword) {
-      alert("Passwords do not match");
     } else {
-      dispatch(createAcct(localUsername, localPassword, localRepeatPassword));
+      dispatch(forgotPassword(localUsername));
     }
   };
 
@@ -48,20 +48,6 @@ function LoginForm() {
         setUsername={setLocalUsername}
       />
       <div className="divider"></div>
-      <PasswordField
-        password={localPassword}
-        loading={false}
-        setPassword={setLocalPassword}
-        placeholder={"Password"}
-      />
-      <div className="divider"></div>
-      <PasswordField
-        password={localRepeatPassword}
-        loading={false}
-        setPassword={setLocalRepeatPassword}
-        placeholder={"Confirm Password"}
-      />
-      <div className="divider"></div>
       <LoadingButton onClick={handleSubmit} loading={false}>
         Submit
       </LoadingButton>
@@ -70,4 +56,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default ForgotPassword;

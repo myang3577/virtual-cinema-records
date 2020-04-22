@@ -46,30 +46,49 @@ export const loginReducer = (
       // let isLoggedIn: boolean;
       // let obj = JSON.parse(action.payload);
       // action.payload["yes"];
-      // console.log(action.payload);
-      if (action.payload.isLoggedIn) {
-        return {
-          ...state,
-          isLoggedIn: action.payload.isLoggedIn,
-          loading: LoadingState.DONE,
-          username: action.username,
-          password: action.password,
-        };
-      } else {
-        return {
-          ...state,
-          isLoggedIn: action.payload.isLoggedIn,
-          loading: LoadingState.DONE,
-          loginFeedback: action.payload.requestFeedback,
-          username: "",
-          password: "",
-        };
+      console.log(action.payload.isLoggedIn);
+
+      let statesToSet = {
+        ...state,
+        isLoggedIn: action.payload.isLoggedIn,
+        loading: LoadingState.DONE,
+        loginFeedback: action.payload.requestFeedback,
+        username: "",
+        password: "",
+      };
+
+      if (statesToSet.isLoggedIn) {
+        statesToSet.username = action.username;
+        statesToSet.password = action.password;
       }
+
+      return statesToSet;
     case LoginType.CREATE_ACCT_END:
       return {
         ...state,
         loading: LoadingState.DONE,
         createAcctFeedback: action.payload.requestFeedback,
+      };
+    case LoginType.CHANGE_PASSWORD_END:
+      return {
+        ...state,
+        loading: LoadingState.DONE,
+        passwordChangeFeedback: action.payload.requestFeedback,
+        password: action.password,
+      };
+    case LoginType.RESET_PASSWORD_END:
+      return {
+        ...state,
+        loading: LoadingState.DONE,
+        passwordRecoverFeedback: action.payload.requestFeedback,
+      };
+    case LoginType.LOGOUT_END:
+      return {
+        ...state,
+        loading: LoadingState.DONE,
+        isLoggedIn: action.payload.isLoggedIn,
+        username: "",
+        password: "",
       };
 
     default:
