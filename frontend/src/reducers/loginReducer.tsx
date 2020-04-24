@@ -30,8 +30,6 @@ export const loginReducer = (
   state = initialState2,
   action: Login
 ): LoginState => {
-  console.log(action.payload);
-
   switch (action.type) {
     case LoginType.LOGIN_BEGIN:
       return {
@@ -43,11 +41,6 @@ export const loginReducer = (
         passwordRecoverFeedback: action.payload.requestFeedback,
       };
     case LoginType.LOGIN_END:
-      // let isLoggedIn: boolean;
-      // let obj = JSON.parse(action.payload);
-      // action.payload["yes"];
-      console.log(action.payload.isLoggedIn);
-
       let statesToSet = {
         ...state,
         isLoggedIn: action.payload.isLoggedIn,

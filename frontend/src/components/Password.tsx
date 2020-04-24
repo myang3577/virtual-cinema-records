@@ -9,19 +9,14 @@ import {
 import { Lock, Visibility, VisibilityOff } from "@material-ui/icons";
 import "../styles/App.css";
 
-export interface UserFormProps {
-  //   error: boolean;
-  //   username: string;
+export interface PasswordFormProps {
   password: string;
-  //   feedback: string;
   loading: boolean;
-  //   setUsername: (username: string) => any;
   setPassword: (password: string) => any;
   placeholder: string;
-  //   onSubmit: () => any;
 }
 
-export function PasswordField(props: UserFormProps) {
+export function PasswordField(props: PasswordFormProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (

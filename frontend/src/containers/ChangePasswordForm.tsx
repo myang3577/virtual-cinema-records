@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { changePassword } from "../actions/loginActions";
-import { UserForm } from "../components/UserForm";
 import { GlobalState } from "../reducers/rootReducer";
 import { PasswordField } from "../components/Password";
 import { LoadingButton } from "../components/LoadingButton";
 
-// Email regex used to determine if the entered email address is valid
-//eslint-disable-next-line
-const EMAIL_FORMAT = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
 function ChangePassword() {
-  //   const [localUsername, setLocalUsername] = useState("");
   const [localPassword, setLocalPassword] = useState("");
   const [newLocalPassword, setNewLocalPassword] = useState("");
 

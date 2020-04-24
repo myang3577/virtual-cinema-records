@@ -51,10 +51,6 @@ function Home() {
     (state) => state.loginData.isLoggedIn
   );
 
-  const loginFeedback: any = useSelector<GlobalState>(
-    (state) => state.loginData.loginFeedback
-  );
-
   return (
     // This component layout will need to change, temporary for starter code
     <div>

@@ -5,10 +5,8 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 var bodyParser = require("body-parser");
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-// var testAPIRouter = require('./routes/testAPI')
-var aws_router = require("./routes/aws");
+var login = require("./routes/login");
+var ping = require("./routes/ping");
 var app = express();
 
 // view engine setup
@@ -23,10 +21,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "/../frontend/build")));
-app.use("/test", indexRouter);
-app.use("/users", usersRouter);
-// app.use('/testAPI', testAPIRouter);
-app.use("/aws", aws_router);
+app.use("/login", login);
+app.use("/ping", ping);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname + "/../frontend/build/index.html"));

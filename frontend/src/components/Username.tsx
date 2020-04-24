@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   FormControl,
   Input,
@@ -8,14 +8,14 @@ import {
 import { AccountCircle } from "@material-ui/icons";
 import "../styles/App.css";
 
-export interface UsernameProps {
+export interface UsernameFormProps {
   error: boolean;
   username: string;
   loading: boolean;
   setUsername: (username: string) => any;
 }
 
-export function UsernameField(props: UsernameProps) {
+export function UsernameField(props: UsernameFormProps) {
   return (
     <FormControl error={props.error}>
       <InputLabel>Username</InputLabel>

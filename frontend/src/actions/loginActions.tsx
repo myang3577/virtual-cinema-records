@@ -15,16 +15,9 @@ export interface Login {
     isLoggedIn: boolean;
     requestFeedback: string;
   };
-  // requestResult: boolean;
   username: string;
   password: string;
 }
-
-// export interface LoginCredentials {
-//   type: LoginType;
-//   username: string;
-//   password: string;
-// }
 
 export const initiateLoading = (): Login => {
   return {
@@ -33,28 +26,16 @@ export const initiateLoading = (): Login => {
       isLoggedIn: false,
       requestFeedback: "",
     },
-    // requestResult: false,
     username: "",
     password: "",
   };
 };
-
-// export const checkLoginBegin = (): Login => {
-//   return {
-//     type: LoginType.LOGIN_BEGIN,
-//     payload: {},
-//     loginResult: false,
-//     username: "",
-//     password: "",
-//   };
-// };
 
 export const checkLoginEnd = (
   payload: {
     isLoggedIn: boolean;
     requestFeedback: string;
   },
-  // requestResult: boolean,
   username: string,
   password: string
 ): Login => {
@@ -64,7 +45,6 @@ export const checkLoginEnd = (
       isLoggedIn: payload.isLoggedIn,
       requestFeedback: payload.requestFeedback,
     },
-    // requestResult: requestResult,
     username: username,
     password: password,
   };
@@ -135,46 +115,27 @@ export const logoutEnd = (): Login => {
 
 export const checkLogin = (username: string, password: string) => {
   return (dispatch: Dispatch) => {
-    console.log("username is: " + username);
     dispatch(initiateLoading());
-    // dispatch(setCredentials(username, password));
 
-    return fetch(
-      `/aws/checkLogin?username=${encodeURIComponent(username)}
-                    &password=${encodeURIComponent(password)}`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "access-control-allow-origin": "*",
-        },
-        // credentials: 'include'
-      }
-    )
+    const requestOptions: RequestInit = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "access-control-allow-origin": "*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    };
+
+    return fetch(`/login/checkLogin`, requestOptions)
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         dispatch(checkLoginEnd(json, username, password));
       })
       .catch((err) => alert(err));
-
-    // return fetch(
-    //   `/aws/checkLogin?name=${encodeURIComponent(username)}
-    //                 &password=${encodeURIComponent(password)}`,
-    //   {
-    //     method: "GET",
-    //     mode: "cors",
-    //     headers: {
-    //       "access-control-allow-origin": "*",
-    //     },
-    //     // credentials: 'include'
-    //   }
-    // )
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     dispatch(checkLoginEnd(json, username, password));
-    //   })
-    //   .catch((err) => alert(err));
   };
 };
 
@@ -184,7 +145,6 @@ export const createAcct = (
   repeatPassword: string
 ) => {
   return (dispatch: Dispatch) => {
-    console.log("username is: " + username);
     dispatch(initiateLoading());
 
     const requestOptions: RequestInit = {
@@ -201,7 +161,7 @@ export const createAcct = (
       }),
     };
 
-    return fetch(`/aws/createAccount`, requestOptions)
+    return fetch(`/login/createAccount`, requestOptions)
       .then((response) => response.json())
       .then((json) => {
         dispatch(createAcctEnd(json, username, password));
@@ -216,26 +176,28 @@ export const changePassword = (
   newPassword: string
 ) => {
   return (dispatch: Dispatch) => {
-    // console.log("username is: " + username);
     dispatch(initiateLoading());
 
-    return fetch(
-      `/aws/changePassword?username=${encodeURIComponent(username)}
-                    &password=${encodeURIComponent(
-                      currPassword
-                    )}&newPassword=${encodeURIComponent(newPassword)}`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "access-control-allow-origin": "*",
-        },
-      }
-    )
+    const requestOptions: RequestInit = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "access-control-allow-origin": "*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        currPassword: currPassword,
+        newPassword: newPassword,
+      }),
+    };
+
+    return fetch(`/login/changePassword`, requestOptions)
       .then((response) => response.json())
       .then((json) => {
         let password = currPassword;
-        console.log("isPassChange = " + json.isPassChange);
+
+        // Save the new password only if successfully changed
         if (json.isPassChange) {
           password = newPassword;
         }
@@ -247,19 +209,21 @@ export const changePassword = (
 
 export const forgotPassword = (username: string) => {
   return (dispatch: Dispatch) => {
-    // console.log("username is: " + username);
     dispatch(initiateLoading());
 
-    return fetch(
-      `/aws/resetPassword?username=${encodeURIComponent(username)}`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "access-control-allow-origin": "*",
-        },
-      }
-    )
+    const requestOptions: RequestInit = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "access-control-allow-origin": "*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+      }),
+    };
+
+    return fetch(`/login/resetPassword`, requestOptions)
       .then((response) => response.json())
       .then((json) => {
         dispatch(forgotPasswordEnd(json));
@@ -270,23 +234,7 @@ export const forgotPassword = (username: string) => {
 
 export const logout = () => {
   return (dispatch: Dispatch) => {
-    // console.log("username is: " + username);
     dispatch(initiateLoading());
     dispatch(logoutEnd());
-    // return fetch(
-    //   `/aws/resetPassword?username=${encodeURIComponent(username)}`,
-    //   {
-    //     method: "GET",
-    //     mode: "cors",
-    //     headers: {
-    //       "access-control-allow-origin": "*",
-    //     },
-    //   }
-    // )
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     dispatch(resetPasswordEnd(json));
-    //   })
-    //   .catch((err) => alert(err));
   };
 };

@@ -11,12 +11,6 @@ const EMAIL_FORMAT = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".
 
 function ForgotPassword() {
   const [localUsername, setLocalUsername] = useState("");
-  //   const [localPassword, setLocalPassword] = useState("");
-  //   const [newLocalPassword, setNewLocalPassword] = useState("");
-
-  //   const username: any = useSelector<GlobalState>(
-  //     (state) => state.loginData.username
-  //   );
 
   const feedback: any = useSelector<GlobalState>(
     (state) => state.loginData.passwordRecoverFeedback

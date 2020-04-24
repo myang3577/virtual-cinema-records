@@ -20,12 +20,6 @@ function LoginForm() {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    console.log(
-      "EMAIL_FORMAT test: " +
-        EMAIL_FORMAT.test(String(localUsername).toLowerCase())
-    );
-    console.log("LoginForm localUsername: " + localUsername);
-
     if (localUsername === "" || localPassword === "") {
       alert(
         "Your username or password is empty. Please provide" +
