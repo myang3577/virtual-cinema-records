@@ -1,6 +1,8 @@
 // Below are some database templates that can be used to search a table,
 // put something in a table, and create a new table.
 
+const EMPTY_STRING = "";
+
 module.exports = {
   // Example on how to create a table with a given name, sort key, and attribute
   createTable: {
@@ -38,7 +40,7 @@ module.exports = {
   searchParam: {
     TableName: "Users",
     Key: {
-      username: { S: "" },
+      username: "",
     },
   },
 
@@ -47,8 +49,40 @@ module.exports = {
   addAttribute: {
     TableName: "Users",
     Item: {
-      username: { S: "" },
-      password: { S: "" },
+      username: "",
+      password: "",
+    },
+  },
+
+  exampleSetRanking: {
+    TableName: "Users",
+    Key: {
+      username: "epyeh@ucsd.edu",
+    },
+    UpdateExpression: "SET movieList.#movie.ranking = :r",
+    ExpressionAttributeNames: {
+      "#movie": "Interstellar",
+    },
+    ExpressionAttributeValues: {
+      ":r": "5",
+    },
+  },
+
+  exampleCreateNewMovie: {
+    TableName: "Users",
+    Key: {
+      username: "",
+    },
+    UpdateExpression: "SET movieList.#movie = :movie",
+    ExpressionAttributeNames: {
+      "#movie": "",
+    },
+    ExpressionAttributeValues: {
+      ":movie": {
+        APIkey: "",
+        ranking: "",
+        genre: "",
+      },
     },
   },
 };

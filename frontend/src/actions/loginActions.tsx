@@ -135,7 +135,9 @@ export const checkLogin = (username: string, password: string) => {
       .then((json) => {
         dispatch(checkLoginEnd(json, username, password));
       })
-      .catch((err) => alert(err));
+      .catch((err) => {
+        alert(err);
+      });
   };
 };
 
@@ -173,7 +175,8 @@ export const createAcct = (
 export const changePassword = (
   username: string,
   currPassword: string,
-  newPassword: string
+  newPassword: string,
+  newRepeatPassword: string
 ) => {
   return (dispatch: Dispatch) => {
     dispatch(initiateLoading());
@@ -189,6 +192,7 @@ export const changePassword = (
         username: username,
         currPassword: currPassword,
         newPassword: newPassword,
+        newRepeatPassword: newRepeatPassword,
       }),
     };
 

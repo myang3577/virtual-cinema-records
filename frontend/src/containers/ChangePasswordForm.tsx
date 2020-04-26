@@ -8,6 +8,7 @@ import { LoadingButton } from "../components/LoadingButton";
 function ChangePassword() {
   const [localPassword, setLocalPassword] = useState("");
   const [newLocalPassword, setNewLocalPassword] = useState("");
+  const [newRepeatLocalPassword, setNewRepeatLocalPassword] = useState("");
 
   const username: any = useSelector<GlobalState>(
     (state) => state.loginData.username
@@ -20,13 +21,26 @@ function ChangePassword() {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    if (localPassword === "" || newLocalPassword === "") {
+    if (
+      localPassword === "" ||
+      newLocalPassword === "" ||
+      newRepeatLocalPassword === ""
+    ) {
       alert(
-        "Your current password or new password password is empty. Please provide" +
-          " both your current password and new password"
+        "Your current password, new password, or confirm password is empty. Please provide" +
+          " both your current password, a new password, and a confirm password"
       );
+    } else if (newLocalPassword !== newRepeatLocalPassword) {
+      alert("Your new password does not match your confirm password");
     } else {
-      dispatch(changePassword(username, localPassword, newLocalPassword));
+      dispatch(
+        changePassword(
+          username,
+          localPassword,
+          newLocalPassword,
+          newRepeatLocalPassword
+        )
+      );
     }
   };
 
@@ -44,6 +58,13 @@ function ChangePassword() {
         loading={false}
         setPassword={setNewLocalPassword}
         placeholder={"New Password"}
+      />
+      <div className="divider"></div>
+      <PasswordField
+        password={newRepeatLocalPassword}
+        loading={false}
+        setPassword={setNewRepeatLocalPassword}
+        placeholder={"Confirm Password"}
       />
       <div className="divider"></div>
       <LoadingButton onClick={handleSubmit} loading={false}>

@@ -1,8 +1,4 @@
-const {
-  createTable,
-  searchParam,
-  addAttribute,
-} = require("./databaseTemplates");
+const { searchParam } = require("./databaseTemplates");
 
 var AWS = require("aws-sdk");
 AWS.config.loadFromPath("./config.json");
@@ -10,7 +6,7 @@ AWS.config.apiVersion = {
   dynamodb: "latest",
 };
 
-const db = new AWS.DynamoDB();
+const db = new AWS.DynamoDB.DocumentClient();
 
 // Define useful error message strings
 const invalidEmail =
@@ -41,15 +37,15 @@ function checkValidEmail(username) {
 // Helper function to check if username and password match
 function checkPassword(username, password) {
   return new Promise((resolve, reject) => {
-    searchParam.Key.username.S = username;
-    db.getItem(searchParam, function (err, data) {
+    searchParam.Key.username = username;
+    db.get(searchParam, function (err, data) {
       if (err) {
         resolve({ isCorrectPassword: false, requestFeedback: loginDbError });
       } else {
         if (Object.keys(data).length == 0) {
           resolve({ isCorrectPassword: false, requestFeedback: userNotExist });
         } else {
-          if (data.Item.password.S.localeCompare(password) == 0) {
+          if (data.Item.password.localeCompare(password) == 0) {
             resolve({ isCorrectPassword: true, requestFeedback: loginSuccess });
           } else {
             resolve({
@@ -72,8 +68,8 @@ function checkIfAcctExists(username) {
   // They are called after the promise has been completed. Think of them as
   // return except for promises.
   return new Promise((resolve, reject) => {
-    searchParam.Key.username.S = username;
-    db.getItem(searchParam, function (err, data) {
+    searchParam.Key.username = username;
+    db.get(searchParam, function (err, data) {
       if (err) {
         console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         resolve(true);

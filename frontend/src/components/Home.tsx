@@ -106,7 +106,7 @@ function Home() {
       </h2>
       <ChangePasswordForm />
       <h2>
-        If you want to reset your password, please provide your email below.
+        If you forgot your password, please provide your email below.
         <br />
       </h2>
       <ForgotPassword />
