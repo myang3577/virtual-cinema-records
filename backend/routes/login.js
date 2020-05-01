@@ -20,7 +20,7 @@ const {
   failSend,
 } = require("../tools/loginTools");
 
-const { searchParam, addAttribute } = require("../tools/databaseTemplates");
+// const { searchParam, addAttribute } = require("../tools/databaseTemplates");
 AWS.config.loadFromPath("./config.json");
 AWS.config.apiVersion = {
   dynamodb: "latest",
@@ -75,7 +75,13 @@ function createAccount(req, res, next) {
     res.json({ requestFeedback: passwordMismatch });
     return;
   }
-
+  let addAttribute = {
+    TableName: "Users",
+    Item: {
+      username: "",
+      password: "",
+    },
+  };
   addAttribute.Item.username = username;
   addAttribute.Item.password = password;
   checkIfAcctExists(username).then((acctStatus) => {
@@ -131,6 +137,13 @@ function changePassword(req, res, next) {
 
     // Else, put the new password into the database
     else {
+      let addAttribute = {
+        TableName: "Users",
+        Item: {
+          username: "",
+          password: "",
+        },
+      };
       addAttribute.Item.username = username;
       addAttribute.Item.password = newPassword;
       db.put(addAttribute, function (err, data) {
@@ -161,6 +174,13 @@ function resetPassword(req, res, next) {
     res.json({ isPassChange: false, requestFeedback: invalidEmail });
     return;
   }
+
+  let searchParam = {
+    TableName: "Users",
+    Key: {
+      username: "",
+    },
+  };
 
   // Get the password from the database and mail it to the user
   searchParam.Key.username = username;

@@ -1,4 +1,4 @@
-const { searchParam } = require("./databaseTemplates");
+// const { searchParam } = require("./databaseTemplates");
 
 var AWS = require("aws-sdk");
 AWS.config.loadFromPath("./config.json");
@@ -37,6 +37,12 @@ function checkValidEmail(username) {
 // Helper function to check if username and password match
 function checkPassword(username, password) {
   return new Promise((resolve, reject) => {
+    let searchParam = {
+      TableName: "Users",
+      Key: {
+        username: "",
+      },
+    };
     searchParam.Key.username = username;
     db.get(searchParam, function (err, data) {
       if (err) {
@@ -68,6 +74,12 @@ function checkIfAcctExists(username) {
   // They are called after the promise has been completed. Think of them as
   // return except for promises.
   return new Promise((resolve, reject) => {
+    let searchParam = {
+      TableName: "Users",
+      Key: {
+        username: "",
+      },
+    };
     searchParam.Key.username = username;
     db.get(searchParam, function (err, data) {
       if (err) {

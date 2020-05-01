@@ -83,6 +83,8 @@ export const otherReducer = (
       // Another example of setting state. In this case it sets the
       // movieSearchResult and the loading state. Note that states are
       // overrided. That's what it means to set them
+
+      console.log(action.payload);
       return {
         ...state,
         movieSearchResult: action.payload,
