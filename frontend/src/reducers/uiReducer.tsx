@@ -1,13 +1,14 @@
 import { UI, UIType } from "../actions/uiActions";
-import { LoadingState } from "./otherReducer";
-import LoginForm from "../containers/LoginForm"
-import LogoutForm from "../containers/LogoutForm"
-import RegisterForm from "../containers/RegisterForm"
-import React from "react";
+
+export enum AccountModalType  {
+  LOGIN = "LOGIN",
+  LOGOUT = "LOGOUT",
+  REGISTER = "REGISTER",
+};
 
 export interface UIState {
   accountModalOpen: boolean,
-  accountModalType: any,
+  accountModalType: AccountModalType,
   // add additional attributes here.
   // These attributes can come from the payload or another
   // separate variable from the action
@@ -15,7 +16,7 @@ export interface UIState {
 
 const initialState: UIState = {
   accountModalOpen: false,
-  accountModalType: <LoginForm />,
+  accountModalType: AccountModalType.LOGIN,
 };
 
 export const uiReducer = (
@@ -26,17 +27,17 @@ export const uiReducer = (
     case UIType.LOGIN_MODAL:
       return {
         ...state,
-        accountModalType: <LoginForm />,
+        accountModalType: AccountModalType.LOGIN,
       };
     case UIType.LOGOUT_MODAL:
       return {
           ...state,
-          accountModalType: <LogoutForm />,
+          accountModalType: AccountModalType.LOGOUT,
       };
     case UIType.REGISTER_MODAL:
       return {
         ...state,
-        accountModalType: <RegisterForm />,
+        accountModalType: AccountModalType.REGISTER,
       };
     case UIType.OPEN_MODAL:
         return {

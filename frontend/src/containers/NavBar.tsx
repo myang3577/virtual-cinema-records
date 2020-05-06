@@ -13,8 +13,6 @@ import {
   Modal,
   Card,
   CardContent,
-  CardHeader,
-  CardMedia,
 } from "@material-ui/core";
 import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
 import MovieFilterIcon from "@material-ui/icons/MovieFilter";
@@ -23,6 +21,10 @@ import BookmarksOutlinedIcon from "@material-ui/icons/BookmarksOutlined";
 import PersonIcon from "@material-ui/icons/Person";
 import "../styles/App.css";
 import { accountLoginModal, accountLogoutModal, accountOpenModal, accountCloseModal } from "../actions/uiActions";
+import { AccountModalType } from "../reducers/uiReducer";
+import LoginForm from "./LoginForm";
+import LogoutForm from "./LogoutForm";
+import RegisterForm from "./RegisterForm";
 
 const homeLink = "/";
 const accountLink = "/account";
@@ -58,7 +60,19 @@ function NavBar() {
   const handleModalClose = () => {
     dispatch(accountCloseModal());
   };
+
   const accountString = isLoggedIn ? username : "Login";
+
+  const accountModal = () => {
+    switch(modalType) {
+      case AccountModalType.LOGIN:
+        return <LoginForm />;
+      case AccountModalType.LOGOUT:
+        return <LogoutForm />;
+      case AccountModalType.REGISTER:
+        return <RegisterForm />;
+    };
+  };
 
   return (
     <Tabs
@@ -101,8 +115,8 @@ function NavBar() {
           <div id="modal-img-div">
             <img src={VCRSmallLogo} id="modal-img" />
           </div>
-          <CardContent >
-            {modalType}
+          <CardContent>
+            {accountModal()}
           </CardContent>
         </Card>
       </Modal>
