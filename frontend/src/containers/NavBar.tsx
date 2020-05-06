@@ -14,6 +14,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardMedia,
 } from "@material-ui/core";
 import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
 import MovieFilterIcon from "@material-ui/icons/MovieFilter";
@@ -21,7 +22,7 @@ import TheatersIcon from "@material-ui/icons/Theaters";
 import BookmarksOutlinedIcon from "@material-ui/icons/BookmarksOutlined";
 import PersonIcon from "@material-ui/icons/Person";
 import "../styles/App.css";
-import LoginForm from "./LoginForm";
+import { accountLoginModal, accountLogoutModal, accountOpenModal, accountCloseModal } from "../actions/uiActions";
 
 const homeLink = "/";
 const accountLink = "/account";
@@ -29,6 +30,7 @@ const recsLink = "/recommendations";
 const mymoviesLink = "/mymovies";
 
 const VCRBigLogo = require("../images/VCRBigLogo.png");
+const VCRSmallLogo = require("../images/VCRIconOnly.png");
 
 function NavBar() {
   const isLoggedIn: any = useSelector<GlobalState>(
@@ -39,23 +41,24 @@ function NavBar() {
     (state) => state.loginData.username
   );
 
-  const [accountModalOpen, setModalOpen] = useState(false);
+  const modalOpen: any = useSelector<GlobalState>(
+    (state) => state.uiData.accountModalOpen
+  );
+
+  const modalType: any = useSelector<GlobalState>(
+    (state) => state.uiData.accountModalType
+  );
+
+  const dispatch = useDispatch();
 
   const handleAccountClick = () => {
-    setModalOpen(true);
+    dispatch(accountOpenModal());
   };
 
   const handleModalClose = () => {
-    setModalOpen(false);
+    dispatch(accountCloseModal());
   };
-
   const accountString = isLoggedIn ? username : "Login";
-
-  const accountForm = () => {
-    if (!isLoggedIn) {
-      return <LoginForm />;
-    }
-  };
 
   return (
     <Tabs
@@ -90,13 +93,16 @@ function NavBar() {
         onClick={handleAccountClick}
       />
       <Modal
-        open={accountModalOpen}
+        open={modalOpen}
         onClose={handleModalClose}
         className="account-modal"
       >
         <Card className="account-card">
-          <CardContent>
-            <LoginForm />
+          <div id="modal-img-div">
+            <img src={VCRSmallLogo} id="modal-img" />
+          </div>
+          <CardContent >
+            {modalType}
           </CardContent>
         </Card>
       </Modal>

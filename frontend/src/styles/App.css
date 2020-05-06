@@ -10,18 +10,40 @@
 
 .account-card {
   width: 25%;
-  height: 40%;
+  height: auto;
   border-radius: 3%;
   position: absolute;
   padding: 50px;
-  display: flex;
-  justify-content: center;
 }
 
 .account-modal {
   display: flex;
   justify-content: center;
   padding-top: 10%;
+}
+
+.account-link {
+  display:flex;
+  justify-content: center;
+}
+
+#navbar-img {
+  border-radius: 50%;
+  width: 10%;
+  height: 10%;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+#modal-img {
+  border-radius: 50%;
+  width: 20%;
+  height: 20%;
+}
+
+#modal-img-div {
+  display: flex;
+  justify-content: center;
 }
 
 .navbar-label {
@@ -32,12 +54,4 @@
   display: flex;
   justify-content: ''space-between'';
   margin-top: 10px;
-}
-
-#navbar-img {
-  border-radius: 50%;
-  width: 10%;
-  height: 10%;
-  margin-left: 15%;
-  margin-right: 15%;
 }

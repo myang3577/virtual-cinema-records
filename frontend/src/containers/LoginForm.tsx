@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { checkLogin } from "../actions/loginActions";
+import { checkLogin, Login } from "../actions/loginActions";
 import { UsernameField } from "../components/Username";
 import { PasswordField } from "../components/Password";
 import { LoadingButton } from "../components/LoadingButton";
 import { GlobalState } from "../reducers/rootReducer";
-import { Modal } from "@material-ui/core";
+import { Link } from "@material-ui/core";
+import { accountRegisterModal } from "../actions/uiActions";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
@@ -33,6 +34,10 @@ function LoginForm() {
     }
   };
 
+  const openRegister = () => {
+    dispatch(accountRegisterModal());
+  }
+
   return (
     <div className="user-form">
       <UsernameField
@@ -53,9 +58,15 @@ function LoginForm() {
       />
       <div className="divider"></div>
       <LoadingButton onClick={handleSubmit} loading={false}>
-        Submit
+        Login
       </LoadingButton>
       {feedback}
+      <br/>
+      <div className="account-link">
+        <Link onClick={openRegister}>
+          Not a member? Register
+        </Link>
+      </div>
     </div>
   );
 }
