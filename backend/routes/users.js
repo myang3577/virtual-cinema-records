@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var movie_list = require("./movie_list");
 var recommender = require("./recommender");
+var blacklist = require("./blacklist");
 var AWS = require("aws-sdk");
 
 AWS.config.loadFromPath("./config.json");
@@ -16,6 +17,7 @@ const userTableName = "Users";
 // users
 router.use("/", movie_list);
 router.use("/", recommender);
+router.use("/", blacklist);
 
 // users/:email
 router.get("/:email", getUserInfo);
