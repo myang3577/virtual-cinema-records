@@ -13,14 +13,24 @@ import {
   Modal,
   Card,
   CardContent,
+  CardActionArea,
+  CardActions,
+  IconButton,
+  CardHeader,
 } from "@material-ui/core";
 import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
 import MovieFilterIcon from "@material-ui/icons/MovieFilter";
 import TheatersIcon from "@material-ui/icons/Theaters";
+import CloseIcon from "@material-ui/icons/Close";
 import BookmarksOutlinedIcon from "@material-ui/icons/BookmarksOutlined";
 import PersonIcon from "@material-ui/icons/Person";
 import "../styles/App.css";
-import { accountLoginModal, accountLogoutModal, accountOpenModal, accountCloseModal } from "../actions/uiActions";
+import {
+  accountLoginModal,
+  accountLogoutModal,
+  accountOpenModal,
+  accountCloseModal,
+} from "../actions/uiActions";
 import { AccountModalType } from "../reducers/uiReducer";
 import LoginForm from "./LoginForm";
 import LogoutForm from "./LogoutForm";
@@ -64,14 +74,14 @@ function NavBar() {
   const accountString = isLoggedIn ? username : "Login";
 
   const accountModal = () => {
-    switch(modalType) {
+    switch (modalType) {
       case AccountModalType.LOGIN:
         return <LoginForm />;
       case AccountModalType.LOGOUT:
         return <LogoutForm />;
       case AccountModalType.REGISTER:
         return <RegisterForm />;
-    };
+    }
   };
 
   return (
@@ -110,14 +120,25 @@ function NavBar() {
         open={modalOpen}
         onClose={handleModalClose}
         className="account-modal"
+        disableScrollLock={true}
+        disableBackdropClick={true}
+        disableAutoFocus={true}
+        disableEnforceFocus={true}
       >
         <Card className="account-card">
-          <div id="modal-img-div">
+          <CardHeader
+            action={
+              <IconButton
+                onClick={handleModalClose}
+              >
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <div id="account-card-content">
             <img src={VCRSmallLogo} id="modal-img" />
-          </div>
-          <CardContent>
             {accountModal()}
-          </CardContent>
+          </div>
         </Card>
       </Modal>
     </Tabs>

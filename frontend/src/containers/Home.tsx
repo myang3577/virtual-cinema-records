@@ -73,8 +73,6 @@ function Home() {
       Current store username is: {username.toString()} and its password is:{" "}
       {password} and isLoggedIn is: {isLoggedIn.toString()}
       {/* Remove later ^ */}
-      <h2>If you do not have an account, please create one below</h2>
-      <RegisterForm />
       <h2>
         If you want to change your password, please login above first.
         <br />
@@ -86,11 +84,6 @@ function Home() {
         <br />
       </h2>
       <ForgotPassword />
-      <h2>
-        If you want to logout of your account, click the button below
-        <br />
-      </h2>
-      <LogoutForm />
     </div>
   );
 }

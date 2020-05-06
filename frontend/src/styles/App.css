@@ -8,31 +8,32 @@
   height: 20px;
 }
 
+.account-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10%;
+  outline: 'none';
+}
+
 .account-card {
   width: 25%;
   height: auto;
   border-radius: 3%;
   position: absolute;
-  padding: 50px;
+  padding: 10px;
 }
 
-.account-modal {
+#account-card-content {
   display: flex;
-  justify-content: center;
-  padding-top: 10%;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 10%;
 }
 
 .account-link {
   display:flex;
   justify-content: center;
-}
-
-#navbar-img {
-  border-radius: 50%;
-  width: 10%;
-  height: 10%;
-  margin-left: 15%;
-  margin-right: 15%;
 }
 
 #modal-img {
@@ -41,13 +42,16 @@
   height: 20%;
 }
 
-#modal-img-div {
-  display: flex;
-  justify-content: center;
-}
-
 .navbar-label {
   font-size: 12px;
+}
+
+#navbar-img {
+  border-radius: 50%;
+  width: 10%;
+  height: 10%;
+  margin-left: 15%;
+  margin-right: 15%;
 }
 
 .movie-list {

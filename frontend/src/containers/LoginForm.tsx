@@ -6,7 +6,7 @@ import { PasswordField } from "../components/Password";
 import { LoadingButton } from "../components/LoadingButton";
 import { GlobalState } from "../reducers/rootReducer";
 import { Link } from "@material-ui/core";
-import { accountRegisterModal } from "../actions/uiActions";
+import { accountLogoutModal, accountRegisterModal, accountCloseModal } from "../actions/uiActions";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
@@ -19,6 +19,11 @@ function LoginForm() {
   const feedback: any = useSelector<GlobalState>(
     (state) => state.loginData.loginFeedback
   );
+
+  const isLoggedIn: any = useSelector<GlobalState>(
+    (state) => state.loginData.isLoggedIn
+  );
+
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
@@ -31,6 +36,10 @@ function LoginForm() {
       alert("Your username must be a valid email address");
     } else {
       dispatch(checkLogin(localUsername, localPassword));
+      if(isLoggedIn) {
+        dispatch(accountLogoutModal());
+        dispatch(accountCloseModal());
+      }
     }
   };
 
