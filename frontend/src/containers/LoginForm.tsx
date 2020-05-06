@@ -34,29 +34,29 @@ function LoginForm() {
   };
 
   return (
-      <div className="user-form">
-        <UsernameField
-          error={
-            localUsername !== "" &&
-            !EMAIL_FORMAT.test(String(localUsername).toLowerCase())
-          }
-          username={localUsername}
-          loading={false}
-          setUsername={setLocalUsername}
-        />
-        <div className="divider"></div>
-        <PasswordField
-          password={localPassword}
-          loading={false}
-          setPassword={setLocalPassword}
-          placeholder={"Password"}
-        />
-        <div className="divider"></div>
-        <LoadingButton onClick={handleSubmit} loading={false}>
-          Submit
-        </LoadingButton>
-        {feedback}
-      </div>
+    <div className="user-form">
+      <UsernameField
+        error={
+          localUsername !== "" &&
+          !EMAIL_FORMAT.test(String(localUsername).toLowerCase())
+        }
+        username={localUsername}
+        loading={false}
+        setUsername={setLocalUsername}
+      />
+      <div className="divider"></div>
+      <PasswordField
+        password={localPassword}
+        loading={false}
+        setPassword={setLocalPassword}
+        placeholder={"Password"}
+      />
+      <div className="divider"></div>
+      <LoadingButton onClick={handleSubmit} loading={false}>
+        Submit
+      </LoadingButton>
+      {feedback}
+    </div>
   );
 }
 

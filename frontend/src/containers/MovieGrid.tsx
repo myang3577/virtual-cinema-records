@@ -12,31 +12,31 @@ function MovieGrid() {
     (state) => state.otherData.movieSearchResult
   );
 
-const gridItemStyle = {
-    height: "auto"
+  const gridItemStyle = {
+    height: "auto",
   };
 
-const gridStyle = {
-      display: "flex",
-      justifyContent: "space-between",
-      marginTop: "10px"
+  const gridStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "10px",
   };
 
-  return(
+  return (
     <div>
       <SearchBar />
       <GridList cols={6} style={gridStyle}>
         {movieSearchResult.results
-            ? movieSearchResult.results.map((e: any, index: number) => (
-                //<MovieCard key={e}
-                <GridListTile key={e} cols={1} style={gridItemStyle}>
-                  <MovieCards movie={e}/>
-                </GridListTile>
-              ))
-            : ""}
+          ? movieSearchResult.results.map((e: any, index: number) => (
+              //<MovieCard key={e}
+              <GridListTile key={e} cols={1} style={gridItemStyle}>
+                <MovieCards movie={e} />
+              </GridListTile>
+            ))
+          : ""}
       </GridList>
     </div>
   );
-};
+}
 
 export default MovieGrid;

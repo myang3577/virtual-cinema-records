@@ -64,7 +64,7 @@ function Home() {
         <br />
         &nbsp;
         {/* This is thunk specific. Use it as is. Always call dispatch on the async api call */}
-        <MovieGrid/>
+        <MovieGrid />
       </div>
       <h1>Welcome to CAO!</h1>
       <h2>Please login by clicking above</h2>
