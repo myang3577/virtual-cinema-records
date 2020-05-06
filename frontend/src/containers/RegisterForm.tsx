@@ -41,7 +41,7 @@ function LoginForm() {
 
   const openLogin = () => {
     dispatch(accountLoginModal());
-  }
+  };
 
   return (
     <div className="user-form">
@@ -72,11 +72,9 @@ function LoginForm() {
       <LoadingButton onClick={handleSubmit} loading={false}>
         Register
       </LoadingButton>
-      <br/>
+      <br />
       <div className="account-link">
-        <Link onClick={openLogin}>
-          Already a member? Login
-        </Link>
+        <Link onClick={openLogin}>Already a member? Login</Link>
       </div>
       {feedback}
     </div>

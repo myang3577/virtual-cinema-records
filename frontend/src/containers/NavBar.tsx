@@ -128,9 +128,7 @@ function NavBar() {
         <Card className="account-card">
           <CardHeader
             action={
-              <IconButton
-                onClick={handleModalClose}
-              >
+              <IconButton onClick={handleModalClose}>
                 <CloseIcon />
               </IconButton>
             }
