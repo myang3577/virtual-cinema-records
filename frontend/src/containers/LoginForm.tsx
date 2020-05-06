@@ -5,6 +5,7 @@ import { UsernameField } from "../components/Username";
 import { PasswordField } from "../components/Password";
 import { LoadingButton } from "../components/LoadingButton";
 import { GlobalState } from "../reducers/rootReducer";
+import { Modal } from "@material-ui/core";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
@@ -33,29 +34,29 @@ function LoginForm() {
   };
 
   return (
-    <div className="user-form">
-      <UsernameField
-        error={
-          localUsername !== "" &&
-          !EMAIL_FORMAT.test(String(localUsername).toLowerCase())
-        }
-        username={localUsername}
-        loading={false}
-        setUsername={setLocalUsername}
-      />
-      <div className="divider"></div>
-      <PasswordField
-        password={localPassword}
-        loading={false}
-        setPassword={setLocalPassword}
-        placeholder={"Password"}
-      />
-      <div className="divider"></div>
-      <LoadingButton onClick={handleSubmit} loading={false}>
-        Submit
-      </LoadingButton>
-      {feedback}
-    </div>
+      <div className="user-form">
+        <UsernameField
+          error={
+            localUsername !== "" &&
+            !EMAIL_FORMAT.test(String(localUsername).toLowerCase())
+          }
+          username={localUsername}
+          loading={false}
+          setUsername={setLocalUsername}
+        />
+        <div className="divider"></div>
+        <PasswordField
+          password={localPassword}
+          loading={false}
+          setPassword={setLocalPassword}
+          placeholder={"Password"}
+        />
+        <div className="divider"></div>
+        <LoadingButton onClick={handleSubmit} loading={false}>
+          Submit
+        </LoadingButton>
+        {feedback}
+      </div>
   );
 }
 

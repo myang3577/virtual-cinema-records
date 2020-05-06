@@ -7,3 +7,31 @@
 .divider {
   height: 20px;
 }
+
+.account-card {
+  width: 25%;
+  height: 40%;
+  border-radius: 3%;
+  position: absolute;
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.account-modal {
+  display: flex;
+  justify-content: center;
+  padding-top: 10%;
+}
+
+.navbar-label {
+  font-size: 12px;
+}
+
+#navbar-img {
+  border-radius: 50%;
+  width: 10%;
+  height: 10%;
+  margin-left: 15%;
+  margin-right: 15%;
+}

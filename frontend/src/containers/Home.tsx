@@ -9,6 +9,7 @@ import RegisterForm from "./RegisterForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import ForgotPassword from "./ForgotPasswordForm";
 import LogoutForm from "./LogoutForm";
+import MovieGrid from "./MovieGrid";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
@@ -83,15 +84,10 @@ function Home() {
         >
           Search Movies (secondary color)
         </LoadingButton>
-        {movieSearchResult.results
-          ? movieSearchResult.results.map((e: any, index: number) => (
-              <div key={index}>{e.title}</div>
-            ))
-          : ""}
+        <MovieGrid/>
       </div>
       <h1>Welcome to CAO!</h1>
-      <h2>Please login below</h2>
-      <LoginForm />
+      <h2>Please login by clicking above</h2>
       {/* {loginFeedback} */}
       <br />
       Current store username is: {username.toString()} and its password is:{" "}
