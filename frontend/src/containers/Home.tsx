@@ -10,6 +10,7 @@ import ChangePasswordForm from "./ChangePasswordForm";
 import ForgotPassword from "./ForgotPasswordForm";
 import LogoutForm from "./LogoutForm";
 import MovieGrid from "./MovieGrid";
+import SearchBar from "./SearchBar";
 
 // Email regex used to determine if the entered email address is valid
 //eslint-disable-next-line
@@ -61,29 +62,8 @@ function Home() {
         <br />
         <button onClick={() => setCount(count + 1)}>+1</button>
         <br />
-        <input
-          value={movieQuery}
-          onChange={(e) => setMovieQuery(e.target.value)}
-        ></input>
         &nbsp;
         {/* This is thunk specific. Use it as is. Always call dispatch on the async api call */}
-        <LoadingButton
-          onClick={() => {
-            dispatch(searchMovies(movieQuery));
-          }}
-          loading={loading === LoadingState.LOADING}
-        >
-          Search Movies (primary color)
-        </LoadingButton>
-        <LoadingButton
-          onClick={() => {
-            dispatch(searchMovies(movieQuery));
-          }}
-          loading={loading === LoadingState.LOADING}
-          color={"secondary"}
-        >
-          Search Movies (secondary color)
-        </LoadingButton>
         <MovieGrid/>
       </div>
       <h1>Welcome to CAO!</h1>

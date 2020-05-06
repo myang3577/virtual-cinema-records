@@ -1,7 +1,10 @@
 import React from "react";
+import MovieGrid from "./MovieGrid";
 
 function Recommendations() {
-  return <div> Recommendations </div>;
+  return (
+    <MovieGrid />
+  );
 }
 
 export default Recommendations;

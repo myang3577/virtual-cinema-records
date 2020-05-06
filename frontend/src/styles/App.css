@@ -28,6 +28,12 @@
   font-size: 12px;
 }
 
+.movie-list {
+  display: flex;
+  justify-content: ''space-between'';
+  margin-top: 10px;
+}
+
 #navbar-img {
   border-radius: 50%;
   width: 10%;
