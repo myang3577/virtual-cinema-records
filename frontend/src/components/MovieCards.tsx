@@ -1,5 +1,8 @@
 import React from "react";
-import { Card, CardHeader, CardMedia } from "@material-ui/core";
+import { Card, CardHeader, CardMedia, CardContent } from "@material-ui/core";
+import { RatingButtons, RatingType } from "./RatingButtons";
+import { useSelector } from "react-redux";
+import { GlobalState } from "../reducers/rootReducer";
 
 // Material UI coode will be copy pasted in here and customized
 export interface MovieCardProps {
@@ -22,12 +25,23 @@ function MovieCards(props: MovieCardProps) {
     return title;
   };
 
+  const username: any = useSelector<GlobalState>(
+    (state) => state.loginData.username
+  );
+
   return (
     <Card>
       <CardHeader
         titleTypographyProps={{ variant: "body2" }}
         title={cardTitle()}
       />
+      <CardContent>
+        <RatingButtons
+          username={username}
+          movie_id={props.movie.id}
+          rating={RatingType.TWO}
+        />
+      </CardContent>
       <CardMedia
         component="img"
         image={
