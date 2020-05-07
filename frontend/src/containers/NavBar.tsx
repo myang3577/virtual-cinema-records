@@ -1,10 +1,5 @@
-import React, { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link as RouterLink,
-} from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
 import {
@@ -12,9 +7,6 @@ import {
   Tab,
   Modal,
   Card,
-  CardContent,
-  CardActionArea,
-  CardActions,
   IconButton,
   CardHeader,
 } from "@material-ui/core";
@@ -22,14 +14,14 @@ import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
 import MovieFilterIcon from "@material-ui/icons/MovieFilter";
 import TheatersIcon from "@material-ui/icons/Theaters";
 import CloseIcon from "@material-ui/icons/Close";
-import BookmarksOutlinedIcon from "@material-ui/icons/BookmarksOutlined";
 import PersonIcon from "@material-ui/icons/Person";
 import "../styles/App.css";
 import {
-  accountLoginModal,
-  accountLogoutModal,
   accountOpenModal,
   accountCloseModal,
+  accountToggleModal,
+  accountLoginModal,
+  accountLogoutModal,
 } from "../actions/uiActions";
 import { AccountModalType } from "../reducers/uiReducer";
 import LoginForm from "./LoginForm";
@@ -37,7 +29,6 @@ import LogoutForm from "./LogoutForm";
 import RegisterForm from "./RegisterForm";
 
 const homeLink = "/";
-const accountLink = "/account";
 const recsLink = "/recommendations";
 const mymoviesLink = "/mymovies";
 
@@ -83,6 +74,12 @@ function NavBar() {
         return <RegisterForm />;
     }
   };
+
+  useEffect(() => {
+    dispatch(accountToggleModal(isLoggedIn));
+    dispatch(accountLoginModal(isLoggedIn));
+    dispatch(accountLogoutModal(isLoggedIn));
+  }, [dispatch, isLoggedIn]);
 
   return (
     <Tabs

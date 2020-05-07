@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { checkLogin, Login } from "../actions/loginActions";
+import { checkLogin } from "../actions/loginActions";
 import { UsernameField } from "../components/Username";
 import { PasswordField } from "../components/Password";
 import { LoadingButton } from "../components/LoadingButton";
@@ -40,10 +40,6 @@ function LoginForm() {
       alert("Your username must be a valid email address");
     } else {
       dispatch(checkLogin(localUsername, localPassword));
-      if (isLoggedIn) {
-        dispatch(accountLogoutModal());
-        dispatch(accountCloseModal());
-      }
     }
   };
 

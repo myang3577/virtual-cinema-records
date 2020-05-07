@@ -1,20 +1,10 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { searchMovies } from "../actions/actions";
-import { LoadingState } from "../reducers/otherReducer";
-import { LoadingButton } from "../components/LoadingButton";
+import { useSelector } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import ForgotPassword from "./ForgotPasswordForm";
-import LogoutForm from "./LogoutForm";
 import MovieGrid from "./MovieGrid";
-import SearchBar from "./SearchBar";
 
-// Email regex used to determine if the entered email address is valid
-//eslint-disable-next-line
-const EMAIL_FORMAT = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 /**
  * Home is a component that we want to render. It has been implemented with
@@ -26,21 +16,9 @@ function Home() {
   const [count, setCount] = useState(0);
 
   // Same as above but for the movie query
-  const [movieQuery, setMovieQuery] = useState("");
+  const [] = useState("");
 
-  // Define two local variables that represent the movieSearchREsult and
-  // loading. The local variables defined here should be the ones you intend to
-  // use in rendering the component. the userSelector is the magic function that
-  // binds the local variable to a particular state. By binding them to that
-  // state, this variable will be updated anytime the state its bound to changes
-  const movieSearchResult: any = useSelector<GlobalState>(
-    (state) => state.otherData.movieSearchResult
-  );
-  const loading: LoadingState = useSelector<GlobalState>(
-    (state) => state.otherData.loading
-  ) as LoadingState;
 
-  const dispatch = useDispatch();
 
   // Temp selectors
   const username: any = useSelector<GlobalState>(

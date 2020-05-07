@@ -10,7 +10,7 @@ function LoginForm() {
   const handleSubmit = () => {
     dispatch(logout());
     dispatch(accountCloseModal());
-    dispatch(accountLoginModal());
+    dispatch(accountLoginModal(false));
   };
 
   return (

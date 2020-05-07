@@ -12,15 +12,25 @@ export interface UI {
   type: UIType;
 }
 
-export const accountLoginModal = (): UI => {
+export const accountLoginModal = (isLoggedIn: boolean): UI => {
+  if(isLoggedIn) {
+    return {
+      type: UIType.LOGOUT_MODAL,
+    };
+  }
   return {
     type: UIType.LOGIN_MODAL,
   };
 };
 
-export const accountLogoutModal = (): UI => {
+export const accountLogoutModal = (isLoggedIn: boolean): UI => {
+  if(isLoggedIn) {
+    return {
+      type: UIType.LOGOUT_MODAL,
+    };
+  }
   return {
-    type: UIType.LOGOUT_MODAL,
+    type: UIType.LOGIN_MODAL,
   };
 };
 
@@ -41,3 +51,15 @@ export const accountCloseModal = (): UI => {
     type: UIType.CLOSE_MODAL,
   };
 };
+
+export const accountToggleModal = (isLoggedIn: boolean): UI => {
+  if(isLoggedIn) {
+    return {
+      type: UIType.CLOSE_MODAL,
+    };
+  }
+
+  return {
+    type: UIType.OPEN_MODAL,
+  };
+}

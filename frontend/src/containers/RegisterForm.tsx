@@ -40,7 +40,7 @@ function LoginForm() {
   };
 
   const openLogin = () => {
-    dispatch(accountLoginModal());
+    dispatch(accountLoginModal(false));
   };
 
   return (

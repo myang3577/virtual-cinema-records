@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
 import { GridList, GridListTile } from "@material-ui/core";
 import SearchBar from "./SearchBar";
@@ -27,7 +27,7 @@ function MovieGrid() {
       <SearchBar />
       <GridList cols={6} style={gridStyle}>
         {movieSearchResult.results
-          ? movieSearchResult.results.map((e: any, index: number) => (
+          ? movieSearchResult.results.map((e: any) => (
               //<MovieCard key={e}
               <GridListTile key={e} cols={1} style={gridItemStyle}>
                 <MovieCards movie={e} />

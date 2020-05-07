@@ -2,10 +2,9 @@ import React from "react";
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link as RouterLink,
+  Route
 } from "react-router-dom";
-import { Paper, Tabs, Tab, CssBaseline, Modal } from "@material-ui/core";
+import { Paper, CssBaseline } from "@material-ui/core";
 import Home from "./Home";
 import About from "./About";
 import Recommendations from "./Recommendations";
