@@ -48,7 +48,7 @@
 }
 
 #modal-img {
-  border-radius: 50%;
+  border-radius: 10%;
   width: 20%;
   height: 20%;
 }
@@ -58,7 +58,7 @@
 }
 
 #navbar-img {
-  border-radius: 50%;
+  border-radius: 10%;
   width: 10%;
   height: 10%;
   margin-left: 15%;

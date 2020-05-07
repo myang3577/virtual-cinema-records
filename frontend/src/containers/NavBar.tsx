@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
@@ -13,7 +13,6 @@ import {
   toggleAccountDrawer,
   setAccountModalContent,
   AccountModalContent,
-  closeAccountModal,
 } from "../actions/uiActions";
 import { routes } from "./App";
 import VCRBigLogo from "../images/VCRBigLogo.png";
