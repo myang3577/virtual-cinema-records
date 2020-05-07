@@ -3,6 +3,7 @@ import { Card, CardHeader, CardMedia, CardContent } from "@material-ui/core";
 import { RatingButtons, RatingType } from "./RatingButtons";
 import { useSelector } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
+import { PageType } from "../actions/uiActions";
 
 // Material UI coode will be copy pasted in here and customized
 export interface MovieCardProps {
@@ -29,19 +30,31 @@ function MovieCards(props: MovieCardProps) {
     (state) => state.loginData.username
   );
 
+  const currentPageType: any = useSelector<GlobalState>(
+    (state) => state.uiData.currentPage
+  );
+
+  const ratingButtons = () => {
+    if (currentPageType == PageType.HOME) {
+      return;
+    } else {
+      return (
+        <RatingButtons
+          username={username}
+          movie_id={props.movie.id}
+          rating={RatingType.TWO}
+        />
+      );
+    }
+  };
+
   return (
     <Card elevation={3} style={{ margin: "5px" }}>
       <CardHeader
         titleTypographyProps={{ variant: "body2" }}
         title={cardTitle()}
       />
-      <CardContent>
-        <RatingButtons
-          username={username}
-          movie_id={props.movie.id}
-          rating={RatingType.TWO}
-        />
-      </CardContent>
+      <CardContent>{ratingButtons()}</CardContent>
       <CardMedia
         component="img"
         image={

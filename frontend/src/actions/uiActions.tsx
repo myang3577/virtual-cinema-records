@@ -4,6 +4,7 @@ export enum UIActionType {
   SET_ACCOUNT_MODAL_CONTENT = "SET_ACCOUNT_MODAL_CONTENT",
   OPEN_ACCOUNT_DRAWER = "OPEN_DRAWER",
   CLOSE_ACCOUNT_DRAWER = "CLOSE_DRAWER",
+  SET_CURRENT_PAGE = "SET_CURRENT_PAGE",
 }
 
 export interface UIAction {
@@ -15,6 +16,19 @@ export interface UISetModalContentAction {
   payload: {
     modalContent: AccountModalContent;
   };
+}
+
+export interface UISetPageAction {
+  type: UIActionType;
+  payload: {
+    pageType: PageType;
+  };
+}
+
+export enum PageType {
+  HOME = "HOME",
+  RECS = "RECS",
+  MYMOVIES = "MYMOVIES",
 }
 
 export enum AccountModalContent {
@@ -54,5 +68,14 @@ export const toggleAccountDrawer = (open: boolean): UIAction => {
   }
   return {
     type: UIActionType.CLOSE_ACCOUNT_DRAWER,
+  };
+};
+
+export const setPageType = (pageType: PageType): UISetPageAction => {
+  return {
+    type: UIActionType.SET_CURRENT_PAGE,
+    payload: {
+      pageType,
+    },
   };
 };
