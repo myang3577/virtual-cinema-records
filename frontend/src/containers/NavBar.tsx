@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
@@ -8,12 +8,21 @@ import MovieFilterIcon from "@material-ui/icons/MovieFilter";
 import TheatersIcon from "@material-ui/icons/Theaters";
 import PersonIcon from "@material-ui/icons/Person";
 import "../styles/App.css";
-import { openAccountModal } from "../actions/uiActions";
+import {
+  openAccountModal,
+  toggleAccountDrawer,
+  setAccountModalContent,
+  AccountModalContent,
+  closeAccountModal,
+} from "../actions/uiActions";
 import { routes } from "./App";
 import VCRBigLogo from "../images/VCRBigLogo.png";
+import AccountDrawer from "./AccountDrawer";
 import AccountModal from "./AccountModal";
 
 function NavBar() {
+  const dispatch = useDispatch();
+
   const isLoggedIn: any = useSelector<GlobalState>(
     (state) => state.loginData.isLoggedIn
   );
@@ -22,13 +31,26 @@ function NavBar() {
     (state) => state.loginData.username
   );
 
-  const dispatch = useDispatch();
-
-  const openModal = () => {
-    dispatch(openAccountModal());
-  };
-
   const accountString = isLoggedIn ? username : "Login";
+
+  const toggleDrawer = (open: boolean) => (event: {
+    type: string;
+    key: string;
+  }) => {
+    if (isLoggedIn) {
+      dispatch(setAccountModalContent(AccountModalContent.LOGOUT));
+      dispatch(openAccountModal());
+      return;
+    }
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    dispatch(toggleAccountDrawer(open));
+  };
 
   return (
     <Paper style={{ margin: 0 }} square>
@@ -61,8 +83,9 @@ function NavBar() {
         <Tab
           icon={<PersonIcon />}
           label={<span className="navbar-label">{accountString}</span>}
-          onClick={openModal}
+          onClick={toggleDrawer(true)}
         />
+        <AccountDrawer />
         <AccountModal />
       </Tabs>
     </Paper>

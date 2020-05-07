@@ -8,11 +8,13 @@ import {
 export interface UIState {
   accountModalOpen: boolean;
   accountModalContent: AccountModalContent;
+  accountDrawerOpen: boolean;
 }
 
 const initialState: UIState = {
   accountModalOpen: false,
   accountModalContent: AccountModalContent.LOGIN,
+  accountDrawerOpen: false,
 };
 
 export const uiReducer = (
@@ -35,6 +37,16 @@ export const uiReducer = (
         ...state,
         accountModalContent: (action as UISetModalContentAction).payload
           .modalContent,
+      };
+    case UIActionType.OPEN_ACCOUNT_DRAWER:
+      return {
+        ...state,
+        accountDrawerOpen: true,
+      };
+    case UIActionType.CLOSE_ACCOUNT_DRAWER:
+      return {
+        ...state,
+        accountDrawerOpen: false,
       };
     default:
       return state;

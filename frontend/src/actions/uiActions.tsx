@@ -2,6 +2,8 @@ export enum UIActionType {
   OPEN_ACCOUNT_MODAL = "OPEN_MODAL",
   CLOSE_ACCOUNT_MODAL = "CLOSE_MODAL",
   SET_ACCOUNT_MODAL_CONTENT = "SET_ACCOUNT_MODAL_CONTENT",
+  OPEN_ACCOUNT_DRAWER = "OPEN_DRAWER",
+  CLOSE_ACCOUNT_DRAWER = "CLOSE_DRAWER",
 }
 
 export interface UIAction {
@@ -41,5 +43,16 @@ export const openAccountModal = (): UIAction => {
 export const closeAccountModal = (): UIAction => {
   return {
     type: UIActionType.CLOSE_ACCOUNT_MODAL,
+  };
+};
+
+export const toggleAccountDrawer = (open: boolean): UIAction => {
+  if (open) {
+    return {
+      type: UIActionType.OPEN_ACCOUNT_DRAWER,
+    };
+  }
+  return {
+    type: UIActionType.CLOSE_ACCOUNT_DRAWER,
   };
 };
