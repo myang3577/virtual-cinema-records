@@ -9,9 +9,12 @@ import {
   ListItemText,
   makeStyles,
   Tab,
+  Icon,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../../reducers/rootReducer";
 import {
@@ -60,14 +63,48 @@ function AccountDrawer() {
 
   const openModal = (index: any) => {
     if (index === 0) {
-      dispatch(setAccountModalContent(AccountModalContent.LOGIN));
+      if (isLoggedIn) {
+        dispatch(setAccountModalContent(AccountModalContent.CHANGE_PASSWORD));
+      } else {
+        dispatch(setAccountModalContent(AccountModalContent.LOGIN));
+      }
     } else if (index == 1) {
-      dispatch(setAccountModalContent(AccountModalContent.REGISTER));
+      if (isLoggedIn) {
+        dispatch(setAccountModalContent(AccountModalContent.LOGOUT));
+      } else {
+        dispatch(setAccountModalContent(AccountModalContent.REGISTER));
+      }
     }
 
     dispatch(toggleAccountDrawer(false));
     dispatch(openAccountModal());
   };
+
+  var buttonTextOptions: string[][] = [
+    ["Login", "Register"],
+    ["Change Password", "Logout"],
+  ];
+
+  var buttonIconOptions: any[][] = [
+    [<PersonIcon />, <PersonAddIcon />],
+    [<VpnKeyIcon />, <ExitToAppIcon />],
+  ];
+
+  const setButtonOptions = (isLoggedIn: boolean) => {
+    if (isLoggedIn) {
+      return [buttonTextOptions[1], buttonIconOptions[1]];
+    } else {
+      return [buttonTextOptions[0], buttonIconOptions[0]];
+    }
+  };
+
+  const isLoggedIn: any = useSelector<GlobalState>(
+    (state) => state.loginData.isLoggedIn
+  );
+
+  useEffect(() => {
+    setButtonOptions(isLoggedIn);
+  }, [isLoggedIn]);
 
   const list = (anchor: string) => (
     <div
@@ -81,7 +118,7 @@ function AccountDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {["Login", "Register"].map((text, index) => (
+        {setButtonOptions(isLoggedIn)[0].map((text, index) => (
           <ListItem
             button
             key={text}
@@ -90,7 +127,7 @@ function AccountDrawer() {
             }}
           >
             <ListItemIcon>
-              {index % 2 === 0 ? <PersonIcon /> : <PersonAddIcon />}
+              {setButtonOptions(isLoggedIn)[1][index]}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>

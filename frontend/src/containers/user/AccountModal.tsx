@@ -17,6 +17,7 @@ import {
 import LoginForm from "./LoginForm";
 import LogoutForm from "./LogoutForm";
 import RegisterForm from "./RegisterForm";
+import ChangePasswordForm from "./ChangePasswordForm";
 import VCRSmallLogo from "../../images/VCRIconOnly.png";
 
 function AccountModal() {
@@ -46,6 +47,8 @@ function AccountModal() {
         return <LogoutForm />;
       case AccountModalContent.REGISTER:
         return <RegisterForm />;
+      case AccountModalContent.CHANGE_PASSWORD:
+        return <ChangePasswordForm />;
     }
   };
 

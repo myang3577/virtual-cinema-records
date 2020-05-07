@@ -35,6 +35,7 @@ export enum AccountModalContent {
   LOGIN = "LOGIN",
   LOGOUT = "LOGOUT",
   REGISTER = "REGISTER",
+  CHANGE_PASSWORD = "CHANGE_PASSWORD",
 }
 
 export const setAccountModalContent = (

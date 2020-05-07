@@ -36,16 +36,15 @@ function NavBar() {
     type: string;
     key: string;
   }) => {
-    if (isLoggedIn) {
-      dispatch(setAccountModalContent(AccountModalContent.LOGOUT));
-      dispatch(openAccountModal());
-      return;
-    }
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
     ) {
       return;
+    }
+
+    if (isLoggedIn) {
+      dispatch(toggleAccountDrawer(open));
     }
 
     dispatch(toggleAccountDrawer(open));
