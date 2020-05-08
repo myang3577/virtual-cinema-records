@@ -81,7 +81,6 @@
   height: 20%;
 }
 
-<<<<<<< HEAD
 .navbar-label {
   font-size: 12px;
 }
@@ -95,9 +94,6 @@
 }
 
 .movie-list {
-=======
-.account-link {
->>>>>>> NavBar style updated
   display: flex;
   justify-content: center;
 }
