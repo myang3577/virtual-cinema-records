@@ -13,6 +13,7 @@ import { routes } from "./pages/App";
 import VCRBigLogo from "../images/VCRBigLogo.png";
 import AccountDrawer from "./user/AccountDrawer";
 import AccountModal from "./user/AccountModal";
+import MovieDescription from "./MovieDescription";
 
 function NavBar() {
   const dispatch = useDispatch();
@@ -85,6 +86,7 @@ function NavBar() {
         />
         <AccountDrawer />
         <AccountModal />
+        <MovieDescription />
       </Tabs>
     </Paper>
   );

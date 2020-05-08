@@ -5,6 +5,8 @@ export enum UIActionType {
   OPEN_ACCOUNT_DRAWER = "OPEN_DRAWER",
   CLOSE_ACCOUNT_DRAWER = "CLOSE_DRAWER",
   SET_CURRENT_PAGE = "SET_CURRENT_PAGE",
+  OPEN_DETAIL_DRAWER = "OPEN_DETAILS",
+  CLOSE_DETAIL_DRAWER = "CLOSE_DETAILS",
 }
 
 export interface UIAction {
@@ -56,5 +58,16 @@ export const toggleAccountDrawer = (open: boolean): UIAction => {
   }
   return {
     type: UIActionType.CLOSE_ACCOUNT_DRAWER,
+  };
+};
+
+export const toggleDetailDrawer = (open: boolean): UIAction => {
+  if (open) {
+    return {
+      type: UIActionType.OPEN_DETAIL_DRAWER,
+    };
+  }
+  return {
+    type: UIActionType.CLOSE_DETAIL_DRAWER,
   };
 };

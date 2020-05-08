@@ -9,12 +9,16 @@ export interface UIState {
   accountModalOpen: boolean;
   accountModalContent: AccountModalContent;
   accountDrawerOpen: boolean;
+  detailDrawerOpen: boolean;
+  tmdbBaseUrl: string;
 }
 
 const initialState: UIState = {
   accountModalOpen: false,
   accountModalContent: AccountModalContent.LOGIN,
   accountDrawerOpen: false,
+  detailDrawerOpen: false,
+  tmdbBaseUrl: "https://image.tmdb.org/t/p/w500/",
 };
 
 export const uiReducer = (
@@ -47,6 +51,16 @@ export const uiReducer = (
       return {
         ...state,
         accountDrawerOpen: false,
+      };
+    case UIActionType.OPEN_DETAIL_DRAWER:
+      return {
+        ...state,
+        detailDrawerOpen: true,
+      };
+    case UIActionType.CLOSE_DETAIL_DRAWER:
+      return {
+        ...state,
+        detailDrawerOpen: false,
       };
     default:
       return state;
