@@ -46,12 +46,13 @@ function NavBar() {
   };
 
   return (
-    <Paper style={{ margin: 0 }} square>
+    <Paper style={{ margin: 0 }} square className="navbar-container">
       <Tabs
         value={false}
         className="navbar"
         indicatorColor="primary"
         textColor="primary"
+        variant="fullWidth"
         centered
       >
         <Tab

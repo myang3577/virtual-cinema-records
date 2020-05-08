@@ -22,20 +22,22 @@ function App() {
         <CssBaseline />
         <Navbar />
 
-        <Switch>
-          <Route path={routes.recsLink}>
-            <Recommendations />
-          </Route>
-          <Route path={routes.myMoviesLink}>
-            <MyMovies />
-          </Route>
-          <Route path={routes.aboutLink}>
-            <About />
-          </Route>
-          <Route path={routes.homeLink}>
-            <Home />
-          </Route>
-        </Switch>
+        <div className="page-body">
+          <Switch>
+            <Route path={routes.recsLink}>
+              <Recommendations />
+            </Route>
+            <Route path={routes.myMoviesLink}>
+              <MyMovies />
+            </Route>
+            <Route path={routes.aboutLink}>
+              <About />
+            </Route>
+            <Route path={routes.homeLink}>
+              <Home />
+            </Route>
+          </Switch>
+        </div>
       </div>
     </Router>
   );

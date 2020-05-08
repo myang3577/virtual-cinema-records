@@ -12,6 +12,43 @@
   height: 20px;
 }
 
+.text-link:hover {
+  cursor: pointer;
+}
+
+.page-body {
+  margin-top: 8%;
+}
+
+/* NavBar styling */
+
+.navbar-container {
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar {
+  width: auto;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.navbar-label {
+  font-size: 12px;
+}
+
+#navbar-img {
+  border-radius: 10%;
+  width: 10%;
+  height: 10%;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+/* Account Modal styling */
+
 .account-modal {
   display: flex;
   flex-direction: column;
@@ -27,10 +64,6 @@
   padding: 10px;
 }
 
-.text-link:hover {
-  cursor: pointer;
-}
-
 .account-modal-close-button {
   float: right;
 }
@@ -42,17 +75,13 @@
   padding-bottom: 10%;
 }
 
-.account-link {
-  display: flex;
-  justify-content: center;
-}
-
 #modal-img {
   border-radius: 10%;
   width: 20%;
   height: 20%;
 }
 
+<<<<<<< HEAD
 .navbar-label {
   font-size: 12px;
 }
@@ -66,14 +95,26 @@
 }
 
 .movie-list {
+=======
+.account-link {
+>>>>>>> NavBar style updated
   display: flex;
-  justify-content: "" space-between "";
-  margin-top: 10px;
+  justify-content: center;
 }
+
+/* Account Drawer Styling */
 
 #account-drawer-pic {
   padding-top: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Movie List Styling */
+
+.movie-list {
+  display: flex;
+  justify-content: "" space-between "";
+  margin-top: 10px;
 }
