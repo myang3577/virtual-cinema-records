@@ -10,9 +10,14 @@ import { PageType } from "./Constants";
 
 function Home() {
   const dispatch = useDispatch();
+
+  // This is the actual movies that need to be rendered to the user
   const movieSearchResult = useSelector<GlobalState, any>(
     (state) => state.tmdbData.movieSearchResult
   );
+
+  // This just gets the user's movie list. It is not for rendering purposes.
+  // Instead, it is used to indicate if a movie has been added or not
   const userMyMoviesList = useSelector<GlobalState, []>(
     (state) => state.movieListData.movieListData
   );

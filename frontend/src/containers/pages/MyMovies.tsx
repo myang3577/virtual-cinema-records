@@ -57,7 +57,7 @@ function MyMovies() {
     if (movieFilter.trim() !== "") {
       setFilterMovieList(
         filterMovieList.filter((e: any) =>
-          e.original_title.includes(movieFilter)
+          e.original_title.toLowerCase().includes(movieFilter)
         )
       );
     } else {

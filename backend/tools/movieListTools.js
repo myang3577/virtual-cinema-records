@@ -47,7 +47,7 @@ function fetchAndCheck(apiEndPoint) {
     .then((apiResponse) => {
       let status = apiResponse.status;
       if (status < 200 || status >= 300) {
-        throw new Error("Error getting actor data from TMDB");
+        throw new Error("Error getting data from TMDB");
       }
       return apiResponse.json();
     })
@@ -101,6 +101,39 @@ function getSearchAndFilterParam(
   };
 }
 
+function getPutParam(
+  tableName,
+  email,
+  categoryID,
+  categoryIDVal,
+  categoryName,
+  categoryNameVal,
+  rating,
+  movie_count = 1
+) {
+  return {
+    TableName: tableName,
+    Item: {
+      username: email,
+      [categoryID]: categoryIDVal,
+      rating: rating,
+      movie_count: movie_count,
+      [categoryName]: categoryNameVal,
+    },
+  };
+}
+
+function getDeleteParam(tableName, email, categoryID, categoryIDVal) {
+  return {
+    TableName: tableName,
+    Key: {
+      username: email,
+      [categoryID]: categoryIDVal,
+    },
+    ConditionExpression: "attribute_exists(" + [categoryID] + ")",
+  };
+}
+
 // Helper function to sort an array by rating
 function sortByRating(left, right) {
   if (left.rating >= right.rating) {
@@ -124,6 +157,189 @@ function sortByRatingAndCount(left, right) {
   }
 }
 
+function updateMovieCategories(params) {
+  let apiEndPoint = params.apiEndPoint;
+  let movieRating = params.movieRating;
+  let email = params.email;
+  let tableName = params.tableName;
+  let isExist = params.isExist; // boolean indicating if a movie exists already
+  let type = params.type; // "actor" or "genre"
+  let isDelete = params.isDelete; // boolean indicating if we are deleting a movie
+  let DECAY_THRESHOLD = params.DECAY_THRESHOLD; // Constants defined in movie_list.js
+  let DECAY_RATE = params.DECAY_RATE; // Constants defined in movie_list.js
+  let THRESHOLD = params.THRESHOLD; // Constants defined in movie_list.js
+  // let
+  // console.log("type is: " + type);
+  // let
+  fetchAndCheck(apiEndPoint)
+    .then((json) => {
+      let dataArray;
+
+      switch (type) {
+        case "actor":
+          dataArray = json.cast;
+          break;
+        case "genre":
+          dataArray = json.genres;
+          THRESHOLD = dataArray.length;
+          break;
+      }
+
+      // Loop through the top THRESHOLD actors/genres. async not required
+      // because db query by default will be async
+      for (let i = 0; i < THRESHOLD; i++) {
+        let categoryUpdateRating = movieRating;
+
+        // If i is greater than the threshold apply no decay
+        if (i >= DECAY_THRESHOLD) {
+          categoryUpdateRating =
+            movieRating * Math.pow(DECAY_RATE, i - DECAY_THRESHOLD + 1);
+        }
+
+        // Get category query parameters
+        let searchCategory = getSearchParam(
+          tableName,
+          "username",
+          type + "_id",
+          email,
+          dataArray[i].id
+        );
+        // console.log("categoryUpdateRating is: " + categoryUpdateRating);
+        // Query category table for current rating and movie count
+        db.query(searchCategory, function (err, data) {
+          if (err) {
+            throw new Error(
+              "Unable to query " + type + " table. Error:",
+              JSON.stringify(err, null, 2)
+            );
+          } else {
+            // If not delete, then add the category item
+            if (!isDelete) {
+              // Default is a new movie and new category item
+              let putCategory = getPutParam(
+                tableName,
+                email,
+                type + "_id",
+                dataArray[i].id,
+                type + "_name",
+                dataArray[i].name,
+                categoryUpdateRating
+              );
+
+              // Case where the category item exists, update the rating and movie
+              // count
+              if (data.Items.length !== 0) {
+                // If the movie already exists, keep the movie count
+                if (isExist) {
+                  putCategory.Item.movie_count = data.Items[0].movie_count;
+                }
+                // Else add 1 to the movie_count
+                else {
+                  putCategory.Item.movie_count = data.Items[0].movie_count + 1;
+                }
+
+                // Update the average rating
+                putCategory.Item.rating =
+                  (categoryUpdateRating +
+                    data.Items[0].rating * data.Items[0].movie_count) /
+                  putCategory.Item.movie_count;
+              }
+              // console.log(putCategory);
+              // Update the actors ranking
+              db.put(putCategory, function (err, data) {
+                if (err) {
+                  throw new Error(
+                    "Unable to put " +
+                      type +
+                      " into table on add movie. Error:",
+                    JSON.stringify(err, null, 2)
+                  );
+                } else {
+                  console.log(
+                    type + " rating successfully updated on movie add"
+                  );
+                }
+              });
+            }
+
+            // If delete, check the delete and either delete or update the table
+            else {
+              if (data.Items.length === 0) {
+                throw new Error(
+                  "Empty data.Items object of " +
+                    type +
+                    " query." +
+                    " This means a movie was added successfully but one of the " +
+                    type +
+                    " were not. "
+                );
+              }
+
+              // If deleting sets the movie_count for this category item to 0, remove
+              // the entry instead and skip update
+              if (data.Items[0].movie_count === 1) {
+                let deleteCategory = getDeleteParam(
+                  tableName,
+                  email,
+                  type + "_id",
+                  dataArray[i].id
+                );
+                // console.log(deleteCategory);
+
+                db.delete(deleteCategory, function (err, data) {
+                  if (err) {
+                    throw new Error(
+                      "Unable to delete " + type + " item. Error:",
+                      JSON.stringify(err, null, 2)
+                    );
+                  } else {
+                    console.log("Deleted " + type + " item successfully.");
+                  }
+                });
+              }
+
+              // Otherwise update the category
+              else {
+                let newRating =
+                  (data.Items[0].rating * data.Items[0].movie_count -
+                    categoryUpdateRating) /
+                  (data.Items[0].movie_count - 1);
+                let putCategory = getPutParam(
+                  tableName,
+                  email,
+                  type + "_id",
+                  dataArray[i].id,
+                  type + "_name",
+                  dataArray[i].name,
+                  newRating,
+                  data.Items[0].movie_count - 1
+                );
+
+                db.put(putCategory, function (err, data) {
+                  if (err) {
+                    throw new Error(
+                      "Unable to put " +
+                        type +
+                        " into table on delete movie. Error:",
+                      JSON.stringify(err, null, 2)
+                    );
+                  } else {
+                    console.log(
+                      type + " rating successfully updated on movie delete"
+                    );
+                  }
+                });
+              }
+            }
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
 module.exports = {
   checkIfKeyAndSortExists: checkIfKeyAndSortExists,
   fetchAndCheck: fetchAndCheck,
@@ -131,4 +347,5 @@ module.exports = {
   getSearchAndFilterParam: getSearchAndFilterParam,
   sortByRating: sortByRating,
   sortByRatingAndCount: sortByRatingAndCount,
+  updateMovieCategories: updateMovieCategories,
 };

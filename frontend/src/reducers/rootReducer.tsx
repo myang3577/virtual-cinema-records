@@ -4,6 +4,10 @@ import { loginReducer, LoginState } from "./loginReducer";
 import { movieListReducer, MovieListState } from "./movieListReducer";
 import { userInfoReducer, UserInfoState } from "./userReducer";
 import { uiReducer, UIState } from "./uiReducer";
+import {
+  recommendationReducer,
+  RecommendationState,
+} from "./recommendationReducer";
 
 export interface GlobalState {
   tmdbData: TMDBState;
@@ -11,6 +15,7 @@ export interface GlobalState {
   movieListData: MovieListState;
   userInfo: UserInfoState;
   uiData: UIState;
+  recommendationData: RecommendationState;
 }
 
 // combineReducers just takes multiple reducers and puts them all into one big
@@ -23,6 +28,7 @@ const rootReducer = combineReducers<GlobalState>({
   movieListData: movieListReducer,
   userInfo: userInfoReducer,
   uiData: uiReducer,
+  recommendationData: recommendationReducer,
 });
 
 export default rootReducer;
