@@ -24,10 +24,38 @@
 
 .navbar-container {
   width: 100%;
-  /* height: ; */
+  height: 10%;
   position: fixed;
   top: 0;
   z-index: 100;
+}
+
+.navbar-tab {
+  height: 10%;
+}
+
+.navbar-label {
+  font-size: 8%;
+  opacity: 1;
+  transition: opacity, font-size 1s ease-in-out;
+}
+
+#navbar-img {
+  /* border-radius: 10%; */
+  width: 70%;
+  height: 70%;
+  /* margin-left: 15%;
+  margin-right: 15%; */
+  transition: height, width 1s ease-in-out;
+}
+
+#navbar-small-img {
+  /* border-radius: 10%; */
+  width: 30%;
+  height: 30%;
+  /* margin-left: 15%;
+  margin-right: 15%; */
+  transition: height, width 1s ease-in-out;
 }
 
 /* Account Modal styling */
@@ -62,18 +90,6 @@
   border-radius: 10%;
   width: 20%;
   height: 20%;
-}
-
-.navbar-label {
-  font-size: 12px;
-}
-
-#navbar-img {
-  /* border-radius: 10%; */
-  width: 80%;
-  height: 80%;
-  /* margin-left: 15%;
-  margin-right: 15%; */
 }
 
 .movie-list {

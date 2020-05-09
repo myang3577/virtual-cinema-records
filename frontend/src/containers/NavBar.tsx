@@ -2,19 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
-import { Tabs, Tab, Paper } from "@material-ui/core";
+import { Tabs, Tab, Paper, Collapse } from "@material-ui/core";
 import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
 import MovieFilterIcon from "@material-ui/icons/MovieFilter";
 import TheatersIcon from "@material-ui/icons/Theaters";
 import PersonIcon from "@material-ui/icons/Person";
 import "../styles/App.css";
 import { toggleAccountDrawer } from "../actions/uiActions";
-import { routes } from "./pages/App";
+import App, { routes } from "./pages/App";
 import VCRBigLogo from "../images/VCRBigLogo.png";
 import VCRIconOnly from "../images/VCRIconOnly.png";
 import AccountDrawer from "./user/AccountDrawer";
 import AccountModal from "./user/AccountModal";
 import MovieDescription from "./MovieDescription";
+import { PlayCircleFilledWhite } from "@material-ui/icons";
 
 function NavBar() {
   const dispatch = useDispatch();
@@ -74,20 +75,27 @@ function NavBar() {
     );
   }, [scrollDistance, width]);
 
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: any, newValue: any) => {
+    setValue(newValue);
+  };
+
   return (
     <Paper style={{ margin: 0 }} square className="navbar-container">
       <Tabs
-        value={false}
+        value={value}
         className="navbar"
         indicatorColor="primary"
         textColor="primary"
         variant="fullWidth"
+        onChange={handleChange}
         centered
       >
         <Tab
           className="navbar-tab"
           icon={<HomeOutlinedIcon />}
-          label={displayFullBar && <span className="navbar-label">Home</span>}
+          label={displayFullBar && <span className={"navbar-label"}>Home</span>}
           component={RouterLink}
           to={routes.homeLink}
         />
@@ -96,20 +104,16 @@ function NavBar() {
           icon={<MovieFilterIcon />}
           label={
             displayFullBar && (
-              <span className="navbar-label">Recommendations</span>
+              <span className={"navbar-label"}>Recommendations</span>
             )
           }
           component={RouterLink}
           to={routes.recsLink}
         />
         <Tab
-          className="navbar-tab"
+          className={"navbar-img-tab"}
           icon={
-            <img
-              src={displayFullBar ? VCRBigLogo : VCRIconOnly}
-              id="navbar-img"
-              alt="VCR logo"
-            />
+            <img src={VCRIconOnly} id={"navbar-small-img"} alt="VCR logo" />
           }
           component={RouterLink}
           to={routes.homeLink}
@@ -118,7 +122,7 @@ function NavBar() {
           className="navbar-tab"
           icon={<TheatersIcon />}
           label={
-            displayFullBar && <span className="navbar-label">MyMovies</span>
+            displayFullBar && <span className={"navbar-label"}>MyMovies</span>
           }
           component={RouterLink}
           to={routes.myMoviesLink}
@@ -128,7 +132,7 @@ function NavBar() {
           icon={<PersonIcon />}
           label={
             displayFullBar && (
-              <span className="navbar-label">{accountString}</span>
+              <span className={"navbar-label"}>{accountString}</span>
             )
           }
           onClick={toggleDrawer(true)}
