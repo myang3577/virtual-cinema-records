@@ -135,15 +135,14 @@ function NavBar(props: any) {
           <Tab
             className={"navbar-img-tab"}
             icon={
-              displayFullBar ? (
-                <Fade in={displayFullBar} timeout={1000}>
-                  <img src={VCRBigLogo} id="navbar-img" alt="VCR logo" />
-                </Fade>
-              ) : (
+              <React.Fragment>
                 <Fade in={!displayFullBar} timeout={1000}>
                   <img src={VCRIconOnly} id="navbar-small-img" alt="VCR logo" />
                 </Fade>
-              )
+                <Fade in={displayFullBar} timeout={1000}>
+                  <img src={VCRBigLogo} id="navbar-img" alt="VCR logo" />
+                </Fade>
+              </React.Fragment>
             }
             component={RouterLink}
             to={routes.homeLink}

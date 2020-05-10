@@ -32,13 +32,16 @@
   width: 50%;
   height: 50%;
   margin: -7%;
+  z-index: 100;
 }
 
 #navbar-small-img {
   width: 15%;
   height: 15%;
   margin: -7%;
-  margin-top: -20%;
+  margin-top: 0;
+  margin-bottom: -14%;
+  z-index: 1;
 }
 
 /* Account Modal styling */
