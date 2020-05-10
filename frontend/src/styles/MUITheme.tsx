@@ -12,12 +12,17 @@ export const tealLightGreenTheme = createMuiTheme({
     },
   },
   overrides: {
+    MuiTabs: {
+      root: {
+        minHeight: 0,
+      },
+    },
     MuiTab: {
       root: {
         "&:hover": {
           color: teal[400],
         },
-        // height: "20%",
+        minHeight: 0,
       },
     },
     MuiPaper: {
