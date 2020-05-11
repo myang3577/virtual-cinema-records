@@ -27,10 +27,10 @@ function MovieGrid(props: MovieGridProps) {
 
   return (
     <div className="movie-grid">
-      <GridList cols={6} style={gridStyle}>
+      <GridList cellHeight={140} cols={6} style={gridStyle}>
         {props.loading !== LoadingState.LOADING && props.displayMovieList
           ? props.displayMovieList.map((e: any, i: number) => (
-              <GridListTile key={i} cols={1} style={gridItemStyle}>
+              <GridListTile key={i} cols={1} rows={1} style={gridItemStyle}>
                 <MovieCards
                   movie={e}
                   inUserList={movieInUserList(e)}

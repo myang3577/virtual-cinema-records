@@ -68,10 +68,7 @@ function Home() {
     <Slide in={true} timeout={500} direction="up">
       <div className="page-container">
         <Typography variant="h4" gutterBottom>
-          Home -{" "}
-          {movieSearchResult.results
-            ? 'Showing results for "' + movieQueryDisplay + '"'
-            : "Showing popular movies"}
+          Home
         </Typography>
         <TextField
           label="Movie Search"
@@ -104,6 +101,15 @@ function Home() {
             marginBottom: "5px",
           }}
         />
+        <Typography
+          variant="h6"
+          gutterBottom
+          style={{ marginTop: "5px", marginBottom: "5px" }}
+        >
+          {movieSearchResult.results
+            ? 'Showing results for "' + movieQueryDisplay + '"'
+            : "Popular movies"}
+        </Typography>
         <MovieGrid
           displayMovieList={
             movieSearchResult.results

@@ -28,6 +28,31 @@ export const tealLightGreenTheme = createMuiTheme({
         minHeight: 0,
       },
     },
+    MuiCard: {
+      root: {
+        width: "100%",
+        height: "auto",
+      },
+    },
+    MuiCardHeader: {
+      root: {
+        width: "100%",
+        height: 100,
+      },
+    },
+    MuiCardContent: {
+      root: {
+        width: "80%",
+        height: 50,
+      },
+    },
+    MuiCardMedia: {
+      media: {
+        objectFit: "contain",
+        height: 400,
+        width: "100%",
+      },
+    },
   },
   breakpoints: {
     values: {

@@ -32,9 +32,9 @@ function MovieCards(props: MovieCardProps) {
     if (props.movie.release_date) {
       title += " (" + props.movie.release_date.slice(0, 4) + ")";
     }
-    if (props.movie.id) {
-      title += " [" + props.movie.id + "]";
-    }
+    // if (props.movie.id) {
+    //   title += " [" + props.movie.id + "]";
+    // }
 
     return <Typography>{title}</Typography>;
   };
@@ -57,7 +57,10 @@ function MovieCards(props: MovieCardProps) {
     <div>
       <Card elevation={3} style={{ margin: "5px" }}>
         <CardHeader
-          titleTypographyProps={{ variant: "subtitle1" }}
+          titleTypographyProps={{
+            variant: "subtitle1",
+            display: "inline",
+          }}
           title={cardTitle()}
           action={
             <IconButton size="medium" onClick={iconButtonClick}>
@@ -65,11 +68,11 @@ function MovieCards(props: MovieCardProps) {
             </IconButton>
           }
         />
-        <CardContent>
-          {props.page === PageType.MY_MOVIES && (
+        {props.page === PageType.MY_MOVIES && (
+          <CardContent>
             <RatingButtons movie_id={props.movie.id} rating={RatingType.TWO} />
-          )}
-        </CardContent>
+          </CardContent>
+        )}
         <CardActionArea onClick={openMovieDetailDrawer}>
           <CardMedia
             component="img"
@@ -78,7 +81,6 @@ function MovieCards(props: MovieCardProps) {
                 ? baseUrl + props.movie.poster_path
                 : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1200px-No_image_available.svg.png"
             }
-            style={{ height: "auto", width: "100%" }}
           />
         </CardActionArea>
       </Card>
