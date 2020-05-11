@@ -22,6 +22,14 @@ export interface UISetModalContentAction {
   };
 }
 
+export interface UISetMovieAction {
+  type: UIActionType;
+  payload: {
+    movie: any;
+    inUserList: boolean;
+  };
+}
+
 export interface UISnackBarAction {
   type: UIActionType;
   payload: {
@@ -70,14 +78,26 @@ export const toggleAccountDrawer = (open: boolean): UIAction => {
   };
 };
 
-export const toggleDetailDrawer = (open: boolean): UIAction => {
-  if (open) {
+export const toggleDetailDrawer = (
+  open: boolean,
+  inList: boolean,
+  currMovie?: any
+): UISetMovieAction => {
+  if (open && currMovie) {
     return {
       type: UIActionType.OPEN_DETAIL_DRAWER,
+      payload: {
+        movie: currMovie,
+        inUserList: inList,
+      },
     };
   }
   return {
     type: UIActionType.CLOSE_DETAIL_DRAWER,
+    payload: {
+      movie: null,
+      inUserList: false,
+    },
   };
 };
 

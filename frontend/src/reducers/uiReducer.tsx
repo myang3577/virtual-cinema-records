@@ -4,6 +4,7 @@ import {
   AccountModalContent,
   UISetModalContentAction,
   UISnackBarAction,
+  UISetMovieAction,
 } from "../actions/uiActions";
 
 export interface UIState {
@@ -13,6 +14,10 @@ export interface UIState {
   detailDrawerOpen: boolean;
   snackBarOpen: boolean;
   snackBarString: string;
+  currentMovie: {
+    movie: any;
+    inUserList: boolean;
+  };
   tmdbBaseUrl: string;
 }
 
@@ -23,12 +28,20 @@ const initialState: UIState = {
   detailDrawerOpen: false,
   snackBarOpen: false,
   snackBarString: "",
+  currentMovie: {
+    movie: "",
+    inUserList: false,
+  },
   tmdbBaseUrl: "https://image.tmdb.org/t/p/w500/",
 };
 
 export const uiReducer = (
   state = initialState,
-  action: UIAction | UISetModalContentAction | UISnackBarAction
+  action:
+    | UIAction
+    | UISetModalContentAction
+    | UISetMovieAction
+    | UISnackBarAction
 ): UIState => {
   switch (action.type) {
     case UIActionType.OPEN_ACCOUNT_MODAL:
@@ -61,6 +74,10 @@ export const uiReducer = (
       return {
         ...state,
         detailDrawerOpen: true,
+        currentMovie: {
+          movie: (action as UISetMovieAction).payload.movie,
+          inUserList: (action as UISetMovieAction).payload.inUserList,
+        },
       };
     case UIActionType.CLOSE_DETAIL_DRAWER:
       return {

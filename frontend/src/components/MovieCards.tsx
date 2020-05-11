@@ -49,7 +49,7 @@ function MovieCards(props: MovieCardProps) {
   const dispatch = useDispatch();
 
   const openMovieDetailDrawer = () => {
-    dispatch(toggleDetailDrawer(true));
+    dispatch(toggleDetailDrawer(true, props.inUserList, props.movie));
   };
 
   return (
