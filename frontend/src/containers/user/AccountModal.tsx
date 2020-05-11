@@ -13,6 +13,7 @@ import {
   closeAccountModal,
   AccountModalContent,
   setAccountModalContent,
+  openSnackBar,
 } from "../../actions/uiActions";
 import LoginForm from "./LoginForm";
 import LogoutForm from "./LogoutForm";
@@ -23,6 +24,10 @@ import VCRSmallLogo from "../../images/VCRIconOnly.png";
 function AccountModal() {
   const isLoggedIn = useSelector<GlobalState, boolean>(
     (state) => state.loginData.isLoggedIn
+  );
+
+  const username = useSelector<GlobalState, string>(
+    (state) => state.loginData.username
   );
 
   const isModalOpen = useSelector<GlobalState, boolean>(
@@ -56,6 +61,7 @@ function AccountModal() {
     if (isLoggedIn) {
       dispatch(closeAccountModal());
       dispatch(setAccountModalContent(AccountModalContent.LOGOUT));
+      dispatch(openSnackBar(username + " logged in"));
     }
   }, [dispatch, isLoggedIn]);
 

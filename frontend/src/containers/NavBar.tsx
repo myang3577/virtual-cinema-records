@@ -22,6 +22,7 @@ import VCRIconOnly from "../images/VCRIconOnly.png";
 import AccountDrawer from "./user/AccountDrawer";
 import AccountModal from "./user/AccountModal";
 import MovieDescription from "./MovieDescription";
+import SnackBar from "../components/SnackBar";
 
 const IMG_TAB_VAL = 2;
 const LOGIN_TAB_VAL = 4;
@@ -169,6 +170,7 @@ function NavBar(props: any) {
           <AccountDrawer />
           <AccountModal />
           <MovieDescription />
+          <SnackBar />
         </Tabs>
       </Collapse>
     </Paper>

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../../reducers/rootReducer";
 import MovieGrid from "../../components/MovieGrid";
-import { Typography } from "@material-ui/core";
+import { Typography, Slide } from "@material-ui/core";
 import SearchBar from "../SearchBar";
 import { LoadingState } from "../../reducers/tmdbReducer";
 import { listMovies } from "../../actions/movieListActions";
@@ -36,18 +36,20 @@ function Home() {
   }, [dispatch, username, isLoggedIn]);
 
   return (
-    <div className="page-container">
-      <Typography variant="h4" gutterBottom>
-        Home
-      </Typography>
-      <SearchBar />
-      <MovieGrid
-        displayMovieList={movieSearchResult.results}
-        loading={movieDataLoading}
-        userMyMoviesList={userMyMoviesList}
-        page={PageType.HOME}
-      />
-    </div>
+    <Slide in={true} timeout={500} direction="up">
+      <div className="page-container">
+        <Typography variant="h4" gutterBottom>
+          Home
+        </Typography>
+        <SearchBar />
+        <MovieGrid
+          displayMovieList={movieSearchResult.results}
+          loading={movieDataLoading}
+          userMyMoviesList={userMyMoviesList}
+          page={PageType.HOME}
+        />
+      </div>
+    </Slide>
   );
 }
 

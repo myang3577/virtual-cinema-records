@@ -7,6 +7,8 @@ export enum UIActionType {
   SET_CURRENT_PAGE = "SET_CURRENT_PAGE",
   OPEN_DETAIL_DRAWER = "OPEN_DETAILS",
   CLOSE_DETAIL_DRAWER = "CLOSE_DETAILS",
+  OPEN_SNACKBAR = "OPEN_SNACKBAR",
+  CLOSE_SNACKBAR = "CLOSE_SNACKBAR",
 }
 
 export interface UIAction {
@@ -17,6 +19,13 @@ export interface UISetModalContentAction {
   type: UIActionType;
   payload: {
     modalContent: AccountModalContent;
+  };
+}
+
+export interface UISnackBarAction {
+  type: UIActionType;
+  payload: {
+    snackBarString: string;
   };
 }
 
@@ -69,5 +78,20 @@ export const toggleDetailDrawer = (open: boolean): UIAction => {
   }
   return {
     type: UIActionType.CLOSE_DETAIL_DRAWER,
+  };
+};
+
+export const openSnackBar = (str: string): UISnackBarAction => {
+  return {
+    type: UIActionType.OPEN_SNACKBAR,
+    payload: {
+      snackBarString: str,
+    },
+  };
+};
+
+export const closeSnackBar = (): UIAction => {
+  return {
+    type: UIActionType.CLOSE_SNACKBAR,
   };
 };

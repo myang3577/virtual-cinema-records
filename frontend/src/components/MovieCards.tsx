@@ -54,11 +54,7 @@ function MovieCards(props: MovieCardProps) {
 
   return (
     <div>
-      <Card
-        elevation={3}
-        style={{ margin: "5px" }}
-        onClick={openMovieDetailDrawer}
-      >
+      <Card elevation={3} style={{ margin: "5px" }}>
         <CardHeader
           titleTypographyProps={{ variant: "subtitle1" }}
           title={cardTitle()}
@@ -73,7 +69,7 @@ function MovieCards(props: MovieCardProps) {
             <RatingButtons movie_id={props.movie.id} rating={RatingType.TWO} />
           )}
         </CardContent>
-        <CardActionArea>
+        <CardActionArea onClick={openMovieDetailDrawer}>
           <CardMedia
             component="img"
             image={

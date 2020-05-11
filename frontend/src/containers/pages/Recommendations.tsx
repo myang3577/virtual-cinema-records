@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../../reducers/rootReducer";
 import MovieGrid from "../../components/MovieGrid";
-import { Typography, IconButton } from "@material-ui/core";
+import { Typography, IconButton, Slide } from "@material-ui/core";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import SearchBar from "../SearchBar";
 import { LoadingState } from "../../reducers/tmdbReducer";
@@ -103,18 +103,20 @@ function Recommendations() {
   };
 
   return (
-    <div className="page-container">
-      <Typography variant="h4" gutterBottom>
-        Recommendations
-        <IconButton onClick={refreshRecommendations} size="small">
-          <RefreshIcon />
-        </IconButton>
-      </Typography>
-      <SearchBar />
-      {renderMovieRecommendation(movieRecommendationResult)}
-      {renderMovieRecommendation(actorRecommendationResult)}
-      {renderMovieRecommendation(genreRecommendationResult)}
-    </div>
+    <Slide in={true} timeout={500} direction="up">
+      <div className="page-container">
+        <Typography variant="h4" gutterBottom>
+          Recommendations
+          <IconButton onClick={refreshRecommendations} size="small">
+            <RefreshIcon />
+          </IconButton>
+        </Typography>
+        <SearchBar />
+        {renderMovieRecommendation(movieRecommendationResult)}
+        {renderMovieRecommendation(actorRecommendationResult)}
+        {renderMovieRecommendation(genreRecommendationResult)}
+      </div>
+    </Slide>
   );
 }
 

@@ -6,6 +6,7 @@ import {
   closeAccountModal,
   setAccountModalContent,
   AccountModalContent,
+  openSnackBar,
 } from "../../actions/uiActions";
 
 function LoginForm() {
@@ -15,6 +16,7 @@ function LoginForm() {
     dispatch(logout());
     dispatch(closeAccountModal());
     dispatch(setAccountModalContent(AccountModalContent.LOGIN));
+    dispatch(openSnackBar("Logged out"));
   };
 
   return (

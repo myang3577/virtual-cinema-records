@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { makeStyles, Dialog, Toolbar, IconButton } from "@material-ui/core";
+import {
+  makeStyles,
+  Dialog,
+  Toolbar,
+  IconButton,
+  Slide,
+} from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
 import { toggleDetailDrawer } from "../actions/uiActions";
@@ -7,6 +13,7 @@ import VCRSmallLogo from "../images/VCRIconOnly.png";
 import CloseIcon from "@material-ui/icons/Close";
 import { Add, Delete } from "@material-ui/icons";
 import MovieCards from "../components/MovieCards";
+import { TransitionProps } from "@material-ui/core/transitions/transition";
 
 const useStyles = makeStyles({
   list: {
@@ -15,6 +22,13 @@ const useStyles = makeStyles({
   fullList: {
     width: "auto",
   },
+});
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement<any, any> },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 function MovieDescription() {
@@ -80,6 +94,8 @@ function MovieDescription() {
       onClose={(e) => {
         handleClose();
       }}
+      TransitionComponent={Transition}
+      transitionDuration={1000}
     >
       {display()}
     </Dialog>
