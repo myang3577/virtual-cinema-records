@@ -18,6 +18,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { Add, Delete } from "@material-ui/icons";
 import { TransitionProps } from "@material-ui/core/transitions/transition";
 import RatingButtons, { RatingType } from "./RatingButtons";
+import Prices from "./Prices";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +26,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       marginLeft: "2%",
       marginRight: "2%",
+    },
+    descriptionHeader: {
+      display: "inline-flex",
+      alignItems: "center",
+    },
+    prices: {
+      display: "flex",
+      justifyContent: "center",
     },
     paper: {
       textAlign: "left",
@@ -89,13 +98,17 @@ function MovieDetails() {
         <IconButton>{currMovie.inUserList ? <Delete /> : <Add />}</IconButton>
       </Toolbar>
       <Grid container spacing={3} className={classes.root}>
+        {/* movie poster */}
         <Grid
           className={classes.paper}
           item
           xs={4}
-          style={{ marginRight: "-5%" }}
+          style={{
+            marginLeft: "-5%",
+          }}
         >
           <img
+            style={{ maxWidth: "95%" }}
             src={
               currMovie.movie.poster_path
                 ? baseUrl + currMovie.movie.poster_path
@@ -104,32 +117,30 @@ function MovieDetails() {
             alt="movie poster"
           />
         </Grid>
-        <Grid className={classes.paper} item xs={4}>
-          <Typography variant="h3">
-            {currMovie.movie && currMovie.movie.title}
-          </Typography>
-          {currMovie.movie.production_companies &&
-            currMovie.movie.production_companies.map((e: any) => (
-              <img src={baseUrl + e.logo_path} alt="company logos" />
-            ))}
+        {/* movie description, rating, and title */}
+        <Grid className={classes.paper} item xs={5}>
+          <Grid className={classes.descriptionHeader}>
+            <Typography variant="h3">
+              {currMovie.movie && currMovie.movie.title}
+            </Typography>
+            {currMovie.movie.production_companies &&
+              currMovie.movie.production_companies.map((e: any) => (
+                <img src={baseUrl + e.logo_path} alt="company logos" />
+              ))}
+            <RatingButtons
+              movie_id={currMovie.movie.id}
+              rating={RatingType.TWO}
+            />
+          </Grid>
           <br />
-          <Divider />
-          <br />
-          <RatingButtons
-            movie_id={currMovie.movie.id}
-            rating={RatingType.TWO}
-          />
-          <br />
-          <Divider />
           <br />
           <Typography variant="body1">
             {currMovie.movie && currMovie.movie.overview}
           </Typography>
         </Grid>
-        <Grid className={classes.paper} item xs={4}>
-          <Typography variant="h3">
-            {currMovie.movie && currMovie.movie.title}
-          </Typography>
+        {/* movie prices */}
+        <Grid className={classes.prices} item xs={3}>
+          <Prices />
         </Grid>
       </Grid>
     </Dialog>

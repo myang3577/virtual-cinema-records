@@ -6,6 +6,7 @@ import {
   CardContent,
   IconButton,
   CardActionArea,
+  Typography,
 } from "@material-ui/core";
 import { RatingButtons, RatingType } from "../containers/RatingButtons";
 import { Add, Delete } from "@material-ui/icons";
@@ -35,7 +36,7 @@ function MovieCards(props: MovieCardProps) {
       title += " [" + props.movie.id + "]";
     }
 
-    return title;
+    return <Typography>{title}</Typography>;
   };
 
   const iconButtonClick = () => {

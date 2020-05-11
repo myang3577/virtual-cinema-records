@@ -3,6 +3,9 @@ import { createMuiTheme } from "@material-ui/core/styles";
 import { teal, lightGreen } from "@material-ui/core/colors";
 
 export const tealLightGreenTheme = createMuiTheme({
+  typography: {
+    fontFamily: ["Khand"].join(","),
+  },
   palette: {
     primary: {
       main: teal[400],
