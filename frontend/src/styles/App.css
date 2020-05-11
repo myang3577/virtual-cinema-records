@@ -64,6 +64,10 @@
   float: right;
 }
 
+.account-link {
+  text-align: center;
+}
+
 #account-modal-content {
   display: flex;
   flex-direction: column;

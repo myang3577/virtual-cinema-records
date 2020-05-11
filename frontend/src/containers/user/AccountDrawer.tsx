@@ -8,6 +8,10 @@ import {
   ListItemIcon,
   ListItemText,
   makeStyles,
+  Popper,
+  PopperPlacementType,
+  Fade,
+  Paper,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
@@ -20,8 +24,12 @@ import {
   openAccountModal,
   setAccountModalContent,
   AccountModalContent,
+  closeAccountModal,
+  openSnackBar,
 } from "../../actions/uiActions";
 import VCRSmallLogo from "../../images/VCRIconOnly.png";
+import LoadingButton from "../../components/LoadingButton";
+import { logout } from "../../actions/loginActions";
 
 const useStyles = makeStyles({
   list: {
@@ -29,6 +37,9 @@ const useStyles = makeStyles({
   },
   fullList: {
     width: "auto",
+  },
+  popper: {
+    zIndex: 2000,
   },
 });
 
@@ -59,7 +70,7 @@ function AccountDrawer() {
     dispatch(toggleAccountDrawer(open));
   };
 
-  const openModal = (index: any) => {
+  const openModal = (index: any, event: any) => {
     if (index === 0) {
       if (isLoggedIn) {
         dispatch(setAccountModalContent(AccountModalContent.CHANGE_PASSWORD));
@@ -68,7 +79,9 @@ function AccountDrawer() {
       }
     } else if (index === 1) {
       if (isLoggedIn) {
-        dispatch(setAccountModalContent(AccountModalContent.LOGOUT));
+        setMenuAnchorEl(event.currentTarget);
+        handleLogoutClick(event);
+        return;
       } else {
         dispatch(setAccountModalContent(AccountModalContent.REGISTER));
       }
@@ -115,13 +128,30 @@ function AccountDrawer() {
       }}
       onKeyDown={toggleDrawer(anchor, false)}
     >
+      <Popper
+        className={classes.popper}
+        open={menuOpen}
+        anchorEl={menuAnchorEl}
+        placement="left"
+        transition
+      >
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper>
+              <LoadingButton onClick={handleLogoutSubmit} loading={false}>
+                Confirm Logout
+              </LoadingButton>
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
       <List>
         {setButtonOptions(isLoggedIn)[0].map((text, index) => (
           <ListItem
             button
             key={text}
             onClick={(e) => {
-              openModal(index);
+              openModal(index, e);
             }}
           >
             <ListItemIcon>
@@ -138,6 +168,21 @@ function AccountDrawer() {
     </div>
   );
 
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = React.useState<any>(null);
+
+  const handleLogoutSubmit = () => {
+    dispatch(logout());
+    dispatch(setAccountModalContent(AccountModalContent.LOGIN));
+    dispatch(toggleAccountDrawer(false));
+    dispatch(openSnackBar("Logged out"));
+    setMenuOpen(false);
+  };
+
+  const handleLogoutClick = (event: any) => {
+    setMenuOpen(menuOpen ? false : true);
+  };
+
   return (
     <div>
       {["right"].map((anchor: any) => (
@@ -146,6 +191,7 @@ function AccountDrawer() {
             anchor="right"
             open={drawerOpen}
             onClose={toggleDrawer(anchor, false)}
+            variant="temporary"
           >
             {list(anchor)}
           </Drawer>
