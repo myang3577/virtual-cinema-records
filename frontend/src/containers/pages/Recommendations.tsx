@@ -64,6 +64,7 @@ function Recommendations() {
       if (genreRecommendationResult === 0) {
         dispatch(getGenreRecommendation(username));
       }
+    } else {
     }
   }, [dispatch, username, isLoggedIn]);
 
@@ -80,12 +81,13 @@ function Recommendations() {
   };
 
   const renderMovieRecommendation = (recommendationResult: any): any[] => {
-    let renderArray: any[] = [];
+    // let renderArray: any[] = [];
 
     if (movieDataLoading !== LoadingState.LOADING && recommendationResult) {
-      Object.keys(recommendationResult).map(
+      return Object.keys(recommendationResult).map(
         (keyName: any, keyIndex: number) => {
-          renderArray.push(
+          // renderArray.push(
+          return (
             <div>
               <h2>Because you liked {keyName}</h2>
               <MovieGrid
@@ -96,10 +98,12 @@ function Recommendations() {
               />
             </div>
           );
+          // );
         }
       );
+    } else {
+      return [];
     }
-    return renderArray;
   };
 
   return (

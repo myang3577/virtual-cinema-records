@@ -31,8 +31,14 @@ function checkIfKeyAndSortExists(
         console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         return;
       } else {
+        // console.log(data.Items);
         if (data.Items.length === 0) {
           resolve({ isExist: false, currRating: 0 });
+        } else if (
+          isNaN(data.Items[0].rating) ||
+          data.Items[0].rating === undefined
+        ) {
+          resolve({ isExist: true, currRating: 0 });
         } else {
           resolve({ isExist: true, currRating: data.Items[0].rating });
         }

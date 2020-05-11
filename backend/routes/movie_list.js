@@ -75,27 +75,36 @@ function getList(req, res, next) {
   });
 }
 
+// Adds the movie without any rating attached to it
 function putMovie(req, res, next) {
-  var params = {
-    TableName: movieTableName,
-    Item: {
-      username: req.params.email,
-      tmdb_id: req.body.tmdb_id,
-    },
-  };
+  let movieApiEndpoint = MOVIE_DETAILS_API.replace(
+    "$TMDB_ID",
+    req.body.tmdb_id
+  ).replace("$APIKEY", apiKey);
+  console.log(movieApiEndpoint);
+  fetchAndCheck(movieApiEndpoint).then((json) => {
+    var params = {
+      TableName: movieTableName,
+      Item: {
+        username: req.params.email,
+        tmdb_id: req.body.tmdb_id,
+        movie_name: json.original_title,
+      },
+    };
 
-  // Place or update the rating in the table
-  db.put(params, function (err, data) {
-    if (err) {
-      res.status(err.statusCode).end();
-      throw new Error(
-        "Unable to put movie item. Error JSON:",
-        JSON.stringify(err, null, 2)
-      );
-    } else {
-      console.log("Put item successfully.");
-      res.end();
-    }
+    // Place or update the rating in the table
+    db.put(params, function (err, data) {
+      if (err) {
+        res.status(err.statusCode).end();
+        throw new Error(
+          "Unable to put movie item. Error JSON:",
+          JSON.stringify(err, null, 2)
+        );
+      } else {
+        console.log("Put item successfully.");
+        res.end();
+      }
+    });
   });
 }
 
@@ -221,59 +230,39 @@ function deleteMovie(req, res, next) {
         );
       }
 
-      db.delete(params, function (err, data) {
-        if (err) {
-          res.status(err.statusCode).end();
-          throw new Error(
-            "Unable to delete item. Error:",
-            JSON.stringify(err, null, 2)
-          );
-        } else {
-          console.log("Deleted item successfully.");
-          res.end();
-        }
-      });
-
-      let updateRating = parseInt(checkResponse.currRating);
-
-      // update the actors
-      let actorParams = {
-        apiEndPoint:
-          "https://api.themoviedb.org/3/movie/" +
-          req.body.tmdb_id +
-          "/credits?api_key=" +
-          apiKey,
-        movieRating: updateRating,
-        email: req.params.email,
-        tableName: actorTableName,
-        isExist: checkResponse.isExist,
-        type: "actor",
-        isDelete: true,
-        DECAY_THRESHOLD: ACTOR_DECAY_THRESHOLD,
-        DECAY_RATE: DECAY_RATE,
-        THRESHOLD: ACTOR_THRESHOLD,
-      };
-
-      updateMovieCategories(actorParams);
-
-      // update the actors
-      let genreParams = {
-        apiEndPoint:
-          "https://api.themoviedb.org/3/movie/" +
-          req.body.tmdb_id +
-          "?api_key=" +
-          apiKey,
-        movieRating: updateRating,
-        email: req.params.email,
-        tableName: genreTableName,
-        isExist: checkResponse.isExist,
-        type: "genre",
-        isDelete: true,
-        DECAY_THRESHOLD: GENRE_DECAY_THRESHOLD,
-        DECAY_RATE: DECAY_RATE,
-      };
-
-      updateMovieCategories(genreParams);
+      // If rating exists, then wipe it first. Otherwise, directly delete the
+      // movie
+      if (checkResponse.currRating !== 0) {
+        req.deleteMovie = true;
+        // Call the delete rating to update the actor and genre tables
+        deleteRating(req, res, next, () => {
+          db.delete(params, function (err, data) {
+            if (err) {
+              res.status(err.statusCode).end();
+              throw new Error(
+                "Unable to delete item. Error:",
+                JSON.stringify(err, null, 2)
+              );
+            } else {
+              console.log("Deleted item successfully.");
+              res.end();
+            }
+          });
+        });
+      } else {
+        db.delete(params, function (err, data) {
+          if (err) {
+            res.status(err.statusCode).end();
+            throw new Error(
+              "Unable to delete item. Error:",
+              JSON.stringify(err, null, 2)
+            );
+          } else {
+            console.log("Deleted item successfully.");
+            res.end();
+          }
+        });
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -281,28 +270,97 @@ function deleteMovie(req, res, next) {
 }
 
 // Delete a user's rating
-function deleteRating(req, res, next) {
-  var params = {
-    TableName: movieTableName,
-    Key: {
-      username: req.params.email,
-      tmdb_id: req.body.tmdb_id,
-    },
-    UpdateExpression: "REMOVE rating",
-    ConditionExpression: "attribute_exists(tmdb_id)",
-  };
-
-  db.update(params, function (err, data) {
-    if (err) {
-      console.error(
-        "Unable to update item. Error JSON:",
-        JSON.stringify(err, null, 2)
+function deleteRating(req, res, next, callback = undefined) {
+  checkIfKeyAndSortExists(
+    movieTableName,
+    "username",
+    "tmdb_id",
+    req.params.email,
+    req.body.tmdb_id
+  ).then((checkResponse) => {
+    if (!checkResponse.isExist) {
+      throw new Error(
+        "Attempting to remove rating of movie that is not in the user's movie list. "
       );
-      res.status(err.statusCode).end();
-    } else {
-      console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
-      res.send();
     }
+
+    // Check if user is trying to delete the rating of a movie with no rating
+    if (checkResponse.currRating === 0) {
+      console.error("Attempted deleted rating on a movie that has no rating");
+      res.end();
+      return;
+    }
+    let updateRating = parseInt(checkResponse.currRating);
+
+    // If the callback is defind, then allow the movie data to be deleted
+    if (callback !== undefined) {
+      callback();
+    }
+
+    // Wipe the rating if the movie has not been deleted
+    if (req.deleteMovie === undefined) {
+      var params = {
+        TableName: movieTableName,
+        Key: {
+          username: req.params.email,
+          tmdb_id: req.body.tmdb_id,
+        },
+        UpdateExpression: "REMOVE rating",
+        ConditionExpression: "attribute_exists(tmdb_id)",
+      };
+
+      db.update(params, function (err, data) {
+        if (err) {
+          console.error(
+            "Unable to update rating. Error JSON:",
+            JSON.stringify(err, null, 2)
+          );
+          res.status(err.statusCode).end();
+        } else {
+          console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+          res.send();
+        }
+      });
+    }
+
+    // update the actors
+    let actorParams = {
+      apiEndPoint:
+        "https://api.themoviedb.org/3/movie/" +
+        req.body.tmdb_id +
+        "/credits?api_key=" +
+        apiKey,
+      movieRating: updateRating,
+      email: req.params.email,
+      tableName: actorTableName,
+      isExist: checkResponse.isExist,
+      type: "actor",
+      isDelete: true,
+      DECAY_THRESHOLD: ACTOR_DECAY_THRESHOLD,
+      DECAY_RATE: DECAY_RATE,
+      THRESHOLD: ACTOR_THRESHOLD,
+    };
+
+    updateMovieCategories(actorParams);
+
+    // update the actors
+    let genreParams = {
+      apiEndPoint:
+        "https://api.themoviedb.org/3/movie/" +
+        req.body.tmdb_id +
+        "?api_key=" +
+        apiKey,
+      movieRating: updateRating,
+      email: req.params.email,
+      tableName: genreTableName,
+      isExist: checkResponse.isExist,
+      type: "genre",
+      isDelete: true,
+      DECAY_THRESHOLD: GENRE_DECAY_THRESHOLD,
+      DECAY_RATE: DECAY_RATE,
+    };
+
+    updateMovieCategories(genreParams);
   });
 }
 
