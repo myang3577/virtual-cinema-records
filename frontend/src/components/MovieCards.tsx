@@ -28,14 +28,6 @@ function MovieCards(props: MovieCardProps) {
 
   const cardTitle = () => {
     var title = props.movie.title;
-
-    if (props.movie.release_date) {
-      title += " (" + props.movie.release_date.slice(0, 4) + ")";
-    }
-    // if (props.movie.id) {
-    //   title += " [" + props.movie.id + "]";
-    // }
-
     return <Typography>{title}</Typography>;
   };
 
@@ -62,6 +54,11 @@ function MovieCards(props: MovieCardProps) {
             display: "inline",
           }}
           title={cardTitle()}
+          subheader={props.movie.release_date.slice(0, 4)}
+          subheaderTypographyProps={{
+            variant: "subtitle2",
+            display: "inline",
+          }}
           action={
             <IconButton size="medium" onClick={iconButtonClick}>
               {props.inUserList ? <Delete /> : <Add />}

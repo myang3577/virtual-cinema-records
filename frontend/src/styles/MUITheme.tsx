@@ -49,7 +49,7 @@ export const tealLightGreenTheme = createMuiTheme({
     MuiCardMedia: {
       media: {
         objectFit: "contain",
-        height: 400,
+        height: 450,
         width: "100%",
       },
     },
