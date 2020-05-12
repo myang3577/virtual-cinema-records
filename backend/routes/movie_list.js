@@ -81,7 +81,7 @@ function putMovie(req, res, next) {
     "$TMDB_ID",
     req.body.tmdb_id
   ).replace("$APIKEY", apiKey);
-  console.log(movieApiEndpoint);
+  // console.log(movieApiEndpoint);
   fetchAndCheck(movieApiEndpoint).then((json) => {
     var params = {
       TableName: movieTableName,
@@ -140,6 +140,8 @@ function putRating(req, res, next) {
             rating: req.body.rating,
           },
         };
+        // console.log("params is:");
+        // console.log(params);
 
         // Place or update the rating in the table
         db.put(params, function (err, data) {
@@ -157,8 +159,8 @@ function putRating(req, res, next) {
       });
 
       // The value used to update the ranking by
-      let movieRating = req.body.rating - parseInt(checkResponse.currRating);
-
+      // let movieRating = req.body.rating - parseInt(checkResponse.currRating);
+      // console.log(checkResponse.currRating);
       // update the actors
       let actorParams = {
         apiEndPoint:
@@ -166,7 +168,8 @@ function putRating(req, res, next) {
           req.body.tmdb_id +
           "/credits?api_key=" +
           apiKey,
-        movieRating: movieRating,
+        newRating: req.body.rating,
+        currRating: parseFloat(checkResponse.currRating),
         email: req.params.email,
         tableName: actorTableName,
         isExist: checkResponse.isExist,
@@ -186,7 +189,8 @@ function putRating(req, res, next) {
           req.body.tmdb_id +
           "?api_key=" +
           apiKey,
-        movieRating: movieRating,
+        newRating: req.body.rating,
+        currRating: parseFloat(checkResponse.currRating),
         email: req.params.email,
         tableName: genreTableName,
         isExist: checkResponse.isExist,
@@ -290,7 +294,7 @@ function deleteRating(req, res, next, callback = undefined) {
       res.end();
       return;
     }
-    let updateRating = parseInt(checkResponse.currRating);
+    // let updateRating = parseInt(checkResponse.currRating);
 
     // If the callback is defind, then allow the movie data to be deleted
     if (callback !== undefined) {
@@ -322,6 +326,8 @@ function deleteRating(req, res, next, callback = undefined) {
         }
       });
     }
+    // console.log("CHECKREPONSE");
+    // console.log(checkResponse);
 
     // update the actors
     let actorParams = {
@@ -330,7 +336,8 @@ function deleteRating(req, res, next, callback = undefined) {
         req.body.tmdb_id +
         "/credits?api_key=" +
         apiKey,
-      movieRating: updateRating,
+      newRating: 0,
+      currRating: parseFloat(checkResponse.currRating),
       email: req.params.email,
       tableName: actorTableName,
       isExist: checkResponse.isExist,
@@ -350,7 +357,8 @@ function deleteRating(req, res, next, callback = undefined) {
         req.body.tmdb_id +
         "?api_key=" +
         apiKey,
-      movieRating: updateRating,
+      newRating: 0,
+      currRating: parseFloat(checkResponse.currRating),
       email: req.params.email,
       tableName: genreTableName,
       isExist: checkResponse.isExist,

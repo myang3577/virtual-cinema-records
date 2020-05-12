@@ -165,7 +165,8 @@ function sortByRatingAndCount(left, right) {
 
 function updateMovieCategories(params) {
   let apiEndPoint = params.apiEndPoint;
-  let movieRating = params.movieRating;
+  let newRating = params.newRating;
+  let currRating = params.currRating;
   let email = params.email;
   let tableName = params.tableName;
   let isExist = params.isExist; // boolean indicating if a movie exists already
@@ -177,6 +178,10 @@ function updateMovieCategories(params) {
   // let
   // console.log("type is: " + type);
   // let
+
+  let movieRating = newRating - currRating;
+  // console.log(params);
+  // console.log(movieRating);
   fetchAndCheck(apiEndPoint)
     .then((json) => {
       let dataArray;
@@ -201,7 +206,7 @@ function updateMovieCategories(params) {
           categoryUpdateRating =
             movieRating * Math.pow(DECAY_RATE, i - DECAY_THRESHOLD + 1);
         }
-
+        // console.log(categoryUpdateRating);
         // Get category query parameters
         let searchCategory = getSearchParam(
           tableName,
@@ -235,8 +240,8 @@ function updateMovieCategories(params) {
               // Case where the category item exists, update the rating and movie
               // count
               if (data.Items.length !== 0) {
-                // If the movie already exists, keep the movie count
-                if (isExist) {
+                // If the movie already exists and has a rating, keep the movie count
+                if (isExist && currRating !== 0) {
                   putCategory.Item.movie_count = data.Items[0].movie_count;
                 }
                 // Else add 1 to the movie_count
@@ -306,8 +311,11 @@ function updateMovieCategories(params) {
 
               // Otherwise update the category
               else {
+                // console.log(
+                //   "category updaterating is: " + categoryUpdateRating
+                // );
                 let newRating =
-                  (data.Items[0].rating * data.Items[0].movie_count -
+                  (data.Items[0].rating * data.Items[0].movie_count +
                     categoryUpdateRating) /
                   (data.Items[0].movie_count - 1);
                 let putCategory = getPutParam(
@@ -320,6 +328,7 @@ function updateMovieCategories(params) {
                   newRating,
                   data.Items[0].movie_count - 1
                 );
+                // console.log(putCategory);
 
                 db.put(putCategory, function (err, data) {
                   if (err) {

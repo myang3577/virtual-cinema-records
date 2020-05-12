@@ -3,7 +3,7 @@ import { Typography } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
-import { putRating } from "../actions/movieListActions";
+import { putRating, deleteRating } from "../actions/movieListActions";
 import { openSnackBar } from "../actions/uiActions";
 
 export interface RatingButtonsProps {
@@ -22,8 +22,12 @@ function RatingButtons(props: RatingButtonsProps) {
   const [displayRating, setDisplayRating] = useState(0);
 
   const onRatingChange = (e: React.ChangeEvent<{}>, value: number) => {
+    if (value === null) {
+      dispatch(deleteRating(username, props.movie.id));
+    } else {
+      dispatch(putRating(username, props.movie.id, value));
+    }
     setRating(value);
-    dispatch(putRating(username, props.movie.id, value));
     if (value === null) {
       dispatch(openSnackBar(props.movie.title + " rating removed"));
     } else {

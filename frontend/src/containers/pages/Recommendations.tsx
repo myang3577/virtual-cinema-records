@@ -120,13 +120,15 @@ function Recommendations() {
         dispatch(getGenreRecommendation(username));
       }
     } else {
-      if (
-        generalRecommendationList["Now Playing"].length === 0 ||
-        generalRecommendationList.Popular.length === 0 ||
-        generalRecommendationList.Upcoming.length === 0
-      ) {
-        dispatch(getGeneralRecommendation());
-      }
+      // For anything that needs to be rendered if user is not logged in
+    }
+    // console.log(genreToDisplay);
+    if (
+      generalRecommendationList["Now Playing"].length === 0 ||
+      generalRecommendationList.Popular.length === 0 ||
+      generalRecommendationList.Upcoming.length === 0
+    ) {
+      dispatch(getGeneralRecommendation());
     }
     // eslint-disable-next-line
   }, [dispatch, username, isLoggedIn]);
@@ -233,7 +235,10 @@ function Recommendations() {
           <IconButton onClick={refreshRecommendations} size="small">
             <RefreshIcon />
           </IconButton>
-          <SimpleListMenu handlerFunction={handleChange} />
+          <SimpleListMenu
+            handlerFunction={handleChange}
+            genreToDisplay={genreToDisplay}
+          />
         </Typography>
         {/* <SearchBar /> */}
         {isLoggedIn &&
