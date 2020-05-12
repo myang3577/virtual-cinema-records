@@ -4,6 +4,7 @@ import { Rating } from "@material-ui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
 import { putRating } from "../actions/movieListActions";
+import { openSnackBar } from "../actions/uiActions";
 
 export interface RatingButtonsProps {
   movie: any;
@@ -23,6 +24,15 @@ function RatingButtons(props: RatingButtonsProps) {
   const onRatingChange = (e: React.ChangeEvent<{}>, value: number) => {
     setRating(value);
     dispatch(putRating(username, props.movie.id, value));
+    if (value === null) {
+      dispatch(openSnackBar(props.movie.title + " rating removed"));
+    } else {
+      dispatch(
+        openSnackBar(
+          props.movie.title + " rating updated to " + value + " stars"
+        )
+      );
+    }
   };
 
   return (

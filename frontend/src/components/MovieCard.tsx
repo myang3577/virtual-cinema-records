@@ -11,7 +11,11 @@ import {
 import { Add, Delete } from "@material-ui/icons";
 import { PageType } from "../Constants";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleDetailDrawer, openAccountModal } from "../actions/uiActions";
+import {
+  toggleDetailDrawer,
+  openAccountModal,
+  openSnackBar,
+} from "../actions/uiActions";
 import { GlobalState } from "../reducers/rootReducer";
 import { putMovie, deleteMovie } from "../actions/movieListActions";
 import RatingButtons from "../containers/RatingButtons";
@@ -44,11 +48,17 @@ function MovieCard(props: MovieCardProps) {
   const iconButtonClick = () => {
     if (props.inUserList) {
       dispatch(deleteMovie(username, props.movie.id));
+      dispatch(openSnackBar(props.movie.title + " removed from MyMovies"));
     } else {
       if (isLoggedIn) {
         dispatch(putMovie(username, props.movie.id));
+        dispatch(openSnackBar(props.movie.title + " added to MyMovies"));
       } else {
-        dispatch(openAccountModal());
+        dispatch(
+          openSnackBar(
+            "You must log in to add " + props.movie.title + " to MyMovies"
+          )
+        );
       }
     }
   };

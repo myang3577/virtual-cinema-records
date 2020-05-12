@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../../reducers/rootReducer";
 import MovieGrid from "../../components/MovieGrid";
-import { Typography, IconButton, Slide } from "@material-ui/core";
+import { Typography, IconButton, Slide, Fade } from "@material-ui/core";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { LoadingState } from "../../reducers/tmdbReducer";
 import { listMovies } from "../../actions/movieListActions";
@@ -150,15 +150,17 @@ function Recommendations() {
       return Object.keys(recommendationResult).map(
         (keyName: any, keyIndex: number) => {
           return (
-            <div key={keyIndex}>
-              <h2>Because you liked {keyName}</h2>
-              <MovieGrid
-                displayMovieList={recommendationResult[keyName]}
-                loading={movieDataLoading}
-                userMyMoviesList={userMyMoviesList}
-                page={PageType.HOME}
-              />
-            </div>
+            <Fade in={true} timeout={1000}>
+              <div key={keyIndex}>
+                <h2>Because you liked {keyName}</h2>
+                <MovieGrid
+                  displayMovieList={recommendationResult[keyName]}
+                  loading={movieDataLoading}
+                  userMyMoviesList={userMyMoviesList}
+                  page={PageType.HOME}
+                />
+              </div>
+            </Fade>
           );
         }
       );
@@ -177,15 +179,17 @@ function Recommendations() {
             genreToDisplay[keyName] !== false
           ) {
             return (
-              <div key={keyIndex}>
-                <h1>{keyName}</h1>
-                <MovieGrid
-                  displayMovieList={recommendationResult[keyName]}
-                  loading={movieDataLoading}
-                  userMyMoviesList={userMyMoviesList}
-                  page={PageType.HOME}
-                />
-              </div>
+              <Fade in={true} timeout={1000}>
+                <div key={keyIndex}>
+                  <h1>{keyName}</h1>
+                  <MovieGrid
+                    displayMovieList={recommendationResult[keyName]}
+                    loading={movieDataLoading}
+                    userMyMoviesList={userMyMoviesList}
+                    page={PageType.HOME}
+                  />
+                </div>
+              </Fade>
             );
           }
         }
@@ -236,7 +240,6 @@ function Recommendations() {
               Rate more movies to get recommendations.
             </Typography>
           )}
-
         {renderMovieRecommendation(movieRecommendationResult)}
         {renderMovieRecommendation(actorRecommendationResult)}
         {renderMovieRecommendation(genreRecommendationResult)}
