@@ -24,6 +24,7 @@ import {
   setAccountModalContent,
   AccountModalContent,
   openSnackBar,
+  SnackBarActionType,
 } from "../../actions/uiActions";
 import VCRSmallLogo from "../../images/VCRIconOnly.png";
 import { logout } from "../../actions/loginActions";
@@ -177,7 +178,7 @@ function AccountDrawer() {
     dispatch(logout());
     dispatch(setAccountModalContent(AccountModalContent.LOGIN));
     dispatch(toggleAccountDrawer(false));
-    dispatch(openSnackBar("Logged out"));
+    dispatch(openSnackBar("Logged out", SnackBarActionType.LOGIN));
     setMenuOpen(false);
     setMenuAnchorEl(null);
   };

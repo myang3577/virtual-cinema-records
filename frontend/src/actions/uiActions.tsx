@@ -36,6 +36,7 @@ export interface UISnackBarAction {
   type: UIActionType;
   payload: {
     snackBarString: string;
+    snackBarAction: SnackBarActionType;
   };
 }
 
@@ -44,6 +45,12 @@ export enum AccountModalContent {
   REGISTER = "REGISTER",
   CHANGE_PASSWORD = "CHANGE_PASSWORD",
   FORGOT_PASSWORD = "FORGOT_PASSWORD",
+}
+
+export enum SnackBarActionType {
+  LOGIN = "LOGIN",
+  MYMOVIES = "MYMOVIES",
+  NONE = "NONE",
 }
 
 export const setAccountModalContent = (
@@ -103,11 +110,24 @@ export const toggleDetailDrawer = (
   };
 };
 
-export const openSnackBar = (str: string): UISnackBarAction => {
+export const openSnackBar = (
+  str: string,
+  action?: SnackBarActionType
+): UISnackBarAction => {
+  if (action) {
+    return {
+      type: UIActionType.OPEN_SNACKBAR,
+      payload: {
+        snackBarString: str,
+        snackBarAction: action,
+      },
+    };
+  }
   return {
     type: UIActionType.OPEN_SNACKBAR,
     payload: {
       snackBarString: str,
+      snackBarAction: SnackBarActionType.NONE,
     },
   };
 };

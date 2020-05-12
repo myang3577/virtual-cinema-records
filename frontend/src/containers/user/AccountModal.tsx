@@ -13,6 +13,7 @@ import {
   closeAccountModal,
   AccountModalContent,
   openSnackBar,
+  SnackBarActionType,
 } from "../../actions/uiActions";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
@@ -58,7 +59,9 @@ function AccountModal() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      dispatch(openSnackBar(username + " logged in"));
+      dispatch(
+        openSnackBar(username + " logged in", SnackBarActionType.MYMOVIES)
+      );
     }
   }, [dispatch, isLoggedIn, username]);
 

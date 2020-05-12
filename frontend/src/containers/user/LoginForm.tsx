@@ -10,8 +10,10 @@ import {
   AccountModalContent,
   setAccountModalContent,
   openSnackBar,
+  SnackBarActionType,
 } from "../../actions/uiActions";
 import { validEmail } from "../../Constants";
+import SnackBar from "../SnackBar";
 
 function LoginForm() {
   const [localUsername, setLocalUsername] = useState("");
@@ -40,7 +42,7 @@ function LoginForm() {
 
   useEffect(() => {
     if (feedback !== "") {
-      dispatch(openSnackBar(feedback));
+      dispatch(openSnackBar(feedback, SnackBarActionType.MYMOVIES));
     }
   }, [dispatch, feedback]);
 

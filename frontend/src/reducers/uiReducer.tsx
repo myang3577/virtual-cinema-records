@@ -5,6 +5,7 @@ import {
   UISetModalContentAction,
   UISnackBarAction,
   UISetMovieAction,
+  SnackBarActionType,
 } from "../actions/uiActions";
 
 export interface UIState {
@@ -14,6 +15,7 @@ export interface UIState {
   detailDrawerOpen: boolean;
   snackBarOpen: boolean;
   snackBarString: string;
+  snackBarAction: SnackBarActionType;
   currentMovie: {
     movie: any;
     inUserList: boolean;
@@ -28,6 +30,7 @@ const initialState: UIState = {
   detailDrawerOpen: false,
   snackBarOpen: false,
   snackBarString: "",
+  snackBarAction: SnackBarActionType.NONE,
   currentMovie: {
     movie: {},
     inUserList: false,
@@ -89,6 +92,7 @@ export const uiReducer = (
         ...state,
         snackBarOpen: true,
         snackBarString: (action as UISnackBarAction).payload.snackBarString,
+        snackBarAction: (action as UISnackBarAction).payload.snackBarAction,
       };
     case UIActionType.CLOSE_SNACKBAR:
       return {

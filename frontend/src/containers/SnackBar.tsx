@@ -2,14 +2,24 @@ import React, { useEffect } from "react";
 import Snackbar from "@material-ui/core/Snackbar";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
-import { closeSnackBar } from "../actions/uiActions";
-import { IconButton, Slide } from "@material-ui/core";
+import {
+  closeSnackBar,
+  SnackBarActionType,
+  setAccountModalContent,
+  AccountModalContent,
+  openAccountModal,
+} from "../actions/uiActions";
+import { IconButton, Slide, Tooltip } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Queue } from "@material-ui/icons";
+import { Person, Theaters } from "@material-ui/icons";
+import { Link as RouterLink } from "react-router-dom";
+import { routes } from "./pages/App";
+import NavBar from "./NavBar";
 
 export interface SnackbarMessage {
   message: string;
   key: number;
+  action: SnackBarActionType;
 }
 
 function SnackBar() {
@@ -23,6 +33,10 @@ function SnackBar() {
     (state) => state.uiData.snackBarString
   );
 
+  const snackBarAction = useSelector<GlobalState, SnackBarActionType>(
+    (state) => state.uiData.snackBarAction
+  );
+
   const [messageInfo, setMessageInfo] = React.useState<
     SnackbarMessage | undefined
   >(undefined);
@@ -30,15 +44,18 @@ function SnackBar() {
   const [snackPack, setSnackPack] = React.useState<SnackbarMessage[]>([]);
 
   useEffect(() => {
-    if (snackBarString) {
-      addMessage(snackBarString);
+    if (snackBarString && snackBarAction) {
+      addMessage(snackBarString, snackBarAction);
     }
 
     setOpen(snackBarOpen);
-  }, [dispatch, snackBarString, snackBarOpen]);
+  }, [dispatch, snackBarString, snackBarOpen, snackBarAction]);
 
-  const addMessage = (message: string) => {
-    setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
+  const addMessage = (message: string, action: SnackBarActionType) => {
+    setSnackPack((prev) => [
+      ...prev,
+      { message, key: new Date().getTime(), action },
+    ]);
   };
 
   const handleExited = () => {
@@ -61,6 +78,47 @@ function SnackBar() {
     setOpen(false);
   };
 
+  const interactiveIconClick = () => {
+    setOpen(false);
+
+    if (messageInfo) {
+      switch (messageInfo.action) {
+        case SnackBarActionType.NONE:
+          return;
+        case SnackBarActionType.LOGIN:
+          dispatch(setAccountModalContent(AccountModalContent.LOGIN));
+          dispatch(openAccountModal());
+          return;
+        case SnackBarActionType.MYMOVIES:
+          return;
+      }
+    }
+  };
+
+  const interactiveIcon = () => {
+    if (messageInfo) {
+      switch (messageInfo.action) {
+        case SnackBarActionType.NONE:
+          return;
+        case SnackBarActionType.LOGIN:
+          return <Person fontSize="small" />;
+        case SnackBarActionType.MYMOVIES:
+          return <Theaters fontSize="small" />;
+      }
+    }
+  };
+
+  const interactiveIconLink = (event: any) => {
+    if (messageInfo) {
+      switch (messageInfo.action) {
+        case SnackBarActionType.MYMOVIES:
+          return routes.myMoviesLink;
+      }
+    }
+
+    return "";
+  };
+
   return (
     <Snackbar
       anchorOrigin={{
@@ -77,6 +135,17 @@ function SnackBar() {
       key={messageInfo ? messageInfo.key : undefined}
       action={
         <React.Fragment>
+          {messageInfo && messageInfo.action && (
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={interactiveIconClick}
+              component={RouterLink}
+              to={interactiveIconLink}
+            >
+              {interactiveIcon()}
+            </IconButton>
+          )}
           <IconButton
             size="small"
             aria-label="close"

@@ -7,6 +7,7 @@ import {
   IconButton,
   CardActionArea,
   Typography,
+  Tooltip,
 } from "@material-ui/core";
 import { Add, Delete } from "@material-ui/icons";
 import { PageType } from "../Constants";
@@ -15,6 +16,7 @@ import {
   toggleDetailDrawer,
   openAccountModal,
   openSnackBar,
+  SnackBarActionType,
 } from "../actions/uiActions";
 import { GlobalState } from "../reducers/rootReducer";
 import { putMovie, deleteMovie } from "../actions/movieListActions";
@@ -48,15 +50,26 @@ function MovieCard(props: MovieCardProps) {
   const iconButtonClick = () => {
     if (props.inUserList) {
       dispatch(deleteMovie(username, props.movie.id));
-      dispatch(openSnackBar(props.movie.title + " removed from MyMovies"));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " removed from MyMovies",
+          SnackBarActionType.MYMOVIES
+        )
+      );
     } else {
       if (isLoggedIn) {
         dispatch(putMovie(username, props.movie.id));
-        dispatch(openSnackBar(props.movie.title + " added to MyMovies"));
+        dispatch(
+          openSnackBar(
+            props.movie.title + " added to MyMovies",
+            SnackBarActionType.MYMOVIES
+          )
+        );
       } else {
         dispatch(
           openSnackBar(
-            "You must log in to add " + props.movie.title + " to MyMovies"
+            "You must log in to add " + props.movie.title + " to MyMovies",
+            SnackBarActionType.MYMOVIES
           )
         );
       }
@@ -84,9 +97,26 @@ function MovieCard(props: MovieCardProps) {
             display: "inline",
           }}
           action={
-            <IconButton size="medium" onClick={iconButtonClick}>
-              {props.inUserList ? <Delete /> : <Add />}
-            </IconButton>
+            <Tooltip
+              title={
+                props.inUserList
+                  ? "Remove from MyMovies"
+                  : isLoggedIn
+                  ? "Add to MyMovies"
+                  : "Login to add to MyMovies"
+              }
+              placement="top"
+            >
+              <span>
+                <IconButton
+                  size="medium"
+                  onClick={iconButtonClick}
+                  disabled={!isLoggedIn}
+                >
+                  {props.inUserList ? <Delete /> : <Add />}
+                </IconButton>
+              </span>
+            </Tooltip>
           }
         />
         {props.page === PageType.MY_MOVIES && (

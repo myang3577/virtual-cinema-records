@@ -10,6 +10,7 @@ import {
   AccountModalContent,
   setAccountModalContent,
   openSnackBar,
+  SnackBarActionType,
 } from "../../actions/uiActions";
 import { validEmail } from "../../Constants";
 
@@ -43,7 +44,7 @@ function LoginForm() {
 
   useEffect(() => {
     if (feedback !== "") {
-      dispatch(openSnackBar(feedback));
+      dispatch(openSnackBar(feedback, SnackBarActionType.LOGIN));
     }
   }, [dispatch, feedback]);
 

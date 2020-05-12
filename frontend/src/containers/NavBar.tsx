@@ -15,7 +15,7 @@ import MovieFilterIcon from "@material-ui/icons/MovieFilter";
 import TheatersIcon from "@material-ui/icons/Theaters";
 import PersonIcon from "@material-ui/icons/Person";
 import "../styles/App.css";
-import { toggleAccountDrawer } from "../actions/uiActions";
+import { toggleAccountDrawer, SnackBarActionType } from "../actions/uiActions";
 import { routes } from "./pages/App";
 import VCRBigLogo from "../images/VCRBigLogo.png";
 import VCRIconOnly from "../images/VCRIconOnly.png";
@@ -23,8 +23,12 @@ import AccountDrawer from "./user/AccountDrawer";
 import AccountModal from "./user/AccountModal";
 import MovieDetails from "./MovieDetails";
 import SnackBar from "./SnackBar";
+import { withRouter } from "react-router-dom";
 
+const HOME_TAB_VAL = 0;
+const RECS_TAB_VAL = 1;
 const IMG_TAB_VAL = 2;
+const MYMOVIES_TAB_VAL = 3;
 const LOGIN_TAB_VAL = 4;
 
 function NavBar(props: any) {
@@ -88,6 +92,20 @@ function NavBar(props: any) {
       if (newValue === IMG_TAB_VAL) setValue(0);
       else setValue(newValue);
   };
+
+  useEffect(() => {
+    switch (props.history.location.pathname) {
+      case routes.homeLink:
+        setValue(HOME_TAB_VAL);
+        break;
+      case routes.myMoviesLink:
+        setValue(MYMOVIES_TAB_VAL);
+        break;
+      case routes.recsLink:
+        setValue(RECS_TAB_VAL);
+        break;
+    }
+  }, [props.history.location.pathname]);
 
   return (
     <Paper style={{ margin: 0 }} square className="navbar-container">
@@ -177,4 +195,4 @@ function NavBar(props: any) {
   );
 }
 
-export default NavBar;
+export default withRouter(NavBar);
