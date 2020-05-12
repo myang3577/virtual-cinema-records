@@ -9,6 +9,10 @@ import {
   Grid,
   createStyles,
   Theme,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
@@ -82,6 +86,21 @@ function MovieDetails() {
     (state) => state.uiData.currentMovie.inUserList
   );
 
+  const movieCast: any = useSelector<GlobalState>(
+    (state) => state.tmdbData.movieCast
+  );
+
+  const displayCast = () => {
+    return (
+      movieCast.cast &&
+      movieCast.cast.map((member: any) => (
+        <ListItem>
+          <ListItemText primary={member.name} />
+        </ListItem>
+      ))
+    );
+  };
+
   useEffect(() => {
     dispatch(toggleDetailDrawer(dialogOpen, movieInUserList, currMovie));
   }, [dispatch, dialogOpen, movieInUserList, currMovie]);
@@ -148,7 +167,7 @@ function MovieDetails() {
           />
         </Grid>
         {/* movie description, rating, and title */}
-        <Grid className={classes.paper} item xs={5}>
+        <Grid className={classes.paper} xs={5}>
           <Grid className={classes.descriptionHeader}>
             <Typography variant="h3">{currMovie && currMovie.title}</Typography>
             {currMovie.production_companies &&
@@ -161,6 +180,9 @@ function MovieDetails() {
           <Typography variant="body1">
             {currMovie && currMovie.overview}
           </Typography>
+          <br />
+          <br />
+          <List>{displayCast()}</List>
         </Grid>
         {/* movie prices */}
         <Grid className={classes.prices} item xs={3}>

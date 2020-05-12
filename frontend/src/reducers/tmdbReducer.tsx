@@ -19,6 +19,7 @@ export interface TMDBState {
   loading: LoadingState;
   movieSearchResult: {};
   popularMovies: {};
+  movieCast: {};
 }
 
 /**
@@ -43,6 +44,7 @@ const initialState: TMDBState = {
   loading: LoadingState.IDLE,
   movieSearchResult: {},
   popularMovies: {},
+  movieCast: {},
 };
 
 /**
@@ -88,6 +90,11 @@ export const tmdbReducer = (
       return {
         ...state,
         popularMovies: action.payload,
+      };
+    case TMDBActionType.GET_MOVIE_CAST_END:
+      return {
+        ...state,
+        movieCast: action.payload,
       };
     default:
       return state;
