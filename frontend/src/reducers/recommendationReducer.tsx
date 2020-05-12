@@ -3,6 +3,7 @@ import {
   RecommendationActionType,
   RecommendationAction,
   MovieResultElement,
+  GeneralRecommendationAction,
 } from "../actions/recommendationActions";
 
 export interface RecommendationListObject {
@@ -14,6 +15,7 @@ export interface RecommendationState {
   movieRecommendationList: RecommendationListObject;
   actorRecommendationList: RecommendationListObject;
   genreRecommendationList: RecommendationListObject;
+  generalRecommendationList: RecommendationListObject;
 }
 
 const initialState: RecommendationState = {
@@ -21,11 +23,35 @@ const initialState: RecommendationState = {
   movieRecommendationList: {},
   actorRecommendationList: {},
   genreRecommendationList: {},
+  generalRecommendationList: {
+    "Now Playing": [],
+    Popular: [],
+    Upcoming: [],
+    Action: [],
+    Adventure: [],
+    Animation: [],
+    Comedy: [],
+    Crime: [],
+    Documentary: [],
+    Drama: [],
+    Family: [],
+    Fantasy: [],
+    History: [],
+    Horror: [],
+    Music: [],
+    Mystery: [],
+    Romance: [],
+    "Science Fiction": [],
+    "TV Movie": [],
+    Thriller: [],
+    War: [],
+    Western: [],
+  },
 };
 
 export const recommendationReducer = (
   state = initialState,
-  action: RecommendationAction
+  action: RecommendationAction | GeneralRecommendationAction
 ): RecommendationState => {
   switch (action.type) {
     case RecommendationActionType.GET_RECOMMENDATION_BEGIN:
@@ -41,19 +67,32 @@ export const recommendationReducer = (
         // undefined. Mandatory for attributes that are conditional. See
         // recommendationActions.tsx and look at RecommendationAction -> payload
         // -> recommendationList.
-        movieRecommendationList: action.payload.recommendationList!,
+        movieRecommendationList: (action as RecommendationAction).payload
+          .recommendationList!,
       };
     case RecommendationActionType.GET_ACTOR_RECOMMENDATION_END:
       return {
         ...state,
         loading: LoadingState.DONE,
-        actorRecommendationList: action.payload.recommendationList!,
+        actorRecommendationList: (action as RecommendationAction).payload
+          .recommendationList!,
       };
     case RecommendationActionType.GET_GENRE_RECOMMENDATION_END:
       return {
         ...state,
         loading: LoadingState.DONE,
-        genreRecommendationList: action.payload.recommendationList!,
+        genreRecommendationList: (action as RecommendationAction).payload
+          .recommendationList!,
+      };
+    case RecommendationActionType.GET_GENERAL_RECOMMENDATION_END:
+      return {
+        ...state,
+        loading: LoadingState.DONE,
+        generalRecommendationList: {
+          ...state.generalRecommendationList,
+          [action.name!]: (action as GeneralRecommendationAction).payload
+            .recommendationList!,
+        },
       };
     case RecommendationActionType.CLEAR_RECOMMENDATION_DATA:
       return initialState;

@@ -1,11 +1,13 @@
 import { Dispatch, Action } from "redux";
 import { RecommendationListObject } from "../reducers/recommendationReducer";
+import { apiKey } from "./tmdbActions";
 
 export enum RecommendationActionType {
   GET_RECOMMENDATION_BEGIN = "GET_RECOMMENDATION_BEGIN",
   GET_MOVIE_RECOMMENDATION_END = "GET_MOVIE_RECOMMENDATION_END",
   GET_ACTOR_RECOMMENDATION_END = "GET_ACTOR_RECOMMENDATION_END",
   GET_GENRE_RECOMMENDATION_END = "GET_GENRE_RECOMMENDATION_END",
+  GET_GENERAL_RECOMMENDATION_END = "GET_GENERAL_RECOMMENDATION_END",
   CLEAR_RECOMMENDATION_DATA = "CLEAR_RECOMMENDATION_DATA",
 }
 
@@ -51,8 +53,17 @@ export interface MovieResultElement {
 
 export interface RecommendationAction {
   type: RecommendationActionType;
+  name?: string;
   payload: {
     recommendationList?: RecommendationListObject;
+  };
+}
+
+export interface GeneralRecommendationAction {
+  type: RecommendationActionType;
+  name?: string;
+  payload: {
+    recommendationList?: MovieResultElement[];
   };
 }
 
@@ -71,30 +82,30 @@ export const clearRecommendationData = (): Action => {
 
 export const getRecommendationEnd = (
   payload: RecommendationListObject,
-  recommendationType: string
+  recommendationType: string,
+  recommendationName?: string
 ): RecommendationAction => {
+  // Create an action variable to reduce the number of lines in case statements.
+  // Because TS doesn't let setting type to undefined, it is default set and
+  // will be overrided
+  let action: RecommendationAction = {
+    type: RecommendationActionType.GET_MOVIE_RECOMMENDATION_END,
+    payload: { recommendationList: payload },
+  };
   switch (recommendationType) {
     case "movie":
-      return {
-        type: RecommendationActionType.GET_MOVIE_RECOMMENDATION_END,
-        payload: {
-          recommendationList: payload,
-        },
-      };
+      action.type = RecommendationActionType.GET_MOVIE_RECOMMENDATION_END;
+      return action;
     case "actor":
-      return {
-        type: RecommendationActionType.GET_ACTOR_RECOMMENDATION_END,
-        payload: {
-          recommendationList: payload,
-        },
-      };
+      action.type = RecommendationActionType.GET_ACTOR_RECOMMENDATION_END;
+      return action;
     case "genre":
-      return {
-        type: RecommendationActionType.GET_GENRE_RECOMMENDATION_END,
-        payload: {
-          recommendationList: payload,
-        },
-      };
+      action.type = RecommendationActionType.GET_GENRE_RECOMMENDATION_END;
+      return action;
+    case "general":
+      action.type = RecommendationActionType.GET_GENERAL_RECOMMENDATION_END;
+      action.name = recommendationName;
+      return action;
     // Default statement that should never execute.
     default:
       throw new Error(
@@ -105,6 +116,7 @@ export const getRecommendationEnd = (
   }
 };
 
+// Fetches the user recommendation
 const fetchRecommendation = (
   dispatch: Dispatch,
   email: string,
@@ -122,6 +134,78 @@ const fetchRecommendation = (
       dispatch(getRecommendationEnd(json, recommendationType));
     })
     .catch((error) => console.log("An error occurred.", error));
+};
+
+// Fetches the general recommendation of now playing, popular, and upcoming
+// movies. Differs from fetchRecommendation because the returned json.result
+// is an array and not an object.
+const fetchGeneralRecommendation = (dispatch: Dispatch) => {
+  fetch(
+    "https://api.themoviedb.org/3/movie/now_playing?api_key=" +
+      apiKey +
+      "&language=en-US&page=1"
+  )
+    .then((response) => response.json())
+    .then((json) => {
+      dispatch(getRecommendationEnd(json.results, "general", "Now Playing"));
+    })
+    .catch((error) => {
+      console.log("An error occurred. Could not fetch Now Playing", error);
+    });
+  fetch(
+    "https://api.themoviedb.org/3/movie/popular?api_key=" +
+      apiKey +
+      "&language=en-US&page=1"
+  )
+    .then((response) => response.json())
+    .then((json) => {
+      dispatch(getRecommendationEnd(json.results, "general", "Popular"));
+    })
+    .catch((error) => {
+      console.log(
+        "An error occurred. Could not fetch general recommendations",
+        error
+      );
+    });
+  fetch(
+    "https://api.themoviedb.org/3/movie/upcoming?api_key=" +
+      apiKey +
+      "&language=en-US&page=1&region=US"
+  )
+    .then((response) => response.json())
+    .then((json) => {
+      dispatch(getRecommendationEnd(json.results, "general", "Upcoming"));
+    })
+    .catch((error) => {
+      console.log(
+        "An error occurred. Could not fetch general recommendations",
+        error
+      );
+    });
+};
+
+// Fetches a specific genre recommendation
+const fetchSpecificRecommmendation = (
+  dispatch: Dispatch,
+  id: number,
+  name: string
+) => {
+  return fetch(
+    "https://api.themoviedb.org/3/discover/movie?api_key=" +
+      apiKey +
+      "&with_genres=" +
+      id
+  )
+    .then((response) => response.json())
+    .then((json) => {
+      dispatch(getRecommendationEnd(json.results, "general", name));
+    })
+    .catch((error) => {
+      console.log(
+        "An error occurred. Could not fetch specific recommendations",
+        error
+      );
+    });
 };
 
 export const getMovieRecommendation = (email: string) => {
@@ -142,5 +226,19 @@ export const getGenreRecommendation = (email: string) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
     return fetchRecommendation(dispatch, email, "genre");
+  };
+};
+
+export const getGeneralRecommendation = () => {
+  return (dispatch: Dispatch) => {
+    dispatch(getRecommendationBegin());
+    return fetchGeneralRecommendation(dispatch);
+  };
+};
+
+export const getSpecificRecommendation = (id: number, name: string) => {
+  return (dispatch: Dispatch) => {
+    dispatch(getRecommendationBegin());
+    return fetchSpecificRecommmendation(dispatch, id, name);
   };
 };

@@ -178,7 +178,7 @@ function getRecommendation(req, res, next, params) {
           console.log(
             "Recommmended " + recommendedMovieData.length + " movies"
           );
-          console.log(recommendedMovieData);
+          // console.log(recommendedMovieData);
           res.send(recommendedMovieData);
         })
         .catch((err) => {
