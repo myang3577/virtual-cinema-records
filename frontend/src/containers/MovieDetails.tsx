@@ -29,6 +29,7 @@ import { Add, Delete } from "@material-ui/icons";
 import { TransitionProps } from "@material-ui/core/transitions/transition";
 import Prices from "./Prices";
 import { deleteMovie, putMovie } from "../actions/movieListActions";
+import RatingButtons from "../containers/RatingButtons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -160,7 +161,7 @@ function MovieDetails() {
           item
           xs={4}
           style={{
-            marginLeft: "-5%",
+            marginLeft: "0%",
           }}
         >
           <img
@@ -174,16 +175,25 @@ function MovieDetails() {
           />
         </Grid>
         {/* movie description, rating, and title */}
-        <Grid className={classes.paper} xs={5}>
+        <Grid className={classes.paper} item xs={5}>
           <Grid className={classes.descriptionHeader}>
             <Typography variant="h3">{currMovie && currMovie.title}</Typography>
-            {currMovie.production_companies &&
-              currMovie.production_companies.map((e: any) => (
-                <img src={baseUrl + e.logo_path} alt="company logos" />
-              ))}
+         
           </Grid>
           <br />
+          <Grid item xs={12}>
+          <Grid className={classes.paper}></Grid>
+          {currMovie.production_companies &&
+              currMovie.production_companies.map((e: any) => (
+                <img src={baseUrl + e.logo_path} 
+                style={{ maxWidth: "10%"}}
+                alt="company logos"
+                />
+              ))}
           <br />
+          </Grid>
+            <RatingButtons movie={currMovie} userRating={currMovie.userRating!} displayWords={true} />
+          <br />          
           <Typography variant="body1">
             {currMovie && currMovie.overview}
           </Typography>
