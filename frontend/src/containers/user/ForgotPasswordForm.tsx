@@ -6,6 +6,7 @@ import { UsernameField } from "../../components/Username";
 import { LoadingButton } from "../../components/LoadingButton";
 import { openSnackBar } from "../../actions/uiActions";
 import { validEmail } from "../../Constants";
+import { Typography } from "@material-ui/core";
 
 function ForgotPassword() {
   const [localUsername, setLocalUsername] = useState("");
@@ -38,6 +39,9 @@ function ForgotPassword() {
 
   return (
     <div className="user-form">
+      <Typography variant="h6">
+        Enter your username to send an email to recover your password
+      </Typography>
       <UsernameField
         error={localUsername !== "" && !validEmail(localUsername)}
         username={localUsername}
@@ -46,7 +50,7 @@ function ForgotPassword() {
       />
       <div className="divider"></div>
       <LoadingButton onClick={handleSubmit} loading={false}>
-        Submit
+        Send Email
       </LoadingButton>
     </div>
   );
