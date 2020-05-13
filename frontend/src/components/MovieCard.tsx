@@ -91,7 +91,9 @@ function MovieCard(props: MovieCardProps) {
             display: "inline",
           }}
           title={cardTitle()}
-          subheader={props.movie.release_date.slice(0, 4)}
+          subheader={
+            props.movie.release_data ? props.movie.release_date.slice(0, 4) : ""
+          }
           subheaderTypographyProps={{
             variant: "subtitle2",
             display: "inline",
