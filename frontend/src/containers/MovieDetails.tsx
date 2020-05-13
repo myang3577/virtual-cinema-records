@@ -12,6 +12,9 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemAvatar,
+  Avatar,
+  GridList,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
@@ -92,13 +95,18 @@ function MovieDetails() {
   const displayCast = () => {
     return (
       movieCast.cast &&
-      movieCast.cast.map((member: any) => (
-        <ListItem>
-          <ListItemText primary={member.name} />
+      movieCast.cast.slice(0, 10).map((member: any) => (
+        <ListItem disableGutters={true}>
+          <ListItemText primary={member.name + " (" + member.character + ")"} />
+          <ListItemAvatar>
+            <Avatar alt={member.name} src={baseUrl + member.profile_path} />
+          </ListItemAvatar>
         </ListItem>
       ))
     );
   };
+
+  console.log(movieCast.cast);
 
   useEffect(() => {
     dispatch(toggleDetailDrawer(dialogOpen, movieInUserList, currMovie));
@@ -181,7 +189,21 @@ function MovieDetails() {
           </Typography>
           <br />
           <br />
-          <List>{displayCast()}</List>
+          <Typography variant="h6">
+            {" "}
+            {movieCast.cast && movieCast.cast.length > 0 && "The Cast"}{" "}
+          </Typography>
+          <GridList
+            cols={2}
+            //style={{ width: "50%" }}
+            //dense={true}
+            //disablePadding={true}
+            // above styling was used for List, not GridList
+            cellHeight={45}
+            spacing={1}
+          >
+            {movieCast.cast && displayCast()}
+          </GridList>
         </Grid>
         {/* movie prices */}
         <Grid className={classes.prices} item xs={3}>
