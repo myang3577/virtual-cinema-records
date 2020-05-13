@@ -62,7 +62,9 @@ function MovieCard(props: MovieCardProps) {
         dispatch(
           openSnackBar(
             props.movie.title + " added to MyMovies",
-            SnackBarActionType.MYMOVIES
+            SnackBarActionType.RATING,
+            props.movie,
+            props.userRating
           )
         );
       } else {
@@ -123,7 +125,11 @@ function MovieCard(props: MovieCardProps) {
         />
         {props.page === PageType.MY_MOVIES && (
           <CardContent>
-            <RatingButtons movie={props.movie} userRating={props.userRating!} />
+            <RatingButtons
+              movie={props.movie}
+              userRating={props.userRating!}
+              displayWords={true}
+            />
           </CardContent>
         )}
         <CardActionArea onClick={openMovieDetailDrawer}>

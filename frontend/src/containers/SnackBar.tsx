@@ -15,11 +15,16 @@ import { Person, Theaters } from "@material-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { routes } from "./pages/App";
 import NavBar from "./NavBar";
+import RatingButtons from "./RatingButtons";
 
 export interface SnackbarMessage {
   message: string;
   key: number;
   action: SnackBarActionType;
+  extraPayload: {
+    movie: any;
+    userRating: number;
+  };
 }
 
 function SnackBar() {
@@ -37,6 +42,10 @@ function SnackBar() {
     (state) => state.uiData.snackBarAction
   );
 
+  const snackBarExtraPayload: any = useSelector<GlobalState>(
+    (state) => state.uiData.snackBarExtraPayload
+  );
+
   const [messageInfo, setMessageInfo] = React.useState<
     SnackbarMessage | undefined
   >(undefined);
@@ -44,17 +53,21 @@ function SnackBar() {
   const [snackPack, setSnackPack] = React.useState<SnackbarMessage[]>([]);
 
   useEffect(() => {
-    if (snackBarString && snackBarAction) {
-      addMessage(snackBarString, snackBarAction);
+    if (snackBarString && snackBarAction && snackBarExtraPayload) {
+      addMessage(snackBarString, snackBarAction, snackBarExtraPayload);
     }
 
     setOpen(snackBarOpen);
   }, [dispatch, snackBarString, snackBarOpen, snackBarAction]);
 
-  const addMessage = (message: string, action: SnackBarActionType) => {
+  const addMessage = (
+    message: string,
+    action: SnackBarActionType,
+    extraPayload: any
+  ) => {
     setSnackPack((prev) => [
       ...prev,
-      { message, key: new Date().getTime(), action },
+      { message, key: new Date().getTime(), action, extraPayload },
     ]);
   };
 
@@ -104,6 +117,8 @@ function SnackBar() {
           return <Person fontSize="small" />;
         case SnackBarActionType.MYMOVIES:
           return <Theaters fontSize="small" />;
+        case SnackBarActionType.RATING:
+          return <Theaters fontSize="small" />;
       }
     }
   };
@@ -113,6 +128,26 @@ function SnackBar() {
       switch (messageInfo.action) {
         case SnackBarActionType.MYMOVIES:
           return routes.myMoviesLink;
+        case SnackBarActionType.RATING:
+          return routes.myMoviesLink;
+      }
+    }
+
+    return "";
+  };
+
+  const interactiveExtraAction = () => {
+    if (messageInfo) {
+      switch (messageInfo.action) {
+        case SnackBarActionType.RATING:
+          if (messageInfo.extraPayload.movie !== null)
+            return (
+              <RatingButtons
+                movie={messageInfo.extraPayload.movie}
+                userRating={messageInfo.extraPayload.userRating}
+                displayWords={false}
+              />
+            );
       }
     }
 
@@ -135,6 +170,9 @@ function SnackBar() {
       key={messageInfo ? messageInfo.key : undefined}
       action={
         <React.Fragment>
+          {messageInfo &&
+            messageInfo.action === SnackBarActionType.RATING &&
+            interactiveExtraAction()}
           {messageInfo && messageInfo.action && (
             <IconButton
               size="small"

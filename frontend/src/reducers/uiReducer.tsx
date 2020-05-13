@@ -16,6 +16,10 @@ export interface UIState {
   snackBarOpen: boolean;
   snackBarString: string;
   snackBarAction: SnackBarActionType;
+  snackBarExtraPayload: {
+    movie: any;
+    userRating: number;
+  };
   currentMovie: {
     movie: any;
     inUserList: boolean;
@@ -31,6 +35,10 @@ const initialState: UIState = {
   snackBarOpen: false,
   snackBarString: "",
   snackBarAction: SnackBarActionType.NONE,
+  snackBarExtraPayload: {
+    movie: {},
+    userRating: 0,
+  },
   currentMovie: {
     movie: {},
     inUserList: false,
@@ -93,6 +101,8 @@ export const uiReducer = (
         snackBarOpen: true,
         snackBarString: (action as UISnackBarAction).payload.snackBarString,
         snackBarAction: (action as UISnackBarAction).payload.snackBarAction,
+        snackBarExtraPayload: (action as UISnackBarAction).payload
+          .snackBarExtraPayload,
       };
     case UIActionType.CLOSE_SNACKBAR:
       return {

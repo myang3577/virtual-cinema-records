@@ -4,11 +4,12 @@ import { Rating } from "@material-ui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
 import { putRating, deleteRating } from "../actions/movieListActions";
-import { openSnackBar } from "../actions/uiActions";
+import { openSnackBar, SnackBarActionType } from "../actions/uiActions";
 
 export interface RatingButtonsProps {
   movie: any;
   userRating: number;
+  displayWords: boolean;
 }
 
 function RatingButtons(props: RatingButtonsProps) {
@@ -29,11 +30,21 @@ function RatingButtons(props: RatingButtonsProps) {
     }
     setRating(value);
     if (value === null) {
-      dispatch(openSnackBar(props.movie.title + " rating removed"));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " rating removed",
+          SnackBarActionType.RATING,
+          props.movie,
+          value
+        )
+      );
     } else {
       dispatch(
         openSnackBar(
-          props.movie.title + " rating updated to " + value + " stars"
+          props.movie.title + " rating updated to " + value + " stars",
+          SnackBarActionType.RATING,
+          props.movie,
+          value
         )
       );
     }
@@ -41,7 +52,7 @@ function RatingButtons(props: RatingButtonsProps) {
 
   return (
     <div>
-      <Typography variant="body1">
+      <Typography variant="body1" hidden={!props.displayWords}>
         Your rating: {displayRating > 0 ? displayRating : rating}
       </Typography>
       <Rating

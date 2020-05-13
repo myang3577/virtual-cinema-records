@@ -37,6 +37,10 @@ export interface UISnackBarAction {
   payload: {
     snackBarString: string;
     snackBarAction: SnackBarActionType;
+    snackBarExtraPayload: {
+      movie: any;
+      userRating: number;
+    };
   };
 }
 
@@ -50,6 +54,7 @@ export enum AccountModalContent {
 export enum SnackBarActionType {
   LOGIN = "LOGIN",
   MYMOVIES = "MYMOVIES",
+  RATING = "RATING",
   NONE = "NONE",
 }
 
@@ -112,14 +117,33 @@ export const toggleDetailDrawer = (
 
 export const openSnackBar = (
   str: string,
-  action?: SnackBarActionType
+  action?: SnackBarActionType,
+  movie?: any,
+  userRating?: number
 ): UISnackBarAction => {
   if (action) {
+    if (movie && userRating) {
+      return {
+        type: UIActionType.OPEN_SNACKBAR,
+        payload: {
+          snackBarString: str,
+          snackBarAction: action,
+          snackBarExtraPayload: {
+            movie: movie,
+            userRating: userRating,
+          },
+        },
+      };
+    }
     return {
       type: UIActionType.OPEN_SNACKBAR,
       payload: {
         snackBarString: str,
         snackBarAction: action,
+        snackBarExtraPayload: {
+          movie: {},
+          userRating: 0,
+        },
       },
     };
   }
@@ -128,6 +152,10 @@ export const openSnackBar = (
     payload: {
       snackBarString: str,
       snackBarAction: SnackBarActionType.NONE,
+      snackBarExtraPayload: {
+        movie: {},
+        userRating: 0,
+      },
     },
   };
 };
