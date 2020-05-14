@@ -1,5 +1,11 @@
 import { Dispatch, Action } from "redux";
 import { RecommendationListObject } from "../reducers/recommendationReducer";
+// import { useSelector, useDispatch } from "react-redux";
+// import { GlobalState } from "../reducers/rootReducer";
+import {
+  NUM_GENERAL_RECOMMENDATIONS,
+  MAX_PAGE_SEARCH_LIMIT,
+} from "../constants/Recommendation";
 import { apiKey } from "./tmdbActions";
 
 export enum RecommendationActionType {
@@ -139,75 +145,136 @@ const fetchRecommendation = (
 // Fetches the general recommendation of now playing, popular, and upcoming
 // movies. Differs from fetchRecommendation because the returned json.result
 // is an array and not an object.
-const fetchGeneralRecommendation = (dispatch: Dispatch) => {
-  fetch(
+const fetchGeneralRecommendation = (
+  dispatch: Dispatch,
+  userMyMoviesList: MovieResultElement[]
+) => {
+  let userIdArray = userMyMoviesList.map(
+    (movie: MovieResultElement) => movie.id
+  );
+
+  fetchSpecificRecommmendation(
     "https://api.themoviedb.org/3/movie/now_playing?api_key=" +
       apiKey +
-      "&language=en-US&page=1"
-  )
-    .then((response) => response.json())
-    .then((json) => {
-      dispatch(getRecommendationEnd(json.results, "general", "Now Playing"));
-    })
-    .catch((error) => {
-      console.log("An error occurred. Could not fetch Now Playing", error);
-    });
-  fetch(
+      "&language=en-US&page=",
+    dispatch,
+    userIdArray,
+    "Now Playing"
+  );
+
+  fetchSpecificRecommmendation(
     "https://api.themoviedb.org/3/movie/popular?api_key=" +
       apiKey +
-      "&language=en-US&page=1"
-  )
-    .then((response) => response.json())
-    .then((json) => {
-      dispatch(getRecommendationEnd(json.results, "general", "Popular"));
-    })
-    .catch((error) => {
-      console.log(
-        "An error occurred. Could not fetch general recommendations",
-        error
-      );
-    });
-  fetch(
+      "&language=en-US&page=",
+    dispatch,
+    userIdArray,
+    "Popular"
+  );
+
+  fetchSpecificRecommmendation(
     "https://api.themoviedb.org/3/movie/upcoming?api_key=" +
       apiKey +
-      "&language=en-US&page=1&region=US"
-  )
-    .then((response) => response.json())
-    .then((json) => {
-      dispatch(getRecommendationEnd(json.results, "general", "Upcoming"));
-    })
-    .catch((error) => {
-      console.log(
-        "An error occurred. Could not fetch general recommendations",
-        error
-      );
-    });
+      "&language=en-US&region=US&page=",
+    dispatch,
+    userIdArray,
+    "Upcoming"
+  );
 };
 
-// Fetches a specific genre recommendation
-const fetchSpecificRecommmendation = (
+// Fetches a specific genre recommendation that also filters out movie in the
+// user's list
+const fetchSpecificRecommmendation = async (
+  apiEndpoint: string,
   dispatch: Dispatch,
-  id: number,
+  userIdArray: number[],
   name: string
 ) => {
-  return fetch(
-    "https://api.themoviedb.org/3/discover/movie?api_key=" +
-      apiKey +
-      "&with_genres=" +
-      id
-  )
-    .then((response) => response.json())
-    .then((json) => {
-      dispatch(getRecommendationEnd(json.results, "general", name));
-    })
-    .catch((error) => {
+  // Resultant array that will hold all of filtered recommendations
+  let resultArray: any = [];
+
+  // Which page to start the recommendation from
+  let currPage: number = 1;
+
+  while (resultArray.length < NUM_GENERAL_RECOMMENDATIONS) {
+    try {
+      // console.log(apiEndpoint + currPage);
+      await fetch(apiEndpoint + currPage)
+        .then((response) => response.json())
+        .then((json) => {
+          // console.log(json);
+          json.results.forEach((movie: MovieResultElement) => {
+            // If the movie is not in the user's movie list and the list is not full, then add it
+            if (
+              !userIdArray.includes(movie.id) &&
+              resultArray.length < NUM_GENERAL_RECOMMENDATIONS
+            ) {
+              // console.log("Adding movie");
+              resultArray.push(movie);
+            }
+          });
+          currPage++;
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    } catch (err) {
       console.log(
-        "An error occurred. Could not fetch specific recommendations",
-        error
+        "An error occurred. Could not fetch " + name + " recommendations",
+        err
       );
-    });
+      break;
+    }
+
+    if (currPage > MAX_PAGE_SEARCH_LIMIT) {
+      break;
+    }
+  }
+
+  dispatch(getRecommendationEnd(resultArray, "general", name));
+
+  // resolve();
+  // }).then(() => dispatch(getRecommendationEnd(resultArray, "general", name)));
+
+  // new Promise(async (resolve, reject) => {
+  //   while (resultArray.length < NUM_GENERAL_RECOMMENDATIONS) {
+  //     try {
+  //       // console.log(apiEndpoint + currPage);
+  //       await fetch(apiEndpoint + currPage)
+  //         .then((response) => response.json())
+  //         .then((json) => {
+  //           // console.log(json);
+  //           json.results.forEach((movie: MovieResultElement) => {
+  //             // If the movie is not in the user's movie list and the list is not full, then add it
+  //             if (
+  //               !userIdArray.includes(movie.id) &&
+  //               resultArray.length < NUM_GENERAL_RECOMMENDATIONS
+  //             ) {
+  //               // console.log("Adding movie");
+  //               resultArray.push(movie);
+  //             }
+  //           });
+  //           currPage++;
+  //         })
+  //         .catch((error) => {
+  //           throw new Error(error);
+  //         });
+  //     } catch (err) {
+  //       console.log(
+  //         "An error occurred. Could not fetch " + name + " recommendations",
+  //         err
+  //       );
+  //       break;
+  //     }
+
+  //     if (currPage > MAX_PAGE_SEARCH_LIMIT) {
+  //       break;
+  //     }
+  //   }
+  //   resolve();
+  // }).then(() => dispatch(getRecommendationEnd(resultArray, "general", name)));
 };
 
+// Entry point to get the user's personal recommendations for movies
 export const getMovieRecommendation = (email: string) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
@@ -215,6 +282,7 @@ export const getMovieRecommendation = (email: string) => {
   };
 };
 
+// Entry point to get the user's personal recommendations for actors
 export const getActorRecommendation = (email: string) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
@@ -222,6 +290,7 @@ export const getActorRecommendation = (email: string) => {
   };
 };
 
+// Entry point to get the user's personal recommendations for genres
 export const getGenreRecommendation = (email: string) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
@@ -229,16 +298,36 @@ export const getGenreRecommendation = (email: string) => {
   };
 };
 
-export const getGeneralRecommendation = () => {
+// Entry point to get general personal recommendations
+export const getGeneralRecommendation = (
+  userMyMoviesList: MovieResultElement[]
+) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
-    return fetchGeneralRecommendation(dispatch);
+    return fetchGeneralRecommendation(dispatch, userMyMoviesList);
   };
 };
 
-export const getSpecificRecommendation = (id: number, name: string) => {
+// Entry point to get specific genre recommendations
+export const getSpecificRecommendation = (
+  id: number,
+  name: string,
+  userMyMoviesList: MovieResultElement[]
+) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
-    return fetchSpecificRecommmendation(dispatch, id, name);
+    let userIdArray = userMyMoviesList.map(
+      (movie: MovieResultElement) => movie.id
+    );
+    return fetchSpecificRecommmendation(
+      "https://api.themoviedb.org/3/discover/movie?api_key=" +
+        apiKey +
+        "&with_genres=" +
+        id +
+        "&page=",
+      dispatch,
+      userIdArray,
+      name
+    );
   };
 };

@@ -6,7 +6,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { LoadingState } from "../../reducers/tmdbReducer";
 import { listMovies } from "../../actions/movieListActions";
 import SimpleListMenu from "../../components/DropdownMenu";
-import { genreMap } from "../../constants/Rceommendation";
+import { genreMap } from "../../constants/Recommendation";
 import {
   getMovieRecommendation,
   getActorRecommendation,
@@ -126,14 +126,16 @@ function Recommendations() {
       generalRecommendationList.Popular.length === 0 ||
       generalRecommendationList.Upcoming.length === 0
     ) {
-      dispatch(getGeneralRecommendation());
+      dispatch(getGeneralRecommendation(userMyMoviesList));
     }
     // eslint-disable-next-line
   }, [dispatch, username, isLoggedIn]);
 
   useEffect(() => {
-    if (isLoggedIn && userListDataLoading === LoadingState.DONE)
+    if (isLoggedIn && userListDataLoading === LoadingState.DONE) {
       refreshRecommendations();
+    }
+
     // eslint-disable-next-line
   }, [isLoggedIn, userListDataLoading]);
 
@@ -147,6 +149,7 @@ function Recommendations() {
     dispatch(getMovieRecommendation(username));
     dispatch(getActorRecommendation(username));
     dispatch(getGenreRecommendation(username));
+    dispatch(getGeneralRecommendation(userMyMoviesList));
   };
 
   const renderMovieRecommendation = (recommendationResult: any): any[] => {
@@ -203,7 +206,8 @@ function Recommendations() {
         dispatch(
           getSpecificRecommendation(
             genreMap[event.target.name].id,
-            event.target.name
+            event.target.name,
+            userMyMoviesList
           )
         );
       }

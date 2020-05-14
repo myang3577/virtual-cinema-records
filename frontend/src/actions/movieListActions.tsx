@@ -81,7 +81,7 @@ export const clearMovieListData = (): Action => {
 };
 
 export const listMovies = (email: string) => {
-  return (dispatch: Dispatch) => {
+  return (dispatch: any) => {
     dispatch(listMoviesBegin());
 
     return fetch("/users/" + email + "/movie-list")
@@ -94,17 +94,30 @@ export const listMovies = (email: string) => {
       })
       .then((json: MovieListElement[]) => {
         dispatch(listMoviesEnd(json));
-        json.forEach((movie) => {
-          fetchAndAddMovieData(movie.tmdb_id, dispatch);
+
+        // Wait for all movie additions to complete before sending finished
+        // signal
+        return new Promise((resolve, reject) => {
+          let counter = json.length;
+          json.forEach((movie) => {
+            fetchAndAddMovieData(movie.tmdb_id, dispatch).then(() => {
+              counter--;
+              if (counter === 0) {
+                resolve();
+              }
+            });
+          });
         });
       })
-      .then(() => dispatch(addAllMovieListDataEnd()))
+      .then(() => {
+        dispatch(addAllMovieListDataEnd());
+      })
       .catch((error) => console.log("An error occurred.", error));
   };
 };
 
 const fetchAndAddMovieData = (tmdb_id: number, dispatch: Dispatch) => {
-  fetch(
+  return fetch(
     "https://api.themoviedb.org/3/movie/" +
       tmdb_id +
       "?api_key=" +
@@ -118,7 +131,10 @@ const fetchAndAddMovieData = (tmdb_id: number, dispatch: Dispatch) => {
         throw Error("Error occurred, status: " + response.status);
       }
     })
-    .then((json) => dispatch(addMovieDataAction(json)))
+    .then((json) => {
+      dispatch(addMovieDataAction(json));
+      return;
+    })
     .catch((error) => console.log("An error occurred.", error));
 };
 

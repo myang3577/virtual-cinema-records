@@ -60,6 +60,9 @@ const NUM_RECOMMENDATION_PER_GENRE = 5;
 // Indicates which page of the given genre should be used for recommendations
 const GENRE_PAGE = 1;
 
+// Indicates when to stop searching.
+const MAX_PAGE_SEARCH_LIMIT = 10;
+
 // users/:email/movie-list
 router.get("/:email/movie-recommendation", movieRecommendation);
 router.get("/:email/actor-recommendation", actorRecommendation);
@@ -68,8 +71,8 @@ router.get("/:email/genre-recommendation", genreRecommendation);
 function getRecommendation(req, res, next, params) {
   let query = params.query; // dynamodb query object
   let recType = params.recType; // string representing the recommendation type. As of 05/07/20 only movie, actor, genre
+  let tmdbIdArray = params.tmdbIdArray; // Array containing tmdb id of all movies in user's mymovies list
   let NUM_OBJ = params.NUM_OBJ; // Represents the number of movies, actors, or genres to  recommend for
-  let PAGE = params.PAGE; // Represents which page the movies for the given genre should be selected from
   let NUM_REC = params.NUM_REC; // Represent the number of recommendations per movie, actor, genre
 
   // Represents the specific end point to query for each actor to get the recommendations. This apiQuery will
@@ -105,12 +108,13 @@ function getRecommendation(req, res, next, params) {
       // Only recommend for the first NUM_OBJ
       data.Items = data.Items.slice(0, NUM_OBJ);
 
-      // Get recommendations for the designated number of movies above minimum ranking
+      // Get recommendations for the designated number of movies above minimum
+      // ranking
+      let count = data.Items.length;
       async
-        .each(data.Items, function (item_data, callback) {
+        .each(data.Items, async function (item_data, callback) {
           // Set the name of the movie we are recommending for
           let categoryName = item_data[recType + "_name"];
-
           let apiEndpoint = apiQuery.replace("$APIKEY", apiKey);
 
           switch (recType) {
@@ -121,70 +125,137 @@ function getRecommendation(req, res, next, params) {
               apiEndpoint = apiEndpoint.replace("$ID", item_data.actor_id);
               break;
             case "genre":
-              apiEndpoint = apiEndpoint
-                .replace("$ID", item_data.genre_id)
-                .replace("$PAGE", PAGE);
+              apiEndpoint = apiEndpoint.replace("$ID", item_data.genre_id);
               break;
           }
 
-          fetchAndCheck(apiEndpoint)
-            .then((json) => {
-              let recommendedMoviesArray;
-              switch (recType) {
-                case "movie":
-                case "genre":
-                  recommendedMoviesArray = json.results.slice(0, NUM_REC);
-                  break;
-                case "actor":
-                  recommendedMoviesArray = json.cast.slice(0, NUM_REC);
-                  break;
-              }
+          // Fill the recommendedMovies array with movies that are not in
+          // the user's mymovies list
+          let recommendedMoviesArray = [];
+          let currPage = 1;
 
-              async
-                .each(recommendedMoviesArray, function (item_data, callback) {
-                  let apiMovieDetailEndpoint = MOVIE_DETAILS_API.replace(
-                    "$TMDB_ID",
-                    item_data.id
-                  ).replace("$APIKEY", apiKey);
-                  fetchAndCheck(apiMovieDetailEndpoint)
-                    .then((json) => {
-                      // If the category name does not exist yet, make a new
-                      // array for it
-                      if (!(categoryName in recommendedMovieData)) {
-                        recommendedMovieData[categoryName] = [];
-                      }
+          while (recommendedMoviesArray.length < NUM_REC) {
+            try {
+              // api end point will change on case by case basis
 
-                      recommendedMovieData[categoryName].push(json);
+              await fetchAndCheck(apiEndpoint + currPage)
+                .then((json) => {
+                  let results; // Used to hold the returned movie results
+                  switch (recType) {
+                    case "movie":
+                    case "genre":
+                      results = json.results;
+                      break;
+                    case "actor":
+                      results = json.cast;
+                      break;
+                  }
 
-                      // console.log(data.Items);
-                      // console.log(data.Items[recType + "_name"]);
-                      // recommendedMovieData.push(json);
-                      callback();
-                    })
-                    .catch((err) => {
-                      console.error(err);
-                    });
+                  results.forEach((movie) => {
+                    // If the movie is not in the user's movie list and the list is not full, then add it
+                    if (
+                      !tmdbIdArray.includes(movie.id) &&
+                      recommendedMoviesArray.length < NUM_REC
+                    ) {
+                      recommendedMoviesArray.push(movie);
+                    }
+                  });
+                  currPage++;
                 })
-                .then(() => callback())
+                .catch((error) => {
+                  throw new Error(error);
+                });
+            } catch (err) {
+              console.log(
+                "An error occurred. Could not fetch " +
+                  recType +
+                  " recommendations",
+                err
+              );
+              break;
+            }
+
+            if (currPage > MAX_PAGE_SEARCH_LIMIT) {
+              break;
+            }
+          }
+
+          await async
+            .each(recommendedMoviesArray, function (item_data, callback) {
+              let apiMovieDetailEndpoint = MOVIE_DETAILS_API.replace(
+                "$TMDB_ID",
+                item_data.id
+              ).replace("$APIKEY", apiKey);
+              fetchAndCheck(apiMovieDetailEndpoint)
+                .then((json) => {
+                  // If the category name does not exist yet, make a new
+                  // array for it
+                  if (!(categoryName in recommendedMovieData)) {
+                    recommendedMovieData[categoryName] = [];
+                  }
+
+                  recommendedMovieData[categoryName].push(json);
+
+                  callback();
+                })
                 .catch((err) => {
                   console.error(err);
                 });
+            })
+            .then(() => {
+              count--;
+              if (count === 0) {
+                Promise.resolve();
+              }
             })
             .catch((err) => {
               console.error(err);
             });
         })
         .then(() => {
+          let counter = 0;
+
+          Object.keys(recommendedMovieData).forEach((key) => {
+            counter += recommendedMovieData[key].length;
+          });
           console.log(
-            "Recommmended " + recommendedMovieData.length + " movies"
+            "Recommmended " + counter + " movies for " + recType + " category"
           );
-          // console.log(recommendedMovieData);
           res.send(recommendedMovieData);
         })
         .catch((err) => {
           console.error(err);
         });
     }
+  });
+}
+
+function getUserMovieList(email) {
+  var movieListParams = {
+    TableName: movieTableName,
+    KeyConditionExpression: "#user = :user",
+    ExpressionAttributeNames: {
+      "#user": "username",
+    },
+    ExpressionAttributeValues: {
+      ":user": email,
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    db.query(movieListParams, async function (err, allMovieListData) {
+      if (err) {
+        console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        // res.status(err.statusCode);
+        // res.send("Unable to query. See console for output.");
+      } else {
+        resolve(
+          allMovieListData.Items.map((key) => {
+            return key.tmdb_id;
+          })
+        );
+      }
+    });
   });
 }
 
@@ -201,12 +272,15 @@ function movieRecommendation(req, res, next) {
     query: queryMovie,
     recType: "movie",
     NUM_OBJ: NUM_MOVIES_TO_RECOMMEND_FOR,
-    PAGE: undefined,
     NUM_REC: NUM_RECOMMENDATION_PER_MOVIE,
     apiQuery:
-      "https://api.themoviedb.org/3/movie/$ID/recommendations?api_key=$APIKEY&language=en-US&page=1",
+      "https://api.themoviedb.org/3/movie/$ID/recommendations?api_key=$APIKEY&language=en-US&page=",
   };
-  getRecommendation(req, res, next, params);
+
+  getUserMovieList(req.params.email).then((tmdbIdArray) => {
+    params.tmdbIdArray = tmdbIdArray;
+    getRecommendation(req, res, next, params);
+  });
 }
 
 // Creates the necessary parameters and gets the recommendations for the actors
@@ -222,12 +296,14 @@ function actorRecommendation(req, res, next) {
     query: queryActor,
     recType: "actor",
     NUM_OBJ: NUM_ACTORS_TO_RECOMMEND_FOR,
-    PAGE: undefined,
     NUM_REC: NUM_RECOMMENDATION_PER_ACTOR,
     apiQuery:
-      "https://api.themoviedb.org/3/person/$ID/movie_credits?api_key=$APIKEY&language=en-US",
+      "https://api.themoviedb.org/3/person/$ID/movie_credits?api_key=$APIKEY&language=en-US&page=",
   };
-  getRecommendation(req, res, next, params);
+  getUserMovieList(req.params.email).then((tmdbIdArray) => {
+    params.tmdbIdArray = tmdbIdArray;
+    getRecommendation(req, res, next, params);
+  });
 }
 
 // Creates the necessary parameters and gets the recommendations for the genre
@@ -243,12 +319,14 @@ function genreRecommendation(req, res, next) {
     query: queryGenre,
     recType: "genre",
     NUM_OBJ: NUM_GENRE_TO_RECOMMEND_FOR,
-    PAGE: GENRE_PAGE,
     NUM_REC: NUM_RECOMMENDATION_PER_GENRE,
     apiQuery:
-      "https://api.themoviedb.org/3/discover/movie?api_key=$APIKEY&with_genres=$ID&page=$PAGE&language=en-US",
+      "https://api.themoviedb.org/3/discover/movie?api_key=$APIKEY&with_genres=$ID&language=en-US&page=",
   };
-  getRecommendation(req, res, next, params);
+  getUserMovieList(req.params.email).then((tmdbIdArray) => {
+    params.tmdbIdArray = tmdbIdArray;
+    getRecommendation(req, res, next, params);
+  });
 }
 
 module.exports = router;

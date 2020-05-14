@@ -24,3 +24,10 @@ export const genreMap: { [key: string]: { [key: string]: number } } = {
   War: { id: 10752 },
   Western: { id: 37 },
 };
+
+// The number of general recommendations after filtering out everything from
+// blacklist and MyMovies
+export const NUM_GENERAL_RECOMMENDATIONS = 20;
+
+// The number of pages to traverse to find movies that are not in the user list
+export const MAX_PAGE_SEARCH_LIMIT = 10;
