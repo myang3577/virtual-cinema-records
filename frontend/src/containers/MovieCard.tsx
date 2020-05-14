@@ -20,7 +20,11 @@ import RatingButtons from "./RatingButtons";
 import AddRemoveMoviesIconButton from "../components/AddRemoveMoviesIconButton";
 import BlacklistMovieIcon from "../components/BlacklistMovieIcon";
 import MovieDetails from "./MovieDetails";
-import { getMovieCast, getReleaseDate } from "../actions/tmdbActions";
+import {
+  getMovieCast,
+  getReleaseDate,
+  getRelatedMovies,
+} from "../actions/tmdbActions";
 
 export interface MovieCardProps {
   movie: any;
@@ -106,6 +110,7 @@ function MovieCard(props: MovieCardProps) {
     setMovieDetailsOpen(true);
     dispatch(getMovieCast(props.movie.id));
     dispatch(getReleaseDate(props.movie.id));
+    dispatch(getRelatedMovies(props.movie.id));
   };
 
   return (

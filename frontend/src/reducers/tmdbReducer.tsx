@@ -21,6 +21,7 @@ export interface TMDBState {
   popularMovies: {};
   movieCast: {};
   movieReleaseDate: {};
+  relatedMovies: {};
 }
 
 /**
@@ -47,6 +48,7 @@ const initialState: TMDBState = {
   popularMovies: {},
   movieCast: {},
   movieReleaseDate: {},
+  relatedMovies: {},
 };
 
 /**
@@ -97,6 +99,11 @@ export const tmdbReducer = (
       return {
         ...state,
         movieCast: action.payload,
+      };
+    case TMDBActionType.GET_RELATED_MOVIES_END:
+      return {
+        ...state,
+        relatedMovies: action.payload,
       };
     case TMDBActionType.GET_MOVIE_RELEASE_DATE_END:
       return {

@@ -13,6 +13,7 @@ export enum TMDBActionType {
   GET_POPULAR_MOVIES_END = "GET_POPULAR_MOVIES_END",
   GET_MOVIE_CAST_END = "GET_MOVIE_CAST",
   GET_MOVIE_RELEASE_DATE_END = "GET_MOVIE_RELEASE_DATE_END",
+  GET_RELATED_MOVIES_END = "GET_RELATED_MOVIES_END",
 }
 
 /**
@@ -75,6 +76,13 @@ export const getPopularMoviesEnd = (payload: {}): TMDBAction => {
 export const getMovieCastEnd = (payload: {}): TMDBAction => {
   return {
     type: TMDBActionType.GET_MOVIE_CAST_END,
+    payload,
+  };
+};
+
+export const getRelatedMoviesEnd = (payload: {}): TMDBAction => {
+  return {
+    type: TMDBActionType.GET_RELATED_MOVIES_END,
     payload,
   };
 };
@@ -142,6 +150,21 @@ export const getMovieCast = (movieID: string) => {
     )
       .then((response) => response.json())
       .then((json) => dispatch(getMovieCastEnd(json)))
+      .catch((error) => console.log("An error occurred.", error));
+  };
+};
+
+export const getRelatedMovies = (sourceMovieId: string) => {
+  return (dispatch: Dispatch) => {
+    return fetch(
+      "https://api.themoviedb.org/3/movie/" +
+        sourceMovieId +
+        "/similar?api_key=" +
+        apiKey +
+        "&language=en-US&page=1"
+    )
+      .then((response) => response.json())
+      .then((json) => dispatch(getRelatedMoviesEnd(json)))
       .catch((error) => console.log("An error occurred.", error));
   };
 };

@@ -24,6 +24,7 @@ import Prices from "./Prices";
 import { deleteMovie, putMovie } from "../actions/movieListActions";
 import RatingButtons from "./RatingButtons";
 import AddRemoveMoviesIconButton from "../components/AddRemoveMoviesIconButton";
+import RelatedMovies from "./RelatedMovies";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -89,15 +90,19 @@ function MovieDetails(props: MovieDetailsProps) {
     (state) => state.tmdbData.movieReleaseDate
   );
 
-  const displayCast = () =>
-    movieCast.cast.slice(0, 10).map((member: any, i: number) => (
-      <ListItem disableGutters={true} key={i}>
-        <ListItemAvatar>
-          <Avatar alt={member.name} src={baseUrl + member.profile_path} />
-        </ListItemAvatar>
-        <ListItemText primary={member.name + " (" + member.character + ")"} />
-      </ListItem>
-    ));
+  const displayCast = () => {
+    return (
+      movieCast.cast &&
+      movieCast.cast.slice(0, 10).map((member: any) => (
+        <ListItem disableGutters={true}>
+          <ListItemText primary={member.name + " (" + member.character + ")"} />
+          <ListItemAvatar>
+            <Avatar alt={member.name} src={baseUrl + member.profile_path} />
+          </ListItemAvatar>
+        </ListItem>
+      ))
+    );
+  };
 
   const addRemoveMoviesIconButtonClick = () => {
     if (props.inUserList) {
@@ -223,6 +228,7 @@ function MovieDetails(props: MovieDetailsProps) {
           <Typography variant="h6" style={{ marginLeft: 5, marginTop: 10 }}>
             Related Movies
           </Typography>
+          <RelatedMovies />
         </Grid>
       </Grid>
     </Dialog>

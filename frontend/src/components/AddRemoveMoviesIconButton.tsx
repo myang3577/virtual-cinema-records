@@ -23,6 +23,7 @@ function AddRemoveMoviesIconButton(props: AddRemoveMoviesIconButtonProps) {
       <span>
         <IconButton
           size="medium"
+          style={{ margin: 0 }}
           onClick={props.onClick}
           disabled={!props.isLoggedIn}
         >
