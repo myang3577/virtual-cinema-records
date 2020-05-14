@@ -12,6 +12,7 @@ export enum TMDBActionType {
   SEARCH_MOVIES_END = "SEARCH_MOVIES_END",
   GET_POPULAR_MOVIES_END = "GET_POPULAR_MOVIES_END",
   GET_MOVIE_CAST_END = "GET_MOVIE_CAST",
+  GET_MOVIE_RELEASE_DATE_END = "GET_MOVIE_RELEASE_DATE_END",
 }
 
 /**
@@ -78,6 +79,13 @@ export const getMovieCastEnd = (payload: {}): TMDBAction => {
   };
 };
 
+export const getMovieReleaseDateEnd = (payload: {}): TMDBAction => {
+  return {
+    type: TMDBActionType.GET_MOVIE_RELEASE_DATE_END,
+    payload,
+  };
+};
+
 /**
  * Conducts the API query. This is an async funciton partially handled by Thunk.
  * The first return returns a function. The second return actually returns the
@@ -134,6 +142,20 @@ export const getMovieCast = (movieID: string) => {
     )
       .then((response) => response.json())
       .then((json) => dispatch(getMovieCastEnd(json)))
+      .catch((error) => console.log("An error occurred.", error));
+  };
+};
+
+export const getReleaseDate = (movieID: string) => {
+  return (dispatch: Dispatch) => {
+    return fetch(
+      "https://api.themoviedb.org/3/movie/" +
+        movieID +
+        "/release_dates?api_key=" +
+        apiKey
+    )
+      .then((response) => response.json())
+      .then((json) => dispatch(getMovieReleaseDateEnd(json)))
       .catch((error) => console.log("An error occurred.", error));
   };
 };

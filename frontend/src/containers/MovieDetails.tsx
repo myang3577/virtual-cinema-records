@@ -93,6 +93,10 @@ function MovieDetails() {
     (state) => state.tmdbData.movieCast
   );
 
+  const movieReleaseDate: any = useSelector<GlobalState>(
+    (state) => state.tmdbData.movieReleaseDate
+  );
+
   const displayCast = () => {
     return (
       movieCast.cast &&
@@ -178,26 +182,36 @@ function MovieDetails() {
         <Grid className={classes.paper} item xs={5}>
           <Grid className={classes.descriptionHeader}>
             <Typography variant="h3">{currMovie && currMovie.title}</Typography>
-         
           </Grid>
           <br />
           <Grid item xs={12}>
-          <Grid className={classes.paper}></Grid>
-          {currMovie.production_companies &&
+            <Grid className={classes.paper}></Grid>
+            {currMovie.production_companies &&
               currMovie.production_companies.map((e: any) => (
-                <img src={baseUrl + e.logo_path} 
-                style={{ maxWidth: "10%"}}
-                alt="company logos"
+                <img
+                  src={baseUrl + e.logo_path}
+                  style={{ maxWidth: "10%" }}
+                  alt="company logos"
                 />
               ))}
-          <br />
+            <br />
           </Grid>
-            <RatingButtons movie={currMovie} userRating={currMovie.userRating!} displayWords={true} />
-          <br />          
+          <RatingButtons
+            movie={currMovie}
+            userRating={currMovie.userRating!}
+            displayWords={true}
+          />
+          <br />
           <Typography variant="body1">
             {currMovie && currMovie.overview}
           </Typography>
           <br />
+          <Typography variant="body1">
+            {" "}
+            {movieReleaseDate.results &&
+              movieReleaseDate.results.length > 0 &&
+              "Release Date: " + currMovie.release_date}
+          </Typography>
           <br />
           <Typography variant="h6">
             {" "}

@@ -21,6 +21,7 @@ import { GlobalState } from "../reducers/rootReducer";
 import { putMovie, deleteMovie } from "../actions/movieListActions";
 import RatingButtons from "../containers/RatingButtons";
 import { getMovieCast } from "../actions/tmdbActions";
+import { getReleaseDate } from "../actions/tmdbActions";
 
 export interface MovieCardProps {
   movie: any;
@@ -83,6 +84,7 @@ function MovieCard(props: MovieCardProps) {
   const openMovieDetailDrawer = () => {
     dispatch(toggleDetailDrawer(true, props.inUserList, props.movie));
     dispatch(getMovieCast(props.movie.id));
+    dispatch(getReleaseDate(props.movie.id));
   };
 
   return (
