@@ -14,6 +14,7 @@ import {
   ListItemAvatar,
   Avatar,
   GridList,
+  Paper,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
@@ -31,19 +32,21 @@ import AddRemoveMoviesIconButton from "../components/AddRemoveMoviesIconButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    dialog: {
+      margin: 0,
+      width: "100%",
+    },
     root: {
       flexGrow: 1,
-      marginLeft: "2%",
-      marginRight: "2%",
+      margin: 0,
+      width: "100%",
+      marginTop: "5%",
     },
     descriptionHeader: {
       display: "inline-flex",
       alignItems: "center",
     },
-    prices: {
-      display: "flex",
-      justifyContent: "center",
-    },
+    prices: {},
     paper: {
       textAlign: "left",
       color: theme.palette.text.primary,
@@ -131,23 +134,35 @@ function MovieDetails() {
       }}
       TransitionComponent={Transition}
       transitionDuration={500}
+      className={classes.dialog}
     >
-      <Toolbar>
-        <IconButton
-          edge="start"
-          onClick={() => {
-            handleClose();
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <AddRemoveMoviesIconButton
-          inUserList={movieInUserList}
-          isLoggedIn={isLoggedIn}
-          onClick={iconButtonClick}
-        />
-      </Toolbar>
-      <Grid container spacing={3} className={classes.root}>
+      <Paper
+        elevation={3}
+        style={{
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 5000,
+        }}
+        square
+      >
+        <Toolbar>
+          <IconButton
+            edge="start"
+            onClick={() => {
+              handleClose();
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <AddRemoveMoviesIconButton
+            inUserList={movieInUserList}
+            isLoggedIn={isLoggedIn}
+            onClick={iconButtonClick}
+          />
+        </Toolbar>
+      </Paper>
+      <Grid container spacing={0} className={classes.root}>
         {/* movie poster */}
         <Grid
           className={classes.paper}
@@ -168,7 +183,8 @@ function MovieDetails() {
           />
         </Grid>
         {/* movie description, rating, and title */}
-        <Grid className={classes.paper} item xs={5}>
+        <Grid className={classes.paper} item xs={5} style={{ marginRight: 0 }}>
+          <br />
           <Grid className={classes.descriptionHeader}>
             <Typography variant="h3">{currMovie && currMovie.title}</Typography>
           </Grid>
@@ -231,7 +247,13 @@ function MovieDetails() {
         </Grid>
         {/* movie prices */}
         <Grid className={classes.prices} item xs={3}>
+          <Typography variant="h6" style={{ marginLeft: 5, marginTop: "5%" }}>
+            Where to watch
+          </Typography>
           <Prices />
+          <Typography variant="h6" style={{ marginLeft: 5, marginTop: 10 }}>
+            Related Movies
+          </Typography>
         </Grid>
       </Grid>
     </Dialog>
