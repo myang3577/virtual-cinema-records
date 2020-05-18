@@ -29,6 +29,7 @@ export interface UISetMovieAction {
   payload: {
     movie: any;
     inUserList: boolean;
+    userRating: number;
   };
 }
 
@@ -95,6 +96,7 @@ export const toggleAccountDrawer = (open: boolean): UIAction => {
 export const toggleDetailDrawer = (
   open: boolean,
   inList: boolean,
+  userRate: number,
   currMovie?: any
 ): UISetMovieAction => {
   if (open && currMovie) {
@@ -103,6 +105,7 @@ export const toggleDetailDrawer = (
       payload: {
         movie: currMovie,
         inUserList: inList,
+        userRating: userRate,
       },
     };
   }
@@ -111,6 +114,7 @@ export const toggleDetailDrawer = (
     payload: {
       movie: null,
       inUserList: false,
+      userRating: 0,
     },
   };
 };

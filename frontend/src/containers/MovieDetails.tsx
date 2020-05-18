@@ -22,6 +22,8 @@ import {
   toggleDetailDrawer,
   removeCurrentMovie,
   addCurrentMovie,
+  openSnackBar,
+  SnackBarActionType,
 } from "../actions/uiActions";
 import CloseIcon from "@material-ui/icons/Close";
 import { TransitionProps } from "@material-ui/core/transitions/transition";
@@ -86,6 +88,10 @@ function MovieDetails() {
     (state) => state.uiData.currentMovie.movie
   );
 
+  const userRating = useSelector<GlobalState, any>(
+    (state) => state.uiData.currentMovie.userRating
+  );
+
   const movieInUserList = useSelector<GlobalState, boolean>(
     (state) => state.uiData.currentMovie.inUserList
   );
@@ -109,20 +115,36 @@ function MovieDetails() {
     ));
 
   useEffect(() => {
-    dispatch(toggleDetailDrawer(dialogOpen, movieInUserList, currMovie));
-  }, [dispatch, dialogOpen, movieInUserList, currMovie]);
+    dispatch(
+      toggleDetailDrawer(dialogOpen, movieInUserList, userRating, currMovie)
+    );
+  }, [dispatch, dialogOpen, movieInUserList, userRating, currMovie]);
 
   const handleClose = () => {
-    dispatch(toggleDetailDrawer(false, false));
+    dispatch(toggleDetailDrawer(false, false, 0));
   };
 
   const addRemoveMoviesIconButtonClick = () => {
     if (movieInUserList) {
       dispatch(deleteMovie(username, currMovie.id));
       dispatch(removeCurrentMovie());
+      dispatch(
+        openSnackBar(
+          currMovie.title + " removed from MyMovies",
+          SnackBarActionType.MYMOVIES
+        )
+      );
     } else {
       dispatch(putMovie(username, currMovie.id));
       dispatch(addCurrentMovie());
+      dispatch(
+        openSnackBar(
+          currMovie.title + " added to MyMovies",
+          SnackBarActionType.RATING,
+          currMovie,
+          0
+        )
+      );
     }
   };
 
@@ -212,7 +234,7 @@ function MovieDetails() {
           {isLoggedIn && (
             <RatingButtons
               movie={currMovie}
-              userRating={currMovie.userRating!}
+              userRating={userRating!}
               displayWords={true}
             />
           )}

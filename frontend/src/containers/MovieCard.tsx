@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -71,7 +71,9 @@ function MovieCard(props: MovieCardProps) {
   const dispatch = useDispatch();
 
   const openMovieDetailDrawer = () => {
-    dispatch(toggleDetailDrawer(true, props.inUserList, props.movie));
+    dispatch(
+      toggleDetailDrawer(true, props.inUserList, props.userRating, props.movie)
+    );
     dispatch(getMovieCast(props.movie.id));
     dispatch(getReleaseDate(props.movie.id));
   };

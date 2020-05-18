@@ -22,6 +22,7 @@ export interface UIState {
   };
   currentMovie: {
     movie: any;
+    userRating: number;
     inUserList: boolean;
   };
   tmdbBaseUrl: string;
@@ -41,6 +42,7 @@ const initialState: UIState = {
   },
   currentMovie: {
     movie: {},
+    userRating: 0,
     inUserList: false,
   },
   tmdbBaseUrl: "https://image.tmdb.org/t/p/w500/",
@@ -88,6 +90,7 @@ export const uiReducer = (
         currentMovie: {
           movie: (action as UISetMovieAction).payload.movie,
           inUserList: (action as UISetMovieAction).payload.inUserList,
+          userRating: (action as UISetMovieAction).payload.userRating,
         },
       };
     case UIActionType.CLOSE_DETAIL_DRAWER:
