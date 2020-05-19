@@ -4,6 +4,7 @@ import { CssBaseline } from "@material-ui/core";
 import Home from "./Home";
 import About from "./About";
 import Recommendations from "./Recommendations";
+import Blacklist from "./Blacklist";
 import MyMovies from "./MyMovies";
 import Navbar from "../NavBar";
 import SnackBar from "../SnackBar";
@@ -13,6 +14,7 @@ export const routes = {
   aboutLink: "/about",
   recsLink: "/recommendations",
   myMoviesLink: "/my_movies",
+  blacklistLink: "/blacklist",
 };
 
 function App() {
@@ -34,6 +36,9 @@ function App() {
             </Route>
             <Route path={routes.aboutLink}>
               <About />
+            </Route>
+            <Route path={routes.blacklistLink}>
+              <Blacklist />
             </Route>
             <Route path={routes.homeLink}>
               <Home />

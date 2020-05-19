@@ -16,6 +16,7 @@ import { MovieListElement } from "../actions/userInfoActions";
 interface MovieGridProps {
   displayMovieList: [];
   userMyMoviesList: any[];
+  userBlackList?: any[];
   userMovieIDList: MovieListElement[];
   loading: LoadingState;
   page: PageType;
@@ -58,17 +59,29 @@ function MovieGrid(props: MovieGridProps) {
   const movieInUserList = (movie: any): boolean =>
     props.userMyMoviesList.some((e: any) => movie.id === e.id);
 
+  const movieInBlackList = (movie: any): boolean =>
+    props.userBlackList!.some((e: any) => movie.id === e.id);
+
   return (
     <div className="movie-grid">
       <GridList cellHeight={140} cols={getGridListCols()} style={gridStyle}>
         {props.loading !== LoadingState.LOADING && props.displayMovieList
           ? props.displayMovieList.map((e: any, i: number) => (
               <GridListTile key={i} cols={1} rows={1} style={gridItemStyle}>
-                <MovieCard
-                  movie={e}
-                  inUserList={movieInUserList(e)}
-                  page={props.page}
-                />
+                {props.userBlackList ? (
+                  <MovieCard
+                    movie={e}
+                    inUserList={movieInUserList(e)}
+                    inBlackList={movieInBlackList(e)}
+                    page={props.page}
+                  />
+                ) : (
+                  <MovieCard
+                    movie={e}
+                    inUserList={movieInUserList(e)}
+                    page={props.page}
+                  />
+                )}
               </GridListTile>
             ))
           : [...Array(18).keys()].map((e, i) => (

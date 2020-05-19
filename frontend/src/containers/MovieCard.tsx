@@ -12,14 +12,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { openSnackBar, SnackBarActionType } from "../actions/uiActions";
 import { GlobalState } from "../reducers/rootReducer";
 import { putMovie, deleteMovie } from "../actions/movieListActions";
+import {
+  putBlackListMovie,
+  deleteBlackListMovie,
+} from "../actions/blacklistAction";
 import RatingButtons from "./RatingButtons";
 import AddRemoveMoviesIconButton from "../components/AddRemoveMoviesIconButton";
+import BlacklistMovieIcon from "../components/BlacklistMovieIcon";
 import MovieDetails from "./MovieDetails";
 import { getMovieCast, getReleaseDate } from "../actions/tmdbActions";
 
 export interface MovieCardProps {
   movie: any;
   inUserList: boolean;
+  inBlackList?: boolean;
   page: PageType;
 }
 
@@ -50,7 +56,7 @@ function MovieCard(props: MovieCardProps) {
 
   const [movieDetailsOpen, setMovieDetailsOpen] = useState<boolean>(false);
 
-  const iconButtonClick = () => {
+  const addRemoveIconButtonClick = () => {
     if (props.inUserList) {
       dispatch(deleteMovie(username, props.movie.id));
       dispatch(
@@ -64,6 +70,28 @@ function MovieCard(props: MovieCardProps) {
       dispatch(
         openSnackBar(
           props.movie.title + " added to MyMovies",
+          SnackBarActionType.RATING,
+          props.movie,
+          userRating
+        )
+      );
+    }
+  };
+
+  const blacklistIconButtonClick = () => {
+    if (props.inBlackList) {
+      dispatch(deleteBlackListMovie(username, props.movie.id));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " removed from blacklist",
+          SnackBarActionType.MYMOVIES
+        )
+      );
+    } else {
+      dispatch(putBlackListMovie(username, props.movie.id));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " added to blacklist",
           SnackBarActionType.RATING,
           props.movie,
           userRating
@@ -97,11 +125,32 @@ function MovieCard(props: MovieCardProps) {
             display: "inline",
           }}
           action={
-            <AddRemoveMoviesIconButton
-              inUserList={props.inUserList}
-              isLoggedIn={isLoggedIn}
-              onClick={iconButtonClick}
-            />
+            props.page === PageType.BLACKLIST ? (
+              <BlacklistMovieIcon
+                inBlacklist={props.inBlackList!}
+                isLoggedIn={isLoggedIn}
+                onClick={blacklistIconButtonClick}
+              />
+            ) : props.page === PageType.RECOMMENDATIONS ? (
+              <div>
+                <BlacklistMovieIcon
+                  inBlacklist={props.inBlackList!}
+                  isLoggedIn={isLoggedIn}
+                  onClick={blacklistIconButtonClick}
+                />
+                <AddRemoveMoviesIconButton
+                  inUserList={props.inUserList}
+                  isLoggedIn={isLoggedIn}
+                  onClick={addRemoveIconButtonClick}
+                />
+              </div>
+            ) : (
+              <AddRemoveMoviesIconButton
+                inUserList={props.inUserList}
+                isLoggedIn={isLoggedIn}
+                onClick={addRemoveIconButtonClick}
+              />
+            )
           }
         />
         {props.page === PageType.MY_MOVIES && (

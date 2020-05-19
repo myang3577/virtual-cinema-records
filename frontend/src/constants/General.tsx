@@ -2,6 +2,7 @@ export enum PageType {
   HOME = "HOME",
   RECOMMENDATIONS = "RECOMMENDATIONS",
   MY_MOVIES = "MY_MOVIES",
+  BLACKLIST = "BLACKLIST",
 }
 
 // Email regex used to determine if the entered email address is valid

@@ -12,6 +12,7 @@ import CheckBoxLabels from "./CheckBoxLabels";
 interface MenuProps {
   handlerFunction: (event: React.ChangeEvent<HTMLInputElement>) => any;
   genreToDisplay: { [key: string]: boolean };
+  recommendationToDisplay: { [key: string]: boolean };
 }
 
 export default function SimpleListMenu(props: MenuProps) {
@@ -21,6 +22,11 @@ export default function SimpleListMenu(props: MenuProps) {
 
   useEffect(() => {
     let newGenreString = "";
+    Object.keys(props.recommendationToDisplay).forEach((keyName: string) => {
+      if (props.recommendationToDisplay[keyName]) {
+        newGenreString += keyName + ", ";
+      }
+    });
     Object.keys(props.genreToDisplay).forEach((keyName: string) => {
       if (props.genreToDisplay[keyName]) {
         newGenreString += keyName + ", ";
@@ -28,7 +34,7 @@ export default function SimpleListMenu(props: MenuProps) {
     });
 
     setGenreString(newGenreString.substring(0, newGenreString.length - 2));
-  }, [props.genreToDisplay]);
+  }, [props.genreToDisplay, props.recommendationToDisplay]);
 
   return (
     <ClickAwayListener onClickAway={() => setGenreSelectOpen(false)}>
@@ -55,9 +61,21 @@ export default function SimpleListMenu(props: MenuProps) {
           anchorEl={anchorEl}
           placement={"bottom-start"}
         >
+          {/* Hello world */}
+          {props.recommendationToDisplay &&
+          Object.keys(props.recommendationToDisplay).length !== 0 ? (
+            <CheckBoxLabels
+              handlerFunction={props.handlerFunction}
+              genreToDisplay={props.recommendationToDisplay}
+              recommendationType={"Personal Recommendations"}
+            />
+          ) : (
+            ""
+          )}
           <CheckBoxLabels
             handlerFunction={props.handlerFunction}
             genreToDisplay={props.genreToDisplay}
+            recommendationType={"General Recommendations"}
           />
         </Popper>
       </Paper>

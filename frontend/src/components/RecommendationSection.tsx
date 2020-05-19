@@ -13,6 +13,7 @@ export interface RecommendationSectionProps {
   displayMovieList: [];
   loading: LoadingState;
   userMyMoviesList: any[];
+  userBlackList?: any[];
   userMovieIDList: MovieListElement[];
   page: PageType;
 }
@@ -62,8 +63,9 @@ function RecommendationSection(props: RecommendationSectionProps) {
             displayMovieList={props.displayMovieList}
             loading={props.loading}
             userMyMoviesList={props.userMyMoviesList}
+            userBlackList={props.userBlackList}
             userMovieIDList={props.userMovieIDList}
-            page={PageType.HOME}
+            page={props.page}
           />
         </Collapse>
       </div>

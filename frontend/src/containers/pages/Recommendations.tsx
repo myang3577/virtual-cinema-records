@@ -23,6 +23,7 @@ import {
 } from "../../actions/uiActions";
 import RecommendationSection from "../../components/RecommendationSection";
 import { MovieListElement } from "../../actions/userInfoActions";
+import { CodeSharp } from "@material-ui/icons";
 
 const isEmpty = (object: {}) => Object.keys(object).length === 0;
 
@@ -79,9 +80,16 @@ function Recommendations() {
     (state) => state.myMoviesData.movieIDList
   );
 
+  const userBlackList = useSelector<GlobalState, any[]>(
+    (state) => state.blacklistData.blacklist
+  );
+
   // Flags used to indicate which movies the user wants to view. True to view,
   // false to hide
-  const [genreToDisplay, setGenreToDisplay]: [any, any] = useState({
+  const [genreToDisplay, setGenreToDisplay]: [
+    { [key: string]: boolean },
+    any
+  ] = useState({
     "Now Playing": true,
     Popular: true,
     Upcoming: true,
@@ -106,6 +114,11 @@ function Recommendations() {
     Western: false,
   });
 
+  const [recommendationToDisplay, setRecommendationToDisplay]: [
+    { [key: string]: boolean },
+    any
+  ] = useState({});
+
   useEffect(() => {
     if (isLoggedIn && username !== "") {
       dispatch(listMovies(username));
@@ -118,15 +131,28 @@ function Recommendations() {
       if (isEmpty(genreRecommendationResult)) {
         dispatch(getGenreRecommendation(username));
       }
+
+      // Add the extra genre options here
+      setRecommendationToDisplay({
+        ...recommendationToDisplay,
+        "Movie Recommendation": true,
+        "Actor Recommendation": true,
+        "Genre Recommendation": true,
+      });
     } else {
-      // For anything that needs to be rendered if user is not logged in
+      // Clear the peresonal recommendation options
+      let clearGenreObject = Object.assign({}, recommendationToDisplay);
+      delete clearGenreObject["Movie Recommendation"];
+      delete clearGenreObject["Actor Recommendation"];
+      delete clearGenreObject["Genre Recommendation"];
+      setRecommendationToDisplay(clearGenreObject);
     }
     if (
       generalRecommendationList["Now Playing"].length === 0 ||
       generalRecommendationList.Popular.length === 0 ||
       generalRecommendationList.Upcoming.length === 0
     ) {
-      dispatch(getGeneralRecommendation(userMyMoviesList));
+      dispatch(getGeneralRecommendation(userMyMoviesList, userBlackList));
     }
     // eslint-disable-next-line
   }, [dispatch, username, isLoggedIn]);
@@ -136,7 +162,7 @@ function Recommendations() {
       refreshRecommendations();
     }
 
-    // eslint-disable-next-line
+    //   // eslint-disable-next-line
   }, [isLoggedIn, userListDataLoading]);
 
   // Note: This is NOT what is defined as refresh in the use case document.
@@ -149,24 +175,37 @@ function Recommendations() {
     dispatch(getMovieRecommendation(username));
     dispatch(getActorRecommendation(username));
     dispatch(getGenreRecommendation(username));
-    dispatch(getGeneralRecommendation(userMyMoviesList));
+    dispatch(getGeneralRecommendation(userMyMoviesList, userBlackList));
   };
 
-  const renderMovieRecommendation = (recommendationResult: any): any[] => {
+  const renderMovieRecommendation = (
+    // Represents an object where the keys are the movie/actor/genre,
+    // and the value is an array holding objects containing all the movie recommended info
+    recommendationResult: any,
+    recommendationType: string
+  ): any[] => {
+    // console.log(recommendationResult);
     if (movieDataLoading !== LoadingState.LOADING && recommendationResult) {
       return Object.keys(recommendationResult).map(
         (keyName: any, keyIndex: number) => {
-          return (
-            <RecommendationSection
-              header={"Because you liked " + keyName}
-              displayMovieList={recommendationResult[keyName]}
-              loading={movieDataLoading}
-              userMyMoviesList={userMyMoviesList}
-              userMovieIDList={userMovieIDList}
-              page={PageType.RECOMMENDATIONS}
-              key={keyIndex}
-            />
-          );
+          // console.log(keyName);
+          if (
+            recommendationResult[keyName].length !== 0 &&
+            recommendationToDisplay[recommendationType] !== false
+          ) {
+            return (
+              <RecommendationSection
+                header={"Because you liked " + keyName}
+                displayMovieList={recommendationResult[keyName]}
+                loading={movieDataLoading}
+                userMyMoviesList={userMyMoviesList}
+                userBlackList={userBlackList}
+                userMovieIDList={userMovieIDList}
+                page={PageType.RECOMMENDATIONS}
+                key={keyIndex}
+              />
+            );
+          }
         }
       );
     } else {
@@ -178,19 +217,26 @@ function Recommendations() {
   const renderGeneralRecommendation = (recommendationResult: any): any[] => {
     if (movieDataLoading !== LoadingState.LOADING && recommendationResult) {
       return Object.keys(recommendationResult).map(
-        (keyName: string, keyIndex: number) =>
-          recommendationResult[keyName] !== 0 &&
-          genreToDisplay[keyName] !== false && (
-            <RecommendationSection
-              header={keyName}
-              displayMovieList={recommendationResult[keyName]}
-              loading={movieDataLoading}
-              userMyMoviesList={userMyMoviesList}
-              userMovieIDList={userMovieIDList}
-              page={PageType.RECOMMENDATIONS}
-              key={keyIndex}
-            />
-          )
+        (keyName: string, keyIndex: number) => {
+          // console.log(recommendationResult);
+          if (
+            recommendationResult[keyName].length !== 0 &&
+            genreToDisplay[keyName] !== false
+          ) {
+            return (
+              <RecommendationSection
+                header={keyName}
+                displayMovieList={recommendationResult[keyName]}
+                loading={movieDataLoading}
+                userMyMoviesList={userMyMoviesList}
+                userBlackList={userBlackList}
+                userMovieIDList={userMovieIDList}
+                page={PageType.RECOMMENDATIONS}
+                key={keyIndex}
+              />
+            );
+          }
+        }
       );
     } else {
       return [];
@@ -201,22 +247,60 @@ function Recommendations() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     // If it is now checked, call the api and load the movie information
     if (event.target.checked) {
-      // If no data, make the API call
-      if (generalRecommendationList[event.target.name].length === 0) {
+      if (
+        event.target.name === "Movie Recommendation" ||
+        event.target.name === "Actor Recommendation" ||
+        event.target.name === "Genre Recommendation"
+      ) {
+        setRecommendationToDisplay({
+          ...recommendationToDisplay,
+          [event.target.name]: true,
+        });
+      } else if (generalRecommendationList[event.target.name].length === 0) {
         dispatch(
           getSpecificRecommendation(
             genreMap[event.target.name].id,
             event.target.name,
-            userMyMoviesList
+            userMyMoviesList,
+            userBlackList
           )
         );
+        setGenreToDisplay({ ...genreToDisplay, [event.target.name]: true });
       }
-      setGenreToDisplay({ ...genreToDisplay, [event.target.name]: true });
+
+      // If no data, make the API call if it's a general genre recommendation
+      // if (
+      //   event.target.name !== "Movie Recommendation" &&
+      //   event.target.name !== "Actor Recommendation" &&
+      //   event.target.name !== "Genre Recommendation" &&
+      //   generalRecommendationList[event.target.name].length === 0
+      // ) {
+      //   dispatch(
+      //     getSpecificRecommendation(
+      //       genreMap[event.target.name].id,
+      //       event.target.name,
+      //       userMyMoviesList
+      //     )
+      //   );
+      // }
+
+      // Then set the genre or recommendation to be displayed
     }
 
     // Otherwise set the flag to not display
     else {
-      setGenreToDisplay({ ...genreToDisplay, [event.target.name]: false });
+      if (
+        event.target.name === "Movie Recommendation" ||
+        event.target.name === "Actor Recommendation" ||
+        event.target.name === "Genre Recommendation"
+      ) {
+        setRecommendationToDisplay({
+          ...recommendationToDisplay,
+          [event.target.name]: false,
+        });
+      } else {
+        setGenreToDisplay({ ...genreToDisplay, [event.target.name]: false });
+      }
     }
   };
 
@@ -231,6 +315,7 @@ function Recommendations() {
           <SimpleListMenu
             handlerFunction={handleChange}
             genreToDisplay={genreToDisplay}
+            recommendationToDisplay={recommendationToDisplay}
           />
         </Typography>
         {isLoggedIn &&
@@ -256,9 +341,24 @@ function Recommendations() {
             to get personalized recommendations.
           </Typography>
         )}
-        {renderMovieRecommendation(movieRecommendationResult)}
-        {renderMovieRecommendation(actorRecommendationResult)}
-        {renderMovieRecommendation(genreRecommendationResult)}
+        {Object.keys(movieRecommendationResult).length !== 0
+          ? renderMovieRecommendation(
+              movieRecommendationResult,
+              "Movie Recommendation"
+            )
+          : []}
+        {Object.keys(actorRecommendationResult).length !== 0
+          ? renderMovieRecommendation(
+              actorRecommendationResult,
+              "Actor Recommendation"
+            )
+          : []}
+        {Object.keys(genreRecommendationResult).length !== 0
+          ? renderMovieRecommendation(
+              genreRecommendationResult,
+              "Genre Recommendation"
+            )
+          : []}
         {renderGeneralRecommendation(generalRecommendationList)}
       </div>
     </Slide>

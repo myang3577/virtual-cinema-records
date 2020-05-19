@@ -20,6 +20,7 @@ const db = new AWS.DynamoDB.DocumentClient();
 const movieTableName = "MovieList";
 const genreTableName = "Genre";
 const actorTableName = "Actors";
+const blacklistTableName = "Blacklist";
 const apiKey = "5e38014a47f9412c29d0ca4667091633";
 const MOVIE_DETAILS_API =
   "https://api.themoviedb.org/3/movie/$TMDB_ID?api_key=$APIKEY&language=en-US";
@@ -72,6 +73,7 @@ function getRecommendation(req, res, next, params) {
   let query = params.query; // dynamodb query object
   let recType = params.recType; // string representing the recommendation type. As of 05/07/20 only movie, actor, genre
   let tmdbIdArray = params.tmdbIdArray; // Array containing tmdb id of all movies in user's mymovies list
+  let blacklistTmdbIdArray = params.blacklistTmdbIdArray; // Array containing tmdb id of movies in user's blacklist
   let NUM_OBJ = params.NUM_OBJ; // Represents the number of movies, actors, or genres to  recommend for
   let NUM_REC = params.NUM_REC; // Represent the number of recommendations per movie, actor, genre
 
@@ -155,6 +157,7 @@ function getRecommendation(req, res, next, params) {
                     // If the movie is not in the user's movie list and the list is not full, then add it
                     if (
                       !tmdbIdArray.includes(movie.id) &&
+                      !blacklistTmdbIdArray.includes(movie.id) &&
                       recommendedMoviesArray.length < NUM_REC
                     ) {
                       recommendedMoviesArray.push(movie);
@@ -259,6 +262,35 @@ function getUserMovieList(email) {
   });
 }
 
+function getUserBlackList(email) {
+  var blackListParams = {
+    TableName: blacklistTableName,
+    KeyConditionExpression: "#user = :user",
+    ExpressionAttributeNames: {
+      "#user": "username",
+    },
+    ExpressionAttributeValues: {
+      ":user": email,
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    db.query(blackListParams, async function (err, allMovieListData) {
+      if (err) {
+        console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        // res.status(err.statusCode);
+        // res.send("Unable to query. See console for output.");
+      } else {
+        resolve(
+          allMovieListData.Items.map((key) => {
+            return key.tmdb_id;
+          })
+        );
+      }
+    });
+  });
+}
+
 // Creates the necessary parameters and gets the recommendations for the movies
 function movieRecommendation(req, res, next) {
   var queryMovie = getSearchAndFilterParam(
@@ -279,7 +311,10 @@ function movieRecommendation(req, res, next) {
 
   getUserMovieList(req.params.email).then((tmdbIdArray) => {
     params.tmdbIdArray = tmdbIdArray;
-    getRecommendation(req, res, next, params);
+    getUserBlackList(req.params.email).then((tmdbIdArray) => {
+      params.blacklistTmdbIdArray = tmdbIdArray;
+      getRecommendation(req, res, next, params);
+    });
   });
 }
 
@@ -302,7 +337,10 @@ function actorRecommendation(req, res, next) {
   };
   getUserMovieList(req.params.email).then((tmdbIdArray) => {
     params.tmdbIdArray = tmdbIdArray;
-    getRecommendation(req, res, next, params);
+    getUserBlackList(req.params.email).then((tmdbIdArray) => {
+      params.blacklistTmdbIdArray = tmdbIdArray;
+      getRecommendation(req, res, next, params);
+    });
   });
 }
 
@@ -325,7 +363,10 @@ function genreRecommendation(req, res, next) {
   };
   getUserMovieList(req.params.email).then((tmdbIdArray) => {
     params.tmdbIdArray = tmdbIdArray;
-    getRecommendation(req, res, next, params);
+    getUserBlackList(req.params.email).then((tmdbIdArray) => {
+      params.blacklistTmdbIdArray = tmdbIdArray;
+      getRecommendation(req, res, next, params);
+    });
   });
 }
 

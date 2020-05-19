@@ -147,9 +147,14 @@ const fetchRecommendation = (
 // is an array and not an object.
 const fetchGeneralRecommendation = (
   dispatch: Dispatch,
-  userMyMoviesList: MovieResultElement[]
+  userMyMoviesList: MovieResultElement[],
+  userBlackList: MovieResultElement[]
 ) => {
   let userIdArray = userMyMoviesList.map(
+    (movie: MovieResultElement) => movie.id
+  );
+
+  let userBlacklistIdArray = userBlackList.map(
     (movie: MovieResultElement) => movie.id
   );
 
@@ -159,6 +164,7 @@ const fetchGeneralRecommendation = (
       "&language=en-US&page=",
     dispatch,
     userIdArray,
+    userBlacklistIdArray,
     "Now Playing"
   );
 
@@ -168,6 +174,7 @@ const fetchGeneralRecommendation = (
       "&language=en-US&page=",
     dispatch,
     userIdArray,
+    userBlacklistIdArray,
     "Popular"
   );
 
@@ -177,6 +184,7 @@ const fetchGeneralRecommendation = (
       "&language=en-US&region=US&page=",
     dispatch,
     userIdArray,
+    userBlacklistIdArray,
     "Upcoming"
   );
 };
@@ -187,6 +195,7 @@ const fetchSpecificRecommmendation = async (
   apiEndpoint: string,
   dispatch: Dispatch,
   userIdArray: number[],
+  userBlacklistIdArray: number[],
   name: string
 ) => {
   // Resultant array that will hold all of filtered recommendations
@@ -206,6 +215,7 @@ const fetchSpecificRecommmendation = async (
             // If the movie is not in the user's movie list and the list is not full, then add it
             if (
               !userIdArray.includes(movie.id) &&
+              !userBlacklistIdArray.includes(movie.id) &&
               resultArray.length < NUM_GENERAL_RECOMMENDATIONS
             ) {
               // console.log("Adding movie");
@@ -231,47 +241,6 @@ const fetchSpecificRecommmendation = async (
   }
 
   dispatch(getRecommendationEnd(resultArray, "general", name));
-
-  // resolve();
-  // }).then(() => dispatch(getRecommendationEnd(resultArray, "general", name)));
-
-  // new Promise(async (resolve, reject) => {
-  //   while (resultArray.length < NUM_GENERAL_RECOMMENDATIONS) {
-  //     try {
-  //       // console.log(apiEndpoint + currPage);
-  //       await fetch(apiEndpoint + currPage)
-  //         .then((response) => response.json())
-  //         .then((json) => {
-  //           // console.log(json);
-  //           json.results.forEach((movie: MovieResultElement) => {
-  //             // If the movie is not in the user's movie list and the list is not full, then add it
-  //             if (
-  //               !userIdArray.includes(movie.id) &&
-  //               resultArray.length < NUM_GENERAL_RECOMMENDATIONS
-  //             ) {
-  //               // console.log("Adding movie");
-  //               resultArray.push(movie);
-  //             }
-  //           });
-  //           currPage++;
-  //         })
-  //         .catch((error) => {
-  //           throw new Error(error);
-  //         });
-  //     } catch (err) {
-  //       console.log(
-  //         "An error occurred. Could not fetch " + name + " recommendations",
-  //         err
-  //       );
-  //       break;
-  //     }
-
-  //     if (currPage > MAX_PAGE_SEARCH_LIMIT) {
-  //       break;
-  //     }
-  //   }
-  //   resolve();
-  // }).then(() => dispatch(getRecommendationEnd(resultArray, "general", name)));
 };
 
 // Entry point to get the user's personal recommendations for movies
@@ -300,11 +269,16 @@ export const getGenreRecommendation = (email: string) => {
 
 // Entry point to get general personal recommendations
 export const getGeneralRecommendation = (
-  userMyMoviesList: MovieResultElement[]
+  userMyMoviesList: MovieResultElement[],
+  userBlackList: MovieResultElement[]
 ) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
-    return fetchGeneralRecommendation(dispatch, userMyMoviesList);
+    return fetchGeneralRecommendation(
+      dispatch,
+      userMyMoviesList,
+      userBlackList
+    );
   };
 };
 
@@ -312,11 +286,16 @@ export const getGeneralRecommendation = (
 export const getSpecificRecommendation = (
   id: number,
   name: string,
-  userMyMoviesList: MovieResultElement[]
+  userMyMoviesList: MovieResultElement[],
+  userBlackList: MovieResultElement[]
 ) => {
   return (dispatch: Dispatch) => {
     dispatch(getRecommendationBegin());
     let userIdArray = userMyMoviesList.map(
+      (movie: MovieResultElement) => movie.id
+    );
+
+    let userBlacklistIdArray = userBlackList.map(
       (movie: MovieResultElement) => movie.id
     );
     return fetchSpecificRecommmendation(
@@ -327,6 +306,7 @@ export const getSpecificRecommendation = (
         "&page=",
       dispatch,
       userIdArray,
+      userBlacklistIdArray,
       name
     );
   };

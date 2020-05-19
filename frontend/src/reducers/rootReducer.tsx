@@ -8,6 +8,7 @@ import {
   recommendationReducer,
   RecommendationState,
 } from "./recommendationReducer";
+import { blacklistReducer, BlacklistState } from "./blacklistReducer";
 
 export interface GlobalState {
   tmdbData: TMDBState;
@@ -16,6 +17,7 @@ export interface GlobalState {
   userInfo: UserInfoState;
   uiData: UIState;
   recommendationData: RecommendationState;
+  blacklistData: BlacklistState;
 }
 
 // combineReducers just takes multiple reducers and puts them all into one big
@@ -29,6 +31,7 @@ const rootReducer = combineReducers<GlobalState>({
   userInfo: userInfoReducer,
   uiData: uiReducer,
   recommendationData: recommendationReducer,
+  blacklistData: blacklistReducer,
 });
 
 export default rootReducer;

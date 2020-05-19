@@ -6,6 +6,7 @@ import { Grid, Paper } from "@material-ui/core";
 interface CheckBoxLabelsProps {
   handlerFunction: (event: React.ChangeEvent<HTMLInputElement>) => any;
   genreToDisplay: { [key: string]: boolean };
+  recommendationType: string;
 }
 
 export default function CheckboxLabels(props: CheckBoxLabelsProps) {
@@ -51,7 +52,13 @@ export default function CheckboxLabels(props: CheckBoxLabelsProps) {
 
   return (
     <Paper style={{ paddingLeft: "10px" }} elevation={4}>
-      <Grid container spacing={1} style={{ width: "32vw" }}>
+      <Grid container spacing={1} style={{ width: "60vw" }}>
+        <div
+          style={{ fontSize: "20px", paddingTop: "10px", paddingLeft: "5px" }}
+        >
+          {props.recommendationType}
+        </div>
+        {/* General Recommendations */}
         {renderCheckBoxes()}
       </Grid>
     </Paper>
