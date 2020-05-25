@@ -1,4 +1,8 @@
-import { MovieResultElement } from "./recommendationActions";
+import { Dispatch, Action } from "redux";
+import {
+  MovieResultElement,
+  hideBlacklistMovie,
+} from "./recommendationActions";
 export enum BlacklistActionType {
   BLACKLIST_BEGIN = "BLACKLIST_BEGIN",
   GET_BLACKLIST_END = "GET_BLACKLIST_END",
@@ -58,7 +62,11 @@ export const putBlackListMovie = (email: string, tmdb_id: number) => {
       body: JSON.stringify({ tmdb_id }),
     })
       .then(() => {
+        // get the new updated blacklist
         dispatch(getBlacklist(email));
+
+        // Remove the movie from the recommendation
+        dispatch(hideBlacklistMovie(tmdb_id));
       })
       .catch((error) => {
         console.log("An error occurred on putting blacklist movie.", error);

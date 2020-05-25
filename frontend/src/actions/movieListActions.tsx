@@ -8,6 +8,7 @@ export enum MovieListActionType {
   UPDATE_RATING_END = "UPDATE_RATING_END",
   LIST_BEGIN = "LIST_BEGIN",
   LIST_END = "LIST_END",
+  SET_MOVIE_LIST_DATA_BEGIN = "ADD_ALL_MOVIE_LIST_DATA_BEGIN",
   SET_MOVIE_LIST_DATA_END = "ADD_ALL_MOVIE_LIST_DATA_END",
   CLEAR_MOVIE_LIST_DATA = "CLEAR_MOVIE_LIST_DATA",
   RATING_UPDATE_BEGIN = "RATING_UPDATE_BEGIN",
@@ -82,6 +83,13 @@ export const listMoviesEnd = (payload: any): MovieListAction => {
   };
 };
 
+export const setMovieDataListBegin = (): MovieListAction => {
+  return {
+    type: MovieListActionType.SET_MOVIE_LIST_DATA_BEGIN,
+    payload: {},
+  };
+};
+
 export const setMovieDataListEnd = (
   movieDataList: any[]
 ): SetMovieDataListAction => {
@@ -100,6 +108,7 @@ export const clearMovieDataList = (): Action => {
 export const listMovies = (email: string) => {
   return (dispatch: any) => {
     dispatch(listMoviesBegin());
+    dispatch(setMovieDataListBegin());
 
     return fetch("/users/" + email + "/movie-list")
       .then((response) => {

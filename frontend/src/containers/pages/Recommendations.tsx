@@ -23,7 +23,8 @@ import {
 } from "../../actions/uiActions";
 import RecommendationSection from "../../components/RecommendationSection";
 import { MovieListElement } from "../../actions/userInfoActions";
-
+import { CodeSharp } from "@material-ui/icons";
+import { getBlacklist } from "../../actions/blacklistAction";
 const isEmpty = (object: {}) => Object.keys(object).length === 0;
 
 function Recommendations() {
@@ -79,6 +80,9 @@ function Recommendations() {
     (state) => state.myMoviesData.movieIDList
   );
 
+  const userBlackListDataLoading = useSelector<GlobalState, LoadingState>(
+    (state) => state.blacklistData.loading
+  );
   const userBlackList = useSelector<GlobalState, any[]>(
     (state) => state.blacklistData.blacklist
   );
@@ -121,6 +125,7 @@ function Recommendations() {
   useEffect(() => {
     if (isLoggedIn && username !== "") {
       dispatch(listMovies(username));
+      dispatch(getBlacklist(username));
       if (isEmpty(movieRecommendationResult)) {
         dispatch(getMovieRecommendation(username));
       }
@@ -138,6 +143,10 @@ function Recommendations() {
         "Actor Recommendation": true,
         "Genre Recommendation": true,
       });
+
+      // Get the general recommendations again because some may be filtered out
+      // we have blacklist information
+      // dispatch(getGeneralRecommendation(userMyMoviesList, userBlackList));
     } else {
       // Clear the peresonal recommendation options
       let clearGenreObject = Object.assign({}, recommendationToDisplay);
@@ -157,12 +166,16 @@ function Recommendations() {
   }, [dispatch, username, isLoggedIn]);
 
   useEffect(() => {
-    if (isLoggedIn && userListDataLoading === LoadingState.DONE) {
-      refreshRecommendations();
+    if (
+      isLoggedIn &&
+      userListDataLoading === LoadingState.DONE &&
+      userBlackListDataLoading === LoadingState.DONE
+    ) {
+      refreshGeneralRecommendation();
     }
 
     //   // eslint-disable-next-line
-  }, [isLoggedIn, userListDataLoading]);
+  }, [isLoggedIn, userListDataLoading, userBlackListDataLoading]);
 
   // Note: This is NOT what is defined as refresh in the use case document.
   // Currently this code is written to NOT get a new set of recommendations
@@ -170,7 +183,11 @@ function Recommendations() {
   // This refresh is only useful when the user updates or adds a movie/ranking.
   // then the refresh may generate a new list. Once again, THIS IS NOT REFRESH
   // RECOMMENDATIONS.
-  const refreshRecommendations = (): void => {
+  const refreshGeneralRecommendation = (): void => {
+    dispatch(getGeneralRecommendation(userMyMoviesList, userBlackList));
+  };
+
+  const refreshAll = (): void => {
     dispatch(getMovieRecommendation(username));
     dispatch(getActorRecommendation(username));
     dispatch(getGenreRecommendation(username));
@@ -183,11 +200,9 @@ function Recommendations() {
     recommendationResult: any,
     recommendationType: string
   ): any[] => {
-    // console.log(recommendationResult);
     if (movieDataLoading !== LoadingState.LOADING && recommendationResult) {
       return Object.keys(recommendationResult).map(
         (keyName: any, keyIndex: number) => {
-          // console.log(keyName);
           if (
             recommendationResult[keyName].length !== 0 &&
             recommendationToDisplay[recommendationType] !== false
@@ -267,22 +282,6 @@ function Recommendations() {
         setGenreToDisplay({ ...genreToDisplay, [event.target.name]: true });
       }
 
-      // If no data, make the API call if it's a general genre recommendation
-      // if (
-      //   event.target.name !== "Movie Recommendation" &&
-      //   event.target.name !== "Actor Recommendation" &&
-      //   event.target.name !== "Genre Recommendation" &&
-      //   generalRecommendationList[event.target.name].length === 0
-      // ) {
-      //   dispatch(
-      //     getSpecificRecommendation(
-      //       genreMap[event.target.name].id,
-      //       event.target.name,
-      //       userMyMoviesList
-      //     )
-      //   );
-      // }
-
       // Then set the genre or recommendation to be displayed
     }
 
@@ -308,7 +307,7 @@ function Recommendations() {
       <div className="page-container">
         <Typography variant="h4" gutterBottom>
           Recommendations
-          <IconButton onClick={refreshRecommendations} size="small">
+          <IconButton onClick={refreshAll} size="small">
             <RefreshIcon />
           </IconButton>
           <SimpleListMenu

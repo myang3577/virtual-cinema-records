@@ -89,6 +89,11 @@ export const movieListReducer = (
         loading: LoadingState.DONE,
         movieIDList: (action as MovieListAction).payload.movieList!,
       };
+    case MovieListActionType.SET_MOVIE_LIST_DATA_BEGIN:
+      return {
+        ...state,
+        listDataLoading: LoadingState.LOADING,
+      };
     case MovieListActionType.SET_MOVIE_LIST_DATA_END:
       return {
         ...state,

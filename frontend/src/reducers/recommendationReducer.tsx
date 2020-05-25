@@ -94,6 +94,36 @@ export const recommendationReducer = (
             .recommendationList!,
         },
       };
+    case RecommendationActionType.HIDE_BLACKLIST:
+      let newRecommendations: any = [{}, {}, {}, {}];
+      let allRecommendations = [
+        state.movieRecommendationList,
+        state.actorRecommendationList,
+        state.genreRecommendationList,
+        state.generalRecommendationList,
+      ];
+      for (let i = 0; i < allRecommendations.length; i++) {
+        Object.keys(allRecommendations[i]).map((element: string) => {
+          if (allRecommendations[i][element].length !== 0) {
+            newRecommendations[i][element] = allRecommendations[i][
+              element
+            ].filter((movieData: any) => {
+              return movieData.id !== (action as RecommendationAction).tmdb_id;
+            });
+          } else {
+            newRecommendations[i][element] = [];
+          }
+        });
+      }
+
+      return {
+        ...state,
+        loading: LoadingState.DONE,
+        movieRecommendationList: newRecommendations[0],
+        actorRecommendationList: newRecommendations[1],
+        genreRecommendationList: newRecommendations[2],
+        generalRecommendationList: newRecommendations[3],
+      };
     case RecommendationActionType.CLEAR_RECOMMENDATION_DATA:
       return initialState;
     default:

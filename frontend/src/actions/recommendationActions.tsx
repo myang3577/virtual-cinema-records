@@ -15,6 +15,7 @@ export enum RecommendationActionType {
   GET_GENRE_RECOMMENDATION_END = "GET_GENRE_RECOMMENDATION_END",
   GET_GENERAL_RECOMMENDATION_END = "GET_GENERAL_RECOMMENDATION_END",
   CLEAR_RECOMMENDATION_DATA = "CLEAR_RECOMMENDATION_DATA",
+  HIDE_BLACKLIST = "HIDE_BLACKLIST",
 }
 
 // Represents all of the data that will be sent back by the recommmendation
@@ -60,6 +61,7 @@ export interface MovieResultElement {
 export interface RecommendationAction {
   type: RecommendationActionType;
   name?: string;
+  tmdb_id?: number;
   payload: {
     recommendationList?: RecommendationListObject;
   };
@@ -83,6 +85,14 @@ export const getRecommendationBegin = (): RecommendationAction => {
 export const clearRecommendationData = (): Action => {
   return {
     type: RecommendationActionType.CLEAR_RECOMMENDATION_DATA,
+  };
+};
+
+export const hideMovie = (tmdb_id: number): RecommendationAction => {
+  return {
+    type: RecommendationActionType.HIDE_BLACKLIST,
+    tmdb_id: tmdb_id,
+    payload: {},
   };
 };
 
@@ -309,5 +319,11 @@ export const getSpecificRecommendation = (
       userBlacklistIdArray,
       name
     );
+  };
+};
+
+export const hideBlacklistMovie = (tmdb_id: number) => {
+  return (dispatch: Dispatch) => {
+    dispatch(hideMovie(tmdb_id));
   };
 };
