@@ -158,6 +158,21 @@ function MovieDetails(props: MovieDetailsProps) {
             }
             alt="movie poster"
           />
+          {props.movie.production_companies &&
+            props.movie.production_companies.map((e: any, i: number) => {
+              if (e.logo_path) {
+                return (
+                  <img
+                    src={baseUrl + e.logo_path}
+                    style={{ maxWidth: "10%", maxHeight: "10%" }}
+                    alt="company logos"
+                    key={i}
+                  />
+                );
+              } else {
+                return <div key={i}>{e.name}</div>;
+              }
+            })}
         </Grid>
         {/* movie description, rating, and title */}
         <Grid className={classes.paper} item xs={5} style={{ marginRight: 0 }}>
@@ -170,21 +185,7 @@ function MovieDetails(props: MovieDetailsProps) {
           <br />
           <Grid item xs={12}>
             <Grid className={classes.paper}></Grid>
-            {props.movie.production_companies &&
-              props.movie.production_companies.map((e: any, i: number) => {
-                if (e.logo_path) {
-                  return (
-                    <img
-                      src={baseUrl + e.logo_path}
-                      style={{ maxWidth: "10%" }}
-                      alt="company logos"
-                      key={i}
-                    />
-                  );
-                } else {
-                  return <div key={i}>{e.name}</div>;
-                }
-              })}
+
             <br />
           </Grid>
           {isLoggedIn && (
