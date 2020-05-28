@@ -11,8 +11,6 @@ AWS.config.apiVersion = {
 const {
   fetchAndCheck,
   getSearchAndFilterParam,
-  sortByRating,
-  sortByRatingAndCount,
 } = require("../tools/movieListTools");
 
 const db = new AWS.DynamoDB.DocumentClient();
@@ -97,13 +95,16 @@ function getRecommendation(req, res, next, params) {
 
       switch (recType) {
         case "movie":
-          data.Items.sort(sortByRating);
+          tmpRatings = vgFunction(data, recType);	
+		  quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
           break;
         case "actor":
-          data.Items.sort(sortByRatingAndCount);
+          tmpRatings = vgFunction(data, recType);	
+		  quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
           break;
         case "genre":
-          data.Items.sort(sortByRatingAndCount);
+          tmpRatings = vgFunction(data, recType);	
+		  quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
           break;
       }
 
@@ -233,6 +234,55 @@ function getRecommendation(req, res, next, params) {
   });
 }
 
+function vgFunction(data, recType) {
+	var randomNormal = require('random-normal');
+	var tmpRatings = [];
+	if (recType == "movie") {
+		for (i = 0; i < data.Items.length; i++) {
+				  // Do the calculation for the amount of times that actor has been ranked
+		  //Make sure our number is below 5
+		    var num = randomNormal({mean: data.Items[i].rating, dev: 0.75})
+			    if (num >= 5) {
+				    i--;
+				    continue;
+			    }
+			  // If first one, add it to the tmpList
+				tmpRatings.push(num);
+											
+		  }
+		  return tmpRatings;
+	}
+
+		  // Now for actor/genre
+		  // Make a for loop that does the calculation 
+		  for (i = 0; i < data.Items.length; i++) {
+			  // Do the calculation for the amount of times that actor has been ranked
+			  for (j = 0; j < data.Items[i].movie_count; j++)
+			  {
+				  //Make sure our number is below 5 and above 0
+				  var num = randomNormal({mean: data.Items[i].rating, dev: 0.75})
+					if (num >= 5 || num <= 0) {
+						j--;
+						continue;
+					}
+				  // If first one, add it to the tmpList
+				if (j == 0) {
+					tmpRatings.push(num);
+				}
+				else {
+					tmpRatings[i] += num;
+				}									
+			  }
+			  //Divide by count at the end for the average!
+			  if (data.Items[i].movie_count != 0) {
+					tmpRatings[i] = tmpRatings[i] / data.Items[i].movie_count
+				}
+		   
+		  }
+		  return tmpRatings;
+}
+
+
 function getUserMovieList(email) {
   var movieListParams = {
     TableName: movieTableName,
@@ -290,6 +340,51 @@ function getUserBlackList(email) {
     });
   });
 }
+
+
+//VG STUFF
+//https://www.guru99.com/quicksort-in-javascript.html, edited to fit my needs
+
+function swap(items, leftIndex, rightIndex){
+    var temp = items[leftIndex];
+    items[leftIndex] = items[rightIndex];
+    items[rightIndex] = temp;
+}
+function partition(items, secondaryItems, left, right) {
+    var pivot   = items[Math.floor((right + left) / 2)], //middle element
+        i       = left, //left pointer
+        j       = right; //right pointer
+    while (i <= j) {
+        while (items[i] > pivot) {
+            i++;
+        }
+        while (items[j] < pivot) {
+            j--;
+        }
+        if (i <= j) {
+            swap(items, i, j); //sawpping two elements
+			swap(secondaryItems, i, j);
+            i++;
+            j--;
+        }
+    }
+    return i;
+}
+
+function quickSort(items, secondaryItems, left, right) {
+    var index;
+    if (items.length > 1) {
+        index = partition(items, secondaryItems, left, right); //index returned from partition
+        if (left < index - 1) { //more elements on the left side of the pivot
+            quickSort(items, secondaryItems, left, index - 1);
+        }
+        if (index < right) { //more elements on the right side of the pivot
+            quickSort(items, secondaryItems, index, right);
+        }
+    }
+    return secondaryItems;
+}
+// End of VG stuff
 
 // Creates the necessary parameters and gets the recommendations for the movies
 function movieRecommendation(req, res, next) {
