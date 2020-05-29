@@ -127,10 +127,13 @@ function NavBar(props: any) {
               <HomeOutlinedIcon
                 style={
                   displayFullBar
-                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    ? {
+                        marginBottom: 0,
+                        transition: "margin-bottom 1s ease-in-out",
+                      }
                     : {
-                        marginTop: -50,
-                        transition: "margin-top 1s ease-in-out",
+                        marginBottom: "15%",
+                        transition: "margin-bottom 1s ease-in-out",
                       }
                 }
               />
@@ -151,10 +154,13 @@ function NavBar(props: any) {
               <MovieFilterIcon
                 style={
                   displayFullBar
-                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    ? {
+                        marginBottom: 0,
+                        transition: "margin-bottom 1s ease-in-out",
+                      }
                     : {
-                        marginTop: -50,
-                        transition: "margin-top 1s ease-in-out",
+                        marginBottom: "15%",
+                        transition: "margin-bottom 1s ease-in-out",
                       }
                 }
               />
@@ -190,10 +196,13 @@ function NavBar(props: any) {
               <TheatersIcon
                 style={
                   displayFullBar
-                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    ? {
+                        marginBottom: 0,
+                        transition: "margin-bottom 1s ease-in-out",
+                      }
                     : {
-                        marginTop: -50,
-                        transition: "margin-top 1s ease-in-out",
+                        marginBottom: "15%",
+                        transition: "margin-bottom 1s ease-in-out",
                       }
                 }
               />
@@ -214,10 +223,13 @@ function NavBar(props: any) {
               <PersonIcon
                 style={
                   displayFullBar
-                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    ? {
+                        marginBottom: 0,
+                        transition: "margin-bottom 1s ease-in-out",
+                      }
                     : {
-                        marginTop: -50,
-                        transition: "margin-top 1s ease-in-out",
+                        marginBottom: "15%",
+                        transition: "margin-bottom 1s ease-in-out",
                       }
                 }
               />
