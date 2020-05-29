@@ -109,7 +109,7 @@ function MovieCard(props: MovieCardProps) {
 
   return (
     <div>
-      <Card elevation={3} style={{ margin: "5px" }}>
+      <Card elevation={3} style={{ margin: "5px", minWidth: 275 }}>
         <CardHeader
           titleTypographyProps={{
             variant: "subtitle1",

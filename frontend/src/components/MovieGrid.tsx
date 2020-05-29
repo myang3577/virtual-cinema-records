@@ -38,15 +38,15 @@ function MovieGrid(props: MovieGridProps) {
     }
 
     if (isWidthUp("lg", (props as WithWidthProps).width as Breakpoint)) {
-      return 5;
-    }
-
-    if (isWidthUp("md", (props as WithWidthProps).width as Breakpoint)) {
       return 4;
     }
 
-    if (isWidthUp("sm", (props as WithWidthProps).width as Breakpoint)) {
+    if (isWidthUp("md", (props as WithWidthProps).width as Breakpoint)) {
       return 3;
+    }
+
+    if (isWidthUp("sm", (props as WithWidthProps).width as Breakpoint)) {
+      return 2;
     }
 
     if (isWidthUp("xs", (props as WithWidthProps).width as Breakpoint)) {

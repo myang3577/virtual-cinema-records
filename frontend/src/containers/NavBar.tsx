@@ -123,7 +123,18 @@ function NavBar(props: any) {
         >
           <Tab
             className="navbar-tab"
-            icon={<HomeOutlinedIcon />}
+            icon={
+              <HomeOutlinedIcon
+                style={
+                  displayFullBar
+                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    : {
+                        marginTop: -50,
+                        transition: "margin-top 1s ease-in-out",
+                      }
+                }
+              />
+            }
             label={
               <Fade in={displayFullBar} timeout={1000}>
                 <Typography align="center" variant="button">
@@ -136,7 +147,18 @@ function NavBar(props: any) {
           />
           <Tab
             className="navbar-tab"
-            icon={<MovieFilterIcon />}
+            icon={
+              <MovieFilterIcon
+                style={
+                  displayFullBar
+                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    : {
+                        marginTop: -50,
+                        transition: "margin-top 1s ease-in-out",
+                      }
+                }
+              />
+            }
             label={
               <Fade in={displayFullBar} timeout={1000}>
                 <Typography align="center" variant="button">
@@ -164,7 +186,18 @@ function NavBar(props: any) {
           />
           <Tab
             className="navbar-tab"
-            icon={<TheatersIcon />}
+            icon={
+              <TheatersIcon
+                style={
+                  displayFullBar
+                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    : {
+                        marginTop: -50,
+                        transition: "margin-top 1s ease-in-out",
+                      }
+                }
+              />
+            }
             label={
               <Fade in={displayFullBar} timeout={1000}>
                 <Typography align="center" variant="button">
@@ -177,7 +210,18 @@ function NavBar(props: any) {
           />
           <Tab
             className="navbar-tab"
-            icon={<PersonIcon />}
+            icon={
+              <PersonIcon
+                style={
+                  displayFullBar
+                    ? { marginTop: 0, transition: "margin-top 1s ease-in-out" }
+                    : {
+                        marginTop: -50,
+                        transition: "margin-top 1s ease-in-out",
+                      }
+                }
+              />
+            }
             label={
               <Fade in={displayFullBar} timeout={1000}>
                 <Typography align="center" variant="button">
