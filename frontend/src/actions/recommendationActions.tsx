@@ -16,6 +16,7 @@ export enum RecommendationActionType {
   GET_GENERAL_RECOMMENDATION_END = "GET_GENERAL_RECOMMENDATION_END",
   CLEAR_RECOMMENDATION_DATA = "CLEAR_RECOMMENDATION_DATA",
   HIDE_BLACKLIST = "HIDE_BLACKLIST",
+  UNHIDE_BLACKLIST = "UNHIDE_BLACKLIST",
 }
 
 // Represents all of the data that will be sent back by the recommmendation
@@ -88,9 +89,17 @@ export const clearRecommendationData = (): Action => {
   };
 };
 
-export const hideMovie = (tmdb_id: number): RecommendationAction => {
+export const hideMovieAction = (tmdb_id: number): RecommendationAction => {
   return {
     type: RecommendationActionType.HIDE_BLACKLIST,
+    tmdb_id: tmdb_id,
+    payload: {},
+  };
+};
+
+export const unhideMovieAction = (tmdb_id: number): RecommendationAction => {
+  return {
+    type: RecommendationActionType.UNHIDE_BLACKLIST,
     tmdb_id: tmdb_id,
     payload: {},
   };
@@ -322,8 +331,14 @@ export const getSpecificRecommendation = (
   };
 };
 
-export const hideBlacklistMovie = (tmdb_id: number) => {
+export const hideMovie = (tmdb_id: number) => {
   return (dispatch: Dispatch) => {
-    dispatch(hideMovie(tmdb_id));
+    dispatch(hideMovieAction(tmdb_id));
+  };
+};
+
+export const unhideMovie = (tmdb_id: number) => {
+  return (dispatch: Dispatch) => {
+    dispatch(unhideMovieAction(tmdb_id));
   };
 };

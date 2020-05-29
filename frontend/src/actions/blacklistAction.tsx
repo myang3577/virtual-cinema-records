@@ -1,6 +1,7 @@
 import {
   MovieResultElement,
-  hideBlacklistMovie,
+  hideMovie,
+  unhideMovie,
 } from "./recommendationActions";
 
 export enum BlacklistActionType {
@@ -66,7 +67,7 @@ export const putBlackListMovie = (email: string, tmdb_id: number) => {
         dispatch(getBlacklist(email));
 
         // Remove the movie from the recommendation
-        dispatch(hideBlacklistMovie(tmdb_id));
+        dispatch(hideMovie(tmdb_id));
       })
       .catch((error) => {
         console.log("An error occurred on putting blacklist movie.", error);
@@ -85,7 +86,11 @@ export const deleteBlackListMovie = (email: string, tmdb_id: number) => {
       body: JSON.stringify({ tmdb_id }),
     })
       .then(() => {
+        // Get the new updated blacklist
         dispatch(getBlacklist(email));
+
+        // Add back the movie from the recommendation
+        dispatch(unhideMovie(tmdb_id));
       })
       .catch((error) => {
         console.log("An error occurred on deleting blacklist movie.", error);

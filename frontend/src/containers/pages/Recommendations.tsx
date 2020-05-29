@@ -170,6 +170,7 @@ function Recommendations() {
       userListDataLoading === LoadingState.DONE &&
       userBlackListDataLoading === LoadingState.DONE
     ) {
+      // refreshAll();
       refreshGeneralRecommendation();
     }
 

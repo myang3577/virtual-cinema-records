@@ -1,6 +1,7 @@
 import { Dispatch, Action } from "redux";
 import { apiKey } from "./tmdbActions";
 import { MovieListElement } from "./userInfoActions";
+import { hideMovie, unhideMovie } from "./recommendationActions";
 
 export enum MovieListActionType {
   PUT_RATING_BEGIN = "PUT_RATING_BEGIN",
@@ -164,7 +165,10 @@ export const putMovie = (email: string, tmdb_id: number) => {
       },
       body: JSON.stringify(ratingRequestBody),
     })
-      .then(() => dispatch(listMovies(email)))
+      .then(() => {
+        dispatch(listMovies(email));
+        dispatch(hideMovie(tmdb_id));
+      })
       .catch((error) => console.log("An error occurred.", error));
   };
 };
@@ -183,7 +187,10 @@ export const deleteMovie = (email: string, tmdb_id: number) => {
       },
       body: JSON.stringify(ratingRequestBody),
     })
-      .then(() => dispatch(listMovies(email)))
+      .then(() => {
+        dispatch(listMovies(email));
+        dispatch(unhideMovie(tmdb_id));
+      })
       .catch((error) => console.log("An error occurred.", error));
   };
 };
