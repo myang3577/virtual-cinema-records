@@ -16,8 +16,9 @@ export const tealLightGreenTheme = createMuiTheme({
   },
   overrides: {
     MuiTabs: {
-      root: {
+      centered: {
         minHeight: 0,
+        width: "100%",
       },
     },
     MuiTab: {
@@ -26,6 +27,10 @@ export const tealLightGreenTheme = createMuiTheme({
           color: teal[400],
         },
         minHeight: 0,
+      },
+      fullWidth: {
+        minWidth: 0,
+        width: "20%",
       },
     },
     MuiCardHeader: {

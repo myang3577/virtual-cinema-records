@@ -13,7 +13,7 @@ export interface UsernameFormProps {
 export function UsernameField(props: UsernameFormProps) {
   return (
     <TextField
-      label={"Username"}
+      label={"Email"}
       value={props.username}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
         props.setUsername(e.target.value);

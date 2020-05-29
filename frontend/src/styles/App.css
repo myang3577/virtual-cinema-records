@@ -25,25 +25,27 @@
 
 /* NavBar styling */
 .navbar-container {
-  width: 100%;
+  /* width: 100%; */
   position: fixed;
   top: 0;
   z-index: 100;
 }
 
 #navbar-img {
+  min-width: 100px;
   width: 50%;
   height: 50%;
-  margin: -7%;
+  padding-top: 25px;
+  margin: -25px;
+  margin-top: -50px;
   z-index: 100;
 }
 
 #navbar-small-img {
+  min-width: 30px;
   width: 15%;
   height: 15%;
-  margin: -7%;
-  margin-top: 0;
-  margin-bottom: -14%;
+  margin-top: -5px;
   z-index: 1;
 }
 

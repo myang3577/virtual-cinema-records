@@ -72,10 +72,14 @@ function NavBar(props: any) {
       setScrollDistance(document.scrollingElement!.scrollTop);
     };
 
+    setDisplayFullBar(
+      width > widthBreakpoint && scrollDistance < scrollBreakpoint
+    );
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [scrollDistance, width]);
 
   useEffect(() => {
     setDisplayFullBar(
