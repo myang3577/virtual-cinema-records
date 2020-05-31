@@ -177,6 +177,7 @@ function MovieCard(props: MovieCardProps) {
         tmdb_id={props.movie.id}
         movieDetailsOpen={movieDetailsOpen}
         inUserList={props.inUserList}
+        inBlackList={props.inBlackList}
         userRating={userRating}
         onClose={() => setMovieDetailsOpen(false)}
       />

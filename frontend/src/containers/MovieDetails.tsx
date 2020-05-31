@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   makeStyles,
   Dialog,
@@ -25,6 +25,12 @@ import { deleteMovie, putMovie } from "../actions/movieListActions";
 import RatingButtons from "./RatingButtons";
 import AddRemoveMoviesIconButton from "../components/AddRemoveMoviesIconButton";
 import RelatedMovies from "./RelatedMovies";
+import { openSnackBar, SnackBarActionType } from "../actions/uiActions";
+import BlacklistMovieIcon from "../components/BlacklistMovieIcon";
+import {
+  deleteBlackListMovie,
+  putBlackListMovie,
+} from "../actions/blacklistAction";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,16 +40,34 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     root: {
       flexGrow: 1,
+      display: "flex",
+      flexDirection: "column",
+      minHeight: 0,
       margin: 0,
       width: "100%",
       marginTop: "5%",
+      overflowY: "hidden",
     },
     descriptionHeader: {
       display: "inline-flex",
       alignItems: "center",
     },
-    prices: {},
+    prices: {
+      textAlign: "left",
+      color: theme.palette.text.primary,
+      flexGrow: 1,
+      overflow: "auto",
+      minHeight: "100%",
+    },
     paper: {
+      textAlign: "left",
+      color: theme.palette.text.primary,
+      flexGrow: 1,
+      overflow: "auto",
+      minHeight: "100%",
+    },
+    poster: {
+      flexShrink: 0,
       textAlign: "left",
       color: theme.palette.text.primary,
     },
@@ -62,6 +86,7 @@ interface MovieDetailsProps {
   tmdb_id: number;
   movieDetailsOpen: boolean;
   inUserList: boolean;
+  inBlackList?: boolean;
   userRating: number;
   onClose: () => any;
 }
@@ -105,8 +130,44 @@ function MovieDetails(props: MovieDetailsProps) {
   const addRemoveMoviesIconButtonClick = () => {
     if (props.inUserList) {
       dispatch(deleteMovie(username, movieDetails.id));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " removed from MyMovies",
+          SnackBarActionType.MYMOVIES
+        )
+      );
     } else {
       dispatch(putMovie(username, movieDetails.id));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " added to MyMovies",
+          SnackBarActionType.RATING,
+          props.movie,
+          props.userRating
+        )
+      );
+    }
+  };
+
+  const blacklistIconButtonClick = () => {
+    if (props.inBlackList) {
+      dispatch(deleteBlackListMovie(username, props.movie.id));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " removed from blacklist",
+          SnackBarActionType.MYMOVIES
+        )
+      );
+    } else {
+      dispatch(putBlackListMovie(username, props.movie.id));
+      dispatch(
+        openSnackBar(
+          props.movie.title + " added to blacklist",
+          SnackBarActionType.RATING,
+          props.movie,
+          props.userRating
+        )
+      );
     }
   };
 
@@ -133,17 +194,24 @@ function MovieDetails(props: MovieDetailsProps) {
           <IconButton edge="start" onClick={props.onClose}>
             <CloseIcon />
           </IconButton>
-          <AddRemoveMoviesIconButton
-            inUserList={props.inUserList}
+          <BlacklistMovieIcon
+            inBlacklist={props.inBlackList!}
             isLoggedIn={isLoggedIn}
-            onClick={addRemoveMoviesIconButtonClick}
+            onClick={blacklistIconButtonClick}
           />
+          {!props.inBlackList && (
+            <AddRemoveMoviesIconButton
+              inUserList={props.inUserList}
+              isLoggedIn={isLoggedIn}
+              onClick={addRemoveMoviesIconButtonClick}
+            />
+          )}
         </Toolbar>
       </Paper>
       <Grid container spacing={0} className={classes.root}>
         {/* movie poster */}
         <Grid
-          className={classes.paper}
+          className={classes.poster}
           item
           xs={4}
           style={{
@@ -160,22 +228,6 @@ function MovieDetails(props: MovieDetailsProps) {
             }
             alt="movie poster"
           />
-          {movieDetails &&
-            movieDetails.production_companies &&
-            movieDetails.production_companies.map((e: any, i: number) => {
-              if (e.logo_path) {
-                return (
-                  <img
-                    src={baseUrl + e.logo_path}
-                    style={{ maxWidth: "10%", maxHeight: "10%" }}
-                    alt="company logos"
-                    key={i}
-                  />
-                );
-              } else {
-                return <div key={i}>{e.name}</div>;
-              }
-            })}
         </Grid>
         {/* movie description, rating, and title */}
         <Grid className={classes.paper} item xs={5} style={{ marginRight: 0 }}>
@@ -186,7 +238,7 @@ function MovieDetails(props: MovieDetailsProps) {
             </Typography>
           </Grid>
           <br />
-          {isLoggedIn && (
+          {isLoggedIn && props.inUserList && !props.inBlackList && (
             <RatingButtons
               movie={props.movie}
               userRating={props.userRating}
