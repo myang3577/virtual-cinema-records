@@ -92,19 +92,19 @@ function getRecommendation(req, res, next, params) {
       // ie {Matt Damon: [{Insert movie data here},{Insert movie data here}]}
       // let recommendedMovieData = [];
       let recommendedMovieData = {};
-
+      let tmpRatings;
       switch (recType) {
         case "movie":
-          tmpRatings = vgFunction(data, recType);	
-		  quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
+          tmpRatings = vgFunction(data, recType);
+          quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
           break;
         case "actor":
-          tmpRatings = vgFunction(data, recType);	
-		  quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
+          tmpRatings = vgFunction(data, recType);
+          quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
           break;
         case "genre":
-          tmpRatings = vgFunction(data, recType);	
-		  quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
+          tmpRatings = vgFunction(data, recType);
+          quickSort(tmpRatings, data.Items, 0, tmpRatings.length - 1);
           break;
       }
 
@@ -153,12 +153,20 @@ function getRecommendation(req, res, next, params) {
                       results = json.cast;
                       break;
                   }
-
                   results.forEach((movie) => {
+                    // Check if the movie has already been recommended
+                    let inRecommended = false;
+                    recommendedMoviesArray.map((element) => {
+                      if (element.id === movie.id) {
+                        inRecommended = true;
+                      }
+                    });
+
                     // If the movie is not in the user's movie list and the list is not full, then add it
                     if (
                       !tmdbIdArray.includes(movie.id) &&
                       !blacklistTmdbIdArray.includes(movie.id) &&
+                      !inRecommended &&
                       recommendedMoviesArray.length < NUM_REC
                     ) {
                       recommendedMoviesArray.push(movie);
@@ -235,53 +243,48 @@ function getRecommendation(req, res, next, params) {
 }
 
 function vgFunction(data, recType) {
-	var randomNormal = require('random-normal');
-	var tmpRatings = [];
-	if (recType == "movie") {
-		for (i = 0; i < data.Items.length; i++) {
-				  // Do the calculation for the amount of times that actor has been ranked
-		  //Make sure our number is below 5
-		    var num = randomNormal({mean: data.Items[i].rating, dev: 0.75})
-			    if (num >= 5) {
-				    i--;
-				    continue;
-			    }
-			  // If first one, add it to the tmpList
-				tmpRatings.push(num);
-											
-		  }
-		  return tmpRatings;
-	}
+  let randomNormal = require("random-normal");
+  let tmpRatings = [];
+  if (recType == "movie") {
+    for (let i = 0; i < data.Items.length; i++) {
+      // Do the calculation for the amount of times that actor has been ranked
+      //Make sure our number is below 5
+      let num = randomNormal({ mean: data.Items[i].rating, dev: 0.75 });
+      if (num >= 5) {
+        i--;
+        continue;
+      }
+      // If first one, add it to the tmpList
+      tmpRatings.push(num);
+    }
+    return tmpRatings;
+  }
 
-		  // Now for actor/genre
-		  // Make a for loop that does the calculation 
-		  for (i = 0; i < data.Items.length; i++) {
-			  // Do the calculation for the amount of times that actor has been ranked
-			  for (j = 0; j < data.Items[i].movie_count; j++)
-			  {
-				  //Make sure our number is below 5 and above 0
-				  var num = randomNormal({mean: data.Items[i].rating, dev: 0.75})
-					if (num >= 5 || num <= 0) {
-						j--;
-						continue;
-					}
-				  // If first one, add it to the tmpList
-				if (j == 0) {
-					tmpRatings.push(num);
-				}
-				else {
-					tmpRatings[i] += num;
-				}									
-			  }
-			  //Divide by count at the end for the average!
-			  if (data.Items[i].movie_count != 0) {
-					tmpRatings[i] = tmpRatings[i] / data.Items[i].movie_count
-				}
-		   
-		  }
-		  return tmpRatings;
+  // Now for actor/genre
+  // Make a for loop that does the calculation
+  for (let i = 0; i < data.Items.length; i++) {
+    // Do the calculation for the amount of times that actor has been ranked
+    for (let j = 0; j < data.Items[i].movie_count; j++) {
+      //Make sure our number is below 5 and above 0
+      let num = randomNormal({ mean: data.Items[i].rating, dev: 0.75 });
+      if (num >= 5 || num <= 0) {
+        j--;
+        continue;
+      }
+      // If first one, add it to the tmpList
+      if (j == 0) {
+        tmpRatings.push(num);
+      } else {
+        tmpRatings[i] += num;
+      }
+    }
+    //Divide by count at the end for the average!
+    if (data.Items[i].movie_count != 0) {
+      tmpRatings[i] = tmpRatings[i] / data.Items[i].movie_count;
+    }
+  }
+  return tmpRatings;
 }
-
 
 function getUserMovieList(email) {
   var movieListParams = {
@@ -341,48 +344,49 @@ function getUserBlackList(email) {
   });
 }
 
-
 //VG STUFF
 //https://www.guru99.com/quicksort-in-javascript.html, edited to fit my needs
 
-function swap(items, leftIndex, rightIndex){
-    var temp = items[leftIndex];
-    items[leftIndex] = items[rightIndex];
-    items[rightIndex] = temp;
+function swap(items, leftIndex, rightIndex) {
+  var temp = items[leftIndex];
+  items[leftIndex] = items[rightIndex];
+  items[rightIndex] = temp;
 }
 function partition(items, secondaryItems, left, right) {
-    var pivot   = items[Math.floor((right + left) / 2)], //middle element
-        i       = left, //left pointer
-        j       = right; //right pointer
-    while (i <= j) {
-        while (items[i] > pivot) {
-            i++;
-        }
-        while (items[j] < pivot) {
-            j--;
-        }
-        if (i <= j) {
-            swap(items, i, j); //sawpping two elements
-			swap(secondaryItems, i, j);
-            i++;
-            j--;
-        }
+  var pivot = items[Math.floor((right + left) / 2)], //middle element
+    i = left, //left pointer
+    j = right; //right pointer
+  while (i <= j) {
+    while (items[i] > pivot) {
+      i++;
     }
-    return i;
+    while (items[j] < pivot) {
+      j--;
+    }
+    if (i <= j) {
+      swap(items, i, j); //sawpping two elements
+      swap(secondaryItems, i, j);
+      i++;
+      j--;
+    }
+  }
+  return i;
 }
 
 function quickSort(items, secondaryItems, left, right) {
-    var index;
-    if (items.length > 1) {
-        index = partition(items, secondaryItems, left, right); //index returned from partition
-        if (left < index - 1) { //more elements on the left side of the pivot
-            quickSort(items, secondaryItems, left, index - 1);
-        }
-        if (index < right) { //more elements on the right side of the pivot
-            quickSort(items, secondaryItems, index, right);
-        }
+  var index;
+  if (items.length > 1) {
+    index = partition(items, secondaryItems, left, right); //index returned from partition
+    if (left < index - 1) {
+      //more elements on the left side of the pivot
+      quickSort(items, secondaryItems, left, index - 1);
     }
-    return secondaryItems;
+    if (index < right) {
+      //more elements on the right side of the pivot
+      quickSort(items, secondaryItems, index, right);
+    }
+  }
+  return secondaryItems;
 }
 // End of VG stuff
 
