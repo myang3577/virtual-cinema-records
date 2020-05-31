@@ -36,6 +36,9 @@ function MyMovies() {
   const movieListLoading = useSelector<GlobalState, LoadingState>(
     (state) => state.myMoviesData.loading
   );
+  const userBlackList = useSelector<GlobalState, any[]>(
+    (state) => state.blacklistData.blacklist
+  );
 
   const [movieFilter, setMovieFilter] = useState("");
   const [filterMovieList, setFilterMovieList]: any = useState([]);
@@ -134,6 +137,7 @@ function MyMovies() {
                 loading={movieListLoading}
                 userMyMoviesList={movieDataList}
                 userMovieIDList={movieIDList}
+                userBlackList={userBlackList}
                 page={PageType.MY_MOVIES}
               />
             )}

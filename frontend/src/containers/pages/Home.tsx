@@ -38,6 +38,9 @@ function Home() {
   const userMyMoviesList = useSelector<GlobalState, any[]>(
     (state) => state.myMoviesData.movieDataList
   );
+  const userBlackList = useSelector<GlobalState, any[]>(
+    (state) => state.blacklistData.blacklist
+  );
   const movieDataLoading = useSelector<GlobalState, LoadingState>(
     (state) => state.tmdbData.loading
   );
@@ -124,6 +127,7 @@ function Home() {
           loading={movieDataLoading}
           userMyMoviesList={userMyMoviesList}
           userMovieIDList={userMovieIDList}
+          userBlackList={userBlackList}
           page={PageType.HOME}
         />
       </div>

@@ -25,7 +25,7 @@ import { getMovieDetails } from "../actions/tmdbActions";
 export interface MovieCardProps {
   movie: any;
   inUserList: boolean;
-  inBlackList?: boolean;
+  inBlackList: boolean;
   page: PageType;
 }
 
@@ -177,7 +177,7 @@ function MovieCard(props: MovieCardProps) {
         tmdb_id={props.movie.id}
         movieDetailsOpen={movieDetailsOpen}
         inUserList={props.inUserList}
-        inBlackList={props.inBlackList}
+        inBlackList={props.inBlackList!}
         userRating={userRating}
         onClose={() => setMovieDetailsOpen(false)}
       />

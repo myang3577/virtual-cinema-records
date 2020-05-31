@@ -16,7 +16,7 @@ import { MovieListElement } from "../actions/userInfoActions";
 interface MovieGridProps {
   displayMovieList: [];
   userMyMoviesList: any[];
-  userBlackList?: any[];
+  userBlackList: any[];
   userMovieIDList: MovieListElement[];
   loading: LoadingState;
   page: PageType;
@@ -60,7 +60,7 @@ function MovieGrid(props: MovieGridProps) {
     props.userMyMoviesList.some((e: any) => movie.id === e.id);
 
   const movieInBlackList = (movie: any): boolean =>
-    props.userBlackList!.some((e: any) => movie.id === e.id);
+    props.userBlackList.some((e: any) => movie.id === e.id);
 
   return (
     <div className="movie-grid">
@@ -79,6 +79,7 @@ function MovieGrid(props: MovieGridProps) {
                   <MovieCard
                     movie={e}
                     inUserList={movieInUserList(e)}
+                    inBlackList={false}
                     page={props.page}
                   />
                 )}

@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 0,
       width: "100%",
       marginTop: "5%",
-      overflowY: "hidden",
+      overflow: "hidden",
     },
     descriptionHeader: {
       display: "inline-flex",
@@ -56,14 +56,16 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "left",
       color: theme.palette.text.primary,
       flexGrow: 1,
-      overflow: "auto",
+      overflowY: "auto",
+      overflowX: "hidden",
       minHeight: "100%",
     },
     paper: {
       textAlign: "left",
       color: theme.palette.text.primary,
       flexGrow: 1,
-      overflow: "auto",
+      overflowY: "auto",
+      overflowX: "hidden",
       minHeight: "100%",
     },
     poster: {
@@ -86,7 +88,7 @@ interface MovieDetailsProps {
   tmdb_id: number;
   movieDetailsOpen: boolean;
   inUserList: boolean;
-  inBlackList?: boolean;
+  inBlackList: boolean;
   userRating: number;
   onClose: () => any;
 }
