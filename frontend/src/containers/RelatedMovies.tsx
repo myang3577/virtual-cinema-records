@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { GlobalState } from "../reducers/rootReducer";
 import {
   GridList,
@@ -9,6 +9,8 @@ import {
   CardContent,
   Typography,
 } from "@material-ui/core";
+import { setMovieDetail } from "../actions/movieDetailsActions";
+import { getMovieDetails } from "../actions/tmdbActions";
 
 interface RelatedMoviesProps {
   tmdb_id: number;
@@ -25,6 +27,49 @@ function RelatedMovies(props: RelatedMoviesProps) {
     (state) => state.uiData.tmdbBaseUrl
   );
 
+  const dispatch = useDispatch();
+
+  const userMyMoviesList = useSelector<GlobalState, any[]>(
+    (state) => state.myMoviesData.movieDataList
+  );
+  const userBlackList = useSelector<GlobalState, any[]>(
+    (state) => state.blacklistData.blacklist
+  );
+
+  const movieInUserList = (movie: any): boolean =>
+    userMyMoviesList.some((e: any) => movie.id === e.id);
+
+  const movieInBlackList = (movie: any): boolean =>
+    userBlackList.some((e: any) => movie.id === e.id);
+
+  const [currMovie, setCurrMovie] = useState<any>({});
+
+  const userRating = useSelector<GlobalState, number>((state) => {
+    const userMovieIDList = state.myMoviesData.movieIDList;
+    const userMovieIDElement = userMovieIDList.find(
+      (e) => e.tmdb_id === currMovie.id
+    );
+    if (userMovieIDElement) {
+      const userRating = userMovieIDElement.rating;
+      return userRating ? userRating : 0;
+    }
+    return 0;
+  });
+
+  const relatedMovieClicked = (movie: any) => {
+    setCurrMovie(movie);
+    dispatch(
+      setMovieDetail(
+        movie,
+        movie.id,
+        movieInUserList(movie),
+        movieInBlackList(movie),
+        userRating
+      )
+    );
+    dispatch(getMovieDetails(movie.id));
+  };
+
   const displayRelatedMovies = () => {
     return (
       relatedMovies &&
@@ -35,6 +80,9 @@ function RelatedMovies(props: RelatedMoviesProps) {
               style={{
                 backgroundImage: "url(" + baseUrl + movie.backdrop_path + ")",
                 backgroundSize: "cover",
+              }}
+              onClick={(e) => {
+                relatedMovieClicked(movie);
               }}
             >
               <CardContent>

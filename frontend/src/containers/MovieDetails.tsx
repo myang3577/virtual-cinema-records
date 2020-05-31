@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   makeStyles,
   Dialog,
@@ -31,6 +31,11 @@ import {
   deleteBlackListMovie,
   putBlackListMovie,
 } from "../actions/blacklistAction";
+import {
+  closeMovieDetail,
+  setMovieDetail,
+  setMovieButtons,
+} from "../actions/movieDetailsActions";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -90,13 +95,36 @@ interface MovieDetailsProps {
   inUserList: boolean;
   inBlackList: boolean;
   userRating: number;
-  onClose: () => any;
 }
 
-function MovieDetails(props: MovieDetailsProps) {
+function MovieDetails() {
   const classes = useStyles();
 
   const dispatch = useDispatch();
+
+  const movie = useSelector<GlobalState, any>(
+    (state) => state.movieDetailData.movie
+  );
+
+  const tmdb_id = useSelector<GlobalState, number>(
+    (state) => state.movieDetailData.tmdb_id
+  );
+
+  const movieDetailsOpen = useSelector<GlobalState, boolean>(
+    (state) => state.movieDetailData.movieDetailsOpen
+  );
+
+  const inUserList = useSelector<GlobalState, boolean>(
+    (state) => state.movieDetailData.inUserList
+  );
+
+  const inBlackList = useSelector<GlobalState, boolean>(
+    (state) => state.movieDetailData.inBlackList
+  );
+
+  const userRating = useSelector<GlobalState, number>(
+    (state) => state.movieDetailData.userRating
+  );
 
   const username = useSelector<GlobalState, string>(
     (state) => state.loginData.username
@@ -111,7 +139,7 @@ function MovieDetails(props: MovieDetailsProps) {
   );
 
   const movieDetails = useSelector<GlobalState, any>(
-    (state) => state.tmdbData.movieDetails[props.tmdb_id]
+    (state) => state.tmdbData.movieDetails[tmdb_id]
   );
 
   const displayCast = () =>
@@ -130,54 +158,62 @@ function MovieDetails(props: MovieDetailsProps) {
     ));
 
   const addRemoveMoviesIconButtonClick = () => {
-    if (props.inUserList) {
+    if (inUserList) {
       dispatch(deleteMovie(username, movieDetails.id));
       dispatch(
         openSnackBar(
-          props.movie.title + " removed from MyMovies",
+          movie.title + " removed from MyMovies",
           SnackBarActionType.MYMOVIES
         )
       );
+      dispatch(setMovieButtons(false, inBlackList));
     } else {
       dispatch(putMovie(username, movieDetails.id));
       dispatch(
         openSnackBar(
-          props.movie.title + " added to MyMovies",
+          movie.title + " added to MyMovies",
           SnackBarActionType.RATING,
-          props.movie,
-          props.userRating
+          movie,
+          userRating
         )
       );
+      dispatch(setMovieButtons(true, inBlackList));
     }
   };
 
   const blacklistIconButtonClick = () => {
-    if (props.inBlackList) {
-      dispatch(deleteBlackListMovie(username, props.movie.id));
+    if (inBlackList) {
+      dispatch(deleteBlackListMovie(username, movie.id));
       dispatch(
         openSnackBar(
-          props.movie.title + " removed from blacklist",
+          movie.title + " removed from blacklist",
           SnackBarActionType.MYMOVIES
         )
       );
+      dispatch(setMovieButtons(inUserList, false));
     } else {
-      dispatch(putBlackListMovie(username, props.movie.id));
+      dispatch(putBlackListMovie(username, movie.id));
       dispatch(
         openSnackBar(
-          props.movie.title + " added to blacklist",
+          movie.title + " added to blacklist",
           SnackBarActionType.RATING,
-          props.movie,
-          props.userRating
+          movie,
+          userRating
         )
       );
+      dispatch(setMovieButtons(inUserList, true));
     }
+  };
+
+  const onClose = () => {
+    dispatch(closeMovieDetail());
   };
 
   return (
     <Dialog
       fullScreen
-      open={props.movieDetailsOpen}
-      onClose={props.onClose}
+      open={movieDetailsOpen}
+      onClose={onClose}
       TransitionComponent={Transition}
       transitionDuration={500}
       className={classes.dialog}
@@ -193,17 +229,17 @@ function MovieDetails(props: MovieDetailsProps) {
         square
       >
         <Toolbar>
-          <IconButton edge="start" onClick={props.onClose}>
+          <IconButton edge="start" onClick={onClose}>
             <CloseIcon />
           </IconButton>
           <BlacklistMovieIcon
-            inBlacklist={props.inBlackList!}
+            inBlacklist={inBlackList!}
             isLoggedIn={isLoggedIn}
             onClick={blacklistIconButtonClick}
           />
-          {!props.inBlackList && (
+          {!inBlackList && (
             <AddRemoveMoviesIconButton
-              inUserList={props.inUserList}
+              inUserList={inUserList}
               isLoggedIn={isLoggedIn}
               onClick={addRemoveMoviesIconButtonClick}
             />
@@ -240,10 +276,10 @@ function MovieDetails(props: MovieDetailsProps) {
             </Typography>
           </Grid>
           <br />
-          {isLoggedIn && props.inUserList && !props.inBlackList && (
+          {isLoggedIn && inUserList && !inBlackList && (
             <RatingButtons
-              movie={props.movie}
-              userRating={props.userRating}
+              movie={movie}
+              userRating={userRating}
               displayWords={true}
             />
           )}
@@ -274,7 +310,7 @@ function MovieDetails(props: MovieDetailsProps) {
           <Typography variant="h6" style={{ marginLeft: 5, marginTop: 10 }}>
             Related Movies
           </Typography>
-          <RelatedMovies tmdb_id={props.tmdb_id} />
+          <RelatedMovies tmdb_id={tmdb_id} />
         </Grid>
       </Grid>
     </Dialog>

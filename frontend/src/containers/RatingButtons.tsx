@@ -6,6 +6,7 @@ import { GlobalState } from "../reducers/rootReducer";
 import { putRating, deleteRating } from "../actions/movieListActions";
 import { openSnackBar, SnackBarActionType } from "../actions/uiActions";
 import { LoadingState } from "../reducers/tmdbReducer";
+import { setMovieRating } from "../actions/movieDetailsActions";
 
 export interface RatingButtonsProps {
   movie: any;
@@ -61,6 +62,7 @@ function RatingButtons(props: RatingButtonsProps) {
   useEffect(() => {
     setDisplayRating(-1);
     setRating(props.userRating);
+    dispatch(setMovieRating(rating));
   }, [props.userRating]);
 
   useEffect(() => {

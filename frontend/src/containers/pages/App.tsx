@@ -8,6 +8,7 @@ import Blacklist from "./Blacklist";
 import MyMovies from "./MyMovies";
 import Navbar from "../NavBar";
 import SnackBar from "../SnackBar";
+import MovieDetails from "../MovieDetails";
 
 export const routes = {
   homeLink: "/",
@@ -25,6 +26,7 @@ function App() {
         <CssBaseline />
         <Navbar />
         <SnackBar />
+        <MovieDetails />
 
         <div className="page-body">
           <Switch>

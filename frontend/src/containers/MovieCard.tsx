@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -21,6 +21,10 @@ import AddRemoveMoviesIconButton from "../components/AddRemoveMoviesIconButton";
 import BlacklistMovieIcon from "../components/BlacklistMovieIcon";
 import MovieDetails from "./MovieDetails";
 import { getMovieDetails } from "../actions/tmdbActions";
+import {
+  openMovieDetail,
+  setMovieDetail,
+} from "../actions/movieDetailsActions";
 
 export interface MovieCardProps {
   movie: any;
@@ -54,7 +58,7 @@ function MovieCard(props: MovieCardProps) {
     return 0;
   });
 
-  const [movieDetailsOpen, setMovieDetailsOpen] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const addRemoveIconButtonClick = () => {
     if (props.inUserList) {
@@ -100,10 +104,17 @@ function MovieCard(props: MovieCardProps) {
     }
   };
 
-  const dispatch = useDispatch();
-
   const openMovieDetailDrawer = () => {
-    setMovieDetailsOpen(true);
+    dispatch(
+      openMovieDetail(
+        props.movie,
+        props.movie.id,
+        true,
+        props.inUserList,
+        props.inBlackList,
+        userRating
+      )
+    );
     dispatch(getMovieDetails(props.movie.id));
   };
 
@@ -172,15 +183,6 @@ function MovieCard(props: MovieCardProps) {
           />
         </CardActionArea>
       </Card>
-      <MovieDetails
-        movie={props.movie}
-        tmdb_id={props.movie.id}
-        movieDetailsOpen={movieDetailsOpen}
-        inUserList={props.inUserList}
-        inBlackList={props.inBlackList!}
-        userRating={userRating}
-        onClose={() => setMovieDetailsOpen(false)}
-      />
     </div>
   );
 }
