@@ -3,8 +3,8 @@ import { Card, CardHeader } from "@material-ui/core";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 export interface PriceCardProps {
-  streamingTitle: string;
   streamingPrice: number;
+  streamingBG: string;
 }
 
 function PriceCard(props: PriceCardProps) {
@@ -20,17 +20,24 @@ function PriceCard(props: PriceCardProps) {
         margin: "5px",
         marginLeft: "5%",
         marginRight: "5%",
+        backgroundImage: "url(" + props.streamingBG + ")",
+        backgroundSize: "cover",
+        backgroundPosition: "center top",
       }}
     >
       <CardHeader
         titleTypographyProps={{
           variant: "subtitle1",
-          display: "inline",
+          style: {
+            marginTop: "-10%",
+            color: "white",
+            textShadow:
+              "0px 0px 8px rgba(0, 0, 0, 1),0px 0px 8px rgba(0, 0, 0, 1),0px 0px 8px rgba(0, 0, 0, 1),0px 0px 8px rgba(0, 0, 0, 1),0px 0px 8px rgba(0, 0, 0, 1),0px 0px 8px rgba(0, 0, 0, 1)",
+          },
+          paragraph: true,
         }}
-        title={props.streamingTitle}
-        subheader={"$" + props.streamingPrice}
-        style={{ height: "auto" }}
-        action={<ExitToAppIcon style={{ margin: "5%" }} onClick={clickSite} />}
+        title={"$" + props.streamingPrice}
+        style={{ height: "auto", margin: "5%" }}
       />
     </Card>
   );

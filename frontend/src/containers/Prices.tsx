@@ -1,33 +1,36 @@
 import React from "react";
 import { GridList, GridListTile } from "@material-ui/core";
 import PriceCard from "./PriceCard";
+import netflixlogo from "../images/netflixlogo.jpeg";
+import hululogo from "../images/hululogo.jpeg";
+import disneypluslogo from "../images/disneypluslogo.jpeg";
+import youtubelogo from "../images/youtubelogo.jpeg";
+import amazonlogo from "../images/amazonlogo.jpeg";
+import applelogo from "../images/applelogo.jpeg";
 
 function Prices() {
+  const displayPrices = () => {
+    const sites = streamingSites();
+    return sites.map((s: any, i: number) => (
+      <GridListTile key={i}>
+        <PriceCard streamingBG={s.siteBG} streamingPrice={s.sitePrice} />
+      </GridListTile>
+    ));
+  };
   const streamingSites = () => {
     return [
-      { siteTitle: "Netfix", sitePrice: 9.99 },
-      { siteTitle: "Hulu", sitePrice: 9.99 },
-      { siteTitle: "Disney+", sitePrice: 14.99 },
-      { siteTitle: "YouTube", sitePrice: 14.99 },
-      { siteTitle: "Apple", sitePrice: 17.99 },
+      { siteTitle: "Netflix", sitePrice: 9.99, siteBG: netflixlogo },
+      { siteTitle: "Hulu", sitePrice: 9.99, siteBG: hululogo },
+      { siteTitle: "Disney+", sitePrice: 14.99, siteBG: disneypluslogo },
+      { siteTitle: "YouTube", sitePrice: 14.99, siteBG: youtubelogo },
+      { siteTitle: "Apple", sitePrice: 15.99, siteBG: applelogo },
+      { siteTitle: "Prime", sitePrice: 8.99, siteBG: amazonlogo },
     ];
   };
 
   return (
-    <GridList
-      cellHeight={"auto"}
-      style={{ height: "50%", width: "100%", margin: "0%" }}
-      cols={1}
-      spacing={0}
-    >
-      {streamingSites().map((s: any, i: number) => (
-        <GridListTile cols={1} rows={1} key={i}>
-          <PriceCard
-            streamingTitle={s.siteTitle}
-            streamingPrice={s.sitePrice}
-          />
-        </GridListTile>
-      ))}
+    <GridList cellHeight={"auto"} cols={2} spacing={0}>
+      {displayPrices()}
     </GridList>
   );
 }
