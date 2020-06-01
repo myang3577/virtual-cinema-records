@@ -106,7 +106,6 @@ function RelatedMovies(props: RelatedMoviesProps) {
     );
   };
 
-  console.log(relatedMovies);
   return relatedMovies ? (
     <GridList cellHeight={"auto"} cols={2}>
       {displayRelatedMovies()}
