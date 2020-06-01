@@ -70,9 +70,7 @@ function MovieCard(props: MovieCardProps) {
       dispatch(
         openSnackBar(
           props.movie.title + " added to MyMovies",
-          SnackBarActionType.RATING,
-          props.movie,
-          userRating
+          SnackBarActionType.MYMOVIES
         )
       );
     }
@@ -84,7 +82,7 @@ function MovieCard(props: MovieCardProps) {
       dispatch(
         openSnackBar(
           props.movie.title + " removed from blacklist",
-          SnackBarActionType.MYMOVIES
+          SnackBarActionType.BLACKLIST
         )
       );
     } else {
@@ -92,9 +90,7 @@ function MovieCard(props: MovieCardProps) {
       dispatch(
         openSnackBar(
           props.movie.title + " added to blacklist",
-          SnackBarActionType.RATING,
-          props.movie,
-          userRating
+          SnackBarActionType.BLACKLIST
         )
       );
     }

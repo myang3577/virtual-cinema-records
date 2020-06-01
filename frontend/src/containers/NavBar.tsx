@@ -128,12 +128,12 @@ function NavBar(props: any) {
                 style={
                   displayFullBar
                     ? {
-                        marginBottom: 0,
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: 0,
+                        transition: "margin-top 1s ease-in-out",
                       }
                     : {
-                        marginBottom: "15%",
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: "-10%",
+                        transition: "margin-top 1s ease-in-out",
                       }
                 }
               />
@@ -155,12 +155,12 @@ function NavBar(props: any) {
                 style={
                   displayFullBar
                     ? {
-                        marginBottom: 0,
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: 0,
+                        transition: "margin-top 1s ease-in-out",
                       }
                     : {
-                        marginBottom: "15%",
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: "-10%",
+                        transition: "margin-top 1s ease-in-out",
                       }
                 }
               />
@@ -197,12 +197,12 @@ function NavBar(props: any) {
                 style={
                   displayFullBar
                     ? {
-                        marginBottom: 0,
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: 0,
+                        transition: "margin-top 1s ease-in-out",
                       }
                     : {
-                        marginBottom: "15%",
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: "-10%",
+                        transition: "margin-top 1s ease-in-out",
                       }
                 }
               />
@@ -224,12 +224,12 @@ function NavBar(props: any) {
                 style={
                   displayFullBar
                     ? {
-                        marginBottom: 0,
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: 0,
+                        transition: "margin-top 1s ease-in-out",
                       }
                     : {
-                        marginBottom: "15%",
-                        transition: "margin-bottom 1s ease-in-out",
+                        marginTop: "-10%",
+                        transition: "margin-top 1s ease-in-out",
                       }
                 }
               />

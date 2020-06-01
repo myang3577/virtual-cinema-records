@@ -43,6 +43,7 @@ export enum SnackBarActionType {
   LOGIN = "LOGIN",
   MYMOVIES = "MYMOVIES",
   RATING = "RATING",
+  BLACKLIST = "BLACKLIST",
   NONE = "NONE",
 }
 

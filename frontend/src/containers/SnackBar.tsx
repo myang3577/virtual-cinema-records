@@ -10,10 +10,11 @@ import {
 } from "../actions/uiActions";
 import { IconButton, Slide } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Person, Theaters } from "@material-ui/icons";
+import { Person, Theaters, Block } from "@material-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { routes } from "./pages/App";
 import RatingButtons from "./RatingButtons";
+import { closeMovieDetail } from "../actions/movieDetailsActions";
 
 export interface SnackbarMessage {
   message: string;
@@ -107,6 +108,10 @@ function SnackBar() {
           dispatch(openAccountModal());
           return;
         case SnackBarActionType.MYMOVIES:
+          dispatch(closeMovieDetail());
+          return;
+        case SnackBarActionType.BLACKLIST:
+          dispatch(closeMovieDetail());
           return;
       }
     }
@@ -123,6 +128,8 @@ function SnackBar() {
           return <Theaters fontSize="small" />;
         case SnackBarActionType.RATING:
           return <Theaters fontSize="small" />;
+        case SnackBarActionType.BLACKLIST:
+          return <Block fontSize="small" />;
       }
     }
   };
@@ -134,6 +141,8 @@ function SnackBar() {
           return routes.myMoviesLink;
         case SnackBarActionType.RATING:
           return routes.myMoviesLink;
+        case SnackBarActionType.BLACKLIST:
+          return routes.blacklistLink;
       }
     }
 

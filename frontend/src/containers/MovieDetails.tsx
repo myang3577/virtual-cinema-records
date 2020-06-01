@@ -177,9 +177,7 @@ function MovieDetails() {
       dispatch(
         openSnackBar(
           movie.title + " added to MyMovies",
-          SnackBarActionType.RATING,
-          movie,
-          userRating
+          SnackBarActionType.MYMOVIES
         )
       );
       dispatch(setMovieButtons(true, inBlackList));
@@ -192,7 +190,7 @@ function MovieDetails() {
       dispatch(
         openSnackBar(
           movie.title + " removed from blacklist",
-          SnackBarActionType.MYMOVIES
+          SnackBarActionType.BLACKLIST
         )
       );
       dispatch(setMovieButtons(inUserList, false));
@@ -201,9 +199,7 @@ function MovieDetails() {
       dispatch(
         openSnackBar(
           movie.title + " added to blacklist",
-          SnackBarActionType.RATING,
-          movie,
-          userRating
+          SnackBarActionType.BLACKLIST
         )
       );
       dispatch(setMovieButtons(inUserList, true));
