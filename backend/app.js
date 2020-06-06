@@ -10,6 +10,7 @@ var ping = require("./routes/ping");
 var users = require("./routes/users");
 // var recommender = require("./routes/recommender");
 var app = express();
+require("dotenv").config();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
