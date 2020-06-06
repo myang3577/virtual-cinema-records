@@ -3,7 +3,7 @@ var router = express.Router();
 var AWS = require("aws-sdk");
 var async = require("async");
 
-AWS.config.loadFromPath("./config.json");
+AWS.config.update({ region: "us-east-2" });
 AWS.config.apiVersion = {
   dynamodb: "latest",
 };

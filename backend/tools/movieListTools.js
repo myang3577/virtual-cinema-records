@@ -1,7 +1,7 @@
 var AWS = require("aws-sdk");
 const fetch = require("node-fetch");
 
-AWS.config.loadFromPath("./config.json");
+AWS.config.update({ region: "us-east-2" });
 AWS.config.apiVersion = {
   dynamodb: "latest",
 };

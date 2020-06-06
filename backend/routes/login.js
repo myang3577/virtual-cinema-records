@@ -21,7 +21,7 @@ const {
 } = require("../tools/loginTools");
 
 // const { searchParam, addAttribute } = require("../tools/databaseTemplates");
-AWS.config.loadFromPath("./config.json");
+AWS.config.update({ region: "us-east-2" });
 AWS.config.apiVersion = {
   dynamodb: "latest",
 };
